@@ -35,7 +35,9 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return followCamera; }
-
+public:
+	UFUNCTION(BlueprintCallable)
+	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* playerInputComponent) override;

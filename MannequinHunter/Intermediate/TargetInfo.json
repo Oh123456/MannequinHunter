@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "MannequinHunter",
+			"Path": "E:\\UE5\\MannequinHunter\\MannequinHunter\\Source\\MannequinHunter.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "MannequinHunterEditor",
+			"Path": "E:\\UE5\\MannequinHunter\\MannequinHunter\\Source\\MannequinHunterEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\ue5\\mannequinhunter\\mannequinhunter\\intermediate\\build\\win64\\unrealeditor\\inc\\mannequinhunter\\uht\\mannequinhunter.init.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\ue5\\mannequinhunter\\mannequinhunter\\intermediate\\build\\win64\\x64\\mannequinhuntereditor\\development\\engine\\sharedpch.engine.shadowerrors.inclorderunreal5_1.h.pch",
+        "Includes": [
+            "e:\\ue5\\mannequinhunter\\mannequinhunter\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\mannequinhunter\\definitions.mannequinhunter.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

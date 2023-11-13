@@ -10,8 +10,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "CombatSystem/PlayerCharacterCombatComponent.h"
+#include "HFSM/RYUHFSMComponent.h"
 
-ARYU::ARYU()
+ARYU::ARYU() : Super()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -44,8 +46,9 @@ ARYU::ARYU()
 	followCamera->SetupAttachment(cameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	followCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	combatComponent = CreateDefaultSubobject<UPlayerCharacterCombatComponent>(TEXT("PlayerCombatSystem"));
+
+	HFSM = CreateDefaultSubobject<URYUHFSMComponent>(TEXT("RYUHFSM"));
 }
 
 void ARYU::Move(const FInputActionValue& value)

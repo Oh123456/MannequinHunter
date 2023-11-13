@@ -34,5 +34,5 @@ void UActionCharacterAnimInstance::SetBlendSpaceValue()
 	speed =  FMath::Sqrt((velocity.X * velocity.X) + (velocity.Y * velocity.Y));
 
 	const FVector& inverseVector = UKismetMathLibrary::InverseTransformDirection(ownerCharacter->GetActorTransform(), velocity);
-	anlge = UKismetMathLibrary::MakeRotFromX(inverseVector).Yaw;
+	angle = UKismetMathLibrary::MakeRotFromX(inverseVector).Yaw;
 }

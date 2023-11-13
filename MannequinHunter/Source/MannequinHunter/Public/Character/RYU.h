@@ -9,6 +9,16 @@
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class ERYUWeaponType : uint8
+{
+	Katana = 0,
+	Fist,
+
+	None = UINT8_MAX,
+};
+
 UCLASS()
 class MANNEQUINHUNTER_API ARYU : public APlayerCharacter
 {
@@ -19,7 +29,7 @@ class MANNEQUINHUNTER_API ARYU : public APlayerCharacter
 public:
 	ARYU();
 
-
+	ERYUWeaponType GetWeaponType() { return weaponType; }
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
@@ -40,6 +50,8 @@ protected:
 	/** Called for looking input */
 	virtual void Look(const FInputActionValue& value) override;
 
+private:
+	ERYUWeaponType weaponType;
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

@@ -73,5 +73,5 @@ MannequinHunter/Plugins/*/Intermediate/*
 # Cache files for the editor to use 
 MannequinHunter/DerivedDataCache/*
 
-# Original FBX
-MannequinHunter/export/Ryu_TwistBones/*
+# Original FBX, Extracted FBX
+Export/Extraction/*

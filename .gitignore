@@ -46,11 +46,11 @@ SourceArt/**/*.png
 SourceArt/**/*.tga
 
 # Binary Files
-ActionRND/Binaries/*
-ActionRND/Plugins/*/Binaries/*
+MannequinHunter/Binaries/*
+MannequinHunter/Plugins/*/Binaries/*
 
 # Builds
-ActionRND/Build/*
+MannequinHunter/Build/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/

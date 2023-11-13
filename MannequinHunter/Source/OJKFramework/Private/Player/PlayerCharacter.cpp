@@ -77,7 +77,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	if (combatComponent->IsLockOn())
+	if (combatComponent && combatComponent->IsLockOn())
 		return;
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();

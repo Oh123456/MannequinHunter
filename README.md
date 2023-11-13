@@ -1,7 +1,7 @@
 # MannequinHunter
-UE Game Portfolio
-개인 포트 폴리오 레퍼지토리이다.
-작업 환경 PC, 노트북
+UE Game Portfolio <br/>
+개인 포트 폴리오 레퍼지토리이다. <br/>
+작업 환경 PC, 노트북 <br/>
 
 # 본 프로젝트 코딩 표준
 

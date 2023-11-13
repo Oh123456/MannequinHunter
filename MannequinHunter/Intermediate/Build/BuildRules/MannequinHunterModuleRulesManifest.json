@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"E:\\UE5\\MannequinHunter\\MannequinHunter\\Source\\MannequinHunter\\MannequinHunter.Build.cs",
-		"E:\\UE5\\MannequinHunter\\MannequinHunter\\Source\\MannequinHunter.Target.cs",
-		"E:\\UE5\\MannequinHunter\\MannequinHunter\\Source\\MannequinHunterEditor.Target.cs"
-	],
-	"EngineVersion": "5.2.1"
-}

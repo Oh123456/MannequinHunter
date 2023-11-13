@@ -11,5 +11,7 @@ public class MannequinHunterEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
 		ExtraModuleNames.Add("MannequinHunter");
-	}
+        ExtraModuleNames.Add("OJKUtility");
+        ExtraModuleNames.Add("OJKFramework");
+    }
 }

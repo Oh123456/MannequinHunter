@@ -20,6 +20,10 @@ public:
 
 	uint8 GetCurrentStateMachineID();
 	uint8 GetCurrentStateID();
+
+	//Forced Conversion StateMachine
+	void ChangeStateMachine(uint8 changeStateID);
+
 protected:
 	TSharedPtr<FStateMachine>* AddStateMachine(uint8 id, uint8 defaultSateID = 0);
 
@@ -31,8 +35,6 @@ protected:
 	template<typename T>
 	TSharedPtr<FStateMachine>* FindStateMachine(T id);
 
-private:
-	void ChangeState(uint8 changeStateID);
 
 protected:
 	// Called when the game starts

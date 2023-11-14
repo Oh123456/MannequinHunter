@@ -4,21 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Player/PlayerCharacterAnimInstance.h"
+#include "HFSM/RYUHFSMComponent.h"
 #include "RYUAnimInstance.generated.h"
 
 /**
  * 
  */
 
-//enum ERYUWeaponType;
-
 UCLASS()
 class MANNEQUINHUNTER_API URYUAnimInstance : public UPlayerCharacterAnimInstance
 {
 	GENERATED_BODY()
 
-
 public:
+	UFUNCTION(BlueprintPure, Category = HFSM, meta = (BlueprintThreadSafe))
+	bool IsCombat() { return (StaticCast<uint8>(ryuStateMachineState) & StaticCast<uint8>(ERYUStateMachine::Combat)); }
+private:
 	UFUNCTION(BlueprintPure, Category = WeaponType , meta = (BlueprintThreadSafe))
 	ERYUWeaponType GetWeaponType();
 
@@ -27,4 +28,7 @@ public:
 private:
 	UPROPERTY(BlueprintReadOnly, Category = WeaponType, meta = (AllowPrivateAccess = "true"))
 	ERYUWeaponType weaponType;
+
+	UPROPERTY(BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
+	ERYUStateMachine ryuStateMachineState;
 };

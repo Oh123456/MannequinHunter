@@ -30,21 +30,21 @@ inputDirection(0.0f,0.0f) , HFSM(nullptr)
 
 	if (findJumpAction.Succeeded())
 	{
-		jumpAction = findJumpAction.Object;
+		inputData.jumpAction = findJumpAction.Object;
 	}
 
 	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findMoveAction, TEXT("/Game/ThirdPerson/Input/Actions/IA_Move.IA_Move"))
 
 	if (findMoveAction.Succeeded())
 	{
-		moveAction = findMoveAction.Object;
+		inputData.moveAction = findMoveAction.Object;
 	}
 
 	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findLookAction, TEXT("/Game/ThirdPerson/Input/Actions/IA_Look.IA_Look"))
 
 	if (findLookAction.Succeeded())
 	{
-		lookAction = findLookAction.Object;
+		inputData.lookAction = findLookAction.Object;
 	}
 
 }

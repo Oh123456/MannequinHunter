@@ -56,59 +56,59 @@ private:
 protected:
 	enum ECombatAble : int32
 	{
-		E_None = 0,
-		E_AttackAble = 1,
-		E_DodgeAble = E_AttackAble << 1,
-		E_HitAble = E_AttackAble << 2,
+		None = 0,
+		AttackAble = 1,
+		DodgeAble = AttackAble << 1,
+		HitAble = AttackAble << 2,
 
 
 		//기본 상태?
-		E_Default = E_AttackAble | E_DodgeAble | E_HitAble,
+		Default = AttackAble | DodgeAble | HitAble,
 	};
 
 	enum EDodgeDirectionIndex : int8
 	{
-		E_Back = 0,
-		E_Front,
-		E_Left,
-		E_Right,
-		E_Front_Left,
-		E_Front_Right,
-		E_Back_Left,
-		E_Back_Right,
+		Back = 0,
+		Front,
+		Left,
+		Right,
+		Front_Left,
+		Front_Right,
+		Back_Left,
+		Back_Right,
 
 		Max,
 	};
 
 	enum class EDodgeDirection :int8
 	{
-		E_Back = 1,
-		E_Front = 1 << 1,
+		Back = 1,
+		Front = 1 << 1,
 
-		E_Left = 1 << 2,
-		E_Right = 1 << 3,
+		Left = 1 << 2,
+		Right = 1 << 3,
 
-		E_F = E_Front,
-		E_FL = E_Front | E_Left,
-		E_FR = E_Front | E_Right,
+		F = Front,
+		FL = Front | Left,
+		FR = Front | Right,
 
-		E_L = E_Left,
-		E_R = E_Right,
+		L = Left,
+		R = Right,
 
-		E_B = E_Back,
-		E_BL = E_Back | E_Left,
-		E_BR = E_Back | E_Right,
+		B = Back,
+		BL = Back | Left,
+		BR = Back | Right,
 
-		E_FB = E_Front | E_Back,
-		E_LR = E_Left | E_Right,
+		FB = Front | Back,
+		LR = Left | Right,
 	};
 
 	enum ETurnDirection
 	{
-		E_Left_90 = 0,
-		E_Left_180,
-		E_Right_90,
-		E_Right_180,
+		Left_90 = 0,
+		Left_180,
+		Right_90,
+		Right_180,
 	};
 
 public:
@@ -124,7 +124,7 @@ public:
 	template<typename TEquipmentItems>
 	AEquipment* CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex = 0);
 
-	inline void SeCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::E_Default); }
+	inline void SeCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::Default); }
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);
 	inline void SubtractCombatAbleFlag(ECombatAble combatAble);

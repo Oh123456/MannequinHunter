@@ -22,6 +22,8 @@ UHFSMComponent::~UHFSMComponent()
 
 uint8 UHFSMComponent::GetCurrentStateMachineID()
 {
+	if (currentStateMachine == nullptr)
+		return 0;
 	return currentStateMachine->GetStateMachineID(); 
 }
 
@@ -30,7 +32,7 @@ uint8 UHFSMComponent::GetCurrentStateID()
 	return currentStateMachine->GetCurrentState();
 }
 
-void UHFSMComponent::ChangeState(uint8 changeStateID)
+void UHFSMComponent::ChangeStateMachine(uint8 changeStateID)
 {
 	TSharedPtr<FStateMachine>* findSateMachine = stateMachines.Find(changeStateID);
 	if (findSateMachine)
@@ -51,7 +53,7 @@ void UHFSMComponent::BeginPlay()
 	SetStateMachine();
 	SetConditions();
 
-	ChangeState(defaultStateID);
+	ChangeStateMachine(defaultStateID);
 }
 
 TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(uint8 id, uint8 defaultSateID)
@@ -81,7 +83,7 @@ void UHFSMComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	{
 		uint8 stateID = currentStateMachine->Condition();
 		if (currentStateMachine->GetStateMachineID() != stateID)
-			ChangeState(stateID);
+			ChangeStateMachine(stateID);
 		currentStateMachine->Update();
 	}
 }

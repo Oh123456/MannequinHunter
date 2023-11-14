@@ -35,6 +35,11 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return followCamera; }
+
+private:
+	void ToggleCombat();
+
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }

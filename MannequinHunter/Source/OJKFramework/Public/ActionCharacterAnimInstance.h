@@ -17,12 +17,12 @@ class OJKFRAMEWORK_API UActionCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 
-protected:
-	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
-	FORCEINLINE float GetAngle() { return angle; }
-
-	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
-	FORCEINLINE float GetSpeed() { return speed; }
+//protected:
+//	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
+//	FORCEINLINE float GetAngle() { return angle; }
+//
+//	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
+//	FORCEINLINE float GetSpeed() { return speed; }
 
 public:
 	virtual void NativeInitializeAnimation() override;
@@ -33,6 +33,8 @@ protected:
 	TObjectPtr<ABaseActionCharacter> ownerCharacter;
 
 private:
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float angle;
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float speed;
 };

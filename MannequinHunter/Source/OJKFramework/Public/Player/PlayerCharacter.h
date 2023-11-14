@@ -6,11 +6,35 @@
 #include "BaseActionCharacter.h"
 #include "HFSM/HFSMComponent.h"
 #include "InputActionValue.h"
+#include "Defines.h"
 #include "PlayerCharacter.generated.h"
 
 /**
  * 
  */
+
+class UInputAction;
+
+USTRUCT(BlueprintType)
+struct FPlayerInputData
+{
+	GENERATED_BODY()
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* jumpAction;
+
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* moveAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* lookAction;
+
+	/** PlayerCombat NotCombat Action*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* combatAction;
+};
 
 UCLASS()
 class OJKFRAMEWORK_API APlayerCharacter : public ABaseActionCharacter
@@ -19,6 +43,8 @@ class OJKFRAMEWORK_API APlayerCharacter : public ABaseActionCharacter
 
 public:
 	APlayerCharacter();
+
+	UHFSMComponent* GetHFSM() { return HFSM; }
 
 public:
 	UFUNCTION(BlueprintCallable , Category = PlayerCharacter)
@@ -40,17 +66,8 @@ protected:
 protected:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputMappingContext* defaultMappingContext;
+	class UInputMappingContext* defaultMappingContext;	
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputAction* jumpAction;
-
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputAction* moveAction;
-
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputAction* lookAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	FPlayerInputData inputData;
 };

@@ -3,10 +3,23 @@
 
 #include "Animation/RYUAnimInstance.h"
 #include "Character/RYU.h"
+#include "HFSM/RYUHFSMComponent.h"
+
+//bool URYUAnimInstance::IsCombat()
+//{
+//	ARYU* ryu = StaticCast<ARYU*>(ownerCharacter);
+//
+//	if (ryu == nullptr)
+//		return false;
+//
+//	URYUHFSMComponent* RYUHFSMComponent = StaticCast<URYUHFSMComponent*>(ryu->GetHFSM());
+//
+//	return RYUHFSMComponent->IsCombat();
+//}
 
 ERYUWeaponType URYUAnimInstance::GetWeaponType()
 {
-	ARYU* ryu = static_cast<ARYU*>(ownerCharacter);
+	ARYU* ryu = StaticCast<ARYU*>(ownerCharacter);
 
 	if (ryu == nullptr)
 		return ERYUWeaponType::None;
@@ -19,4 +32,6 @@ void URYUAnimInstance::NativeUpdateAnimation(float deltaSeconds)
 	Super::NativeUpdateAnimation(deltaSeconds);
 
 	weaponType = GetWeaponType();
+
+	ryuStateMachineState = StaticCast<ERYUStateMachine>(GetCurrentStateMachineID());
 }

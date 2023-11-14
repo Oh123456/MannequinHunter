@@ -13,13 +13,27 @@
 UENUM(BlueprintType)
 enum class ERYUStateMachine : uint8
 {
-	Defulat = 0,
-	Battle,
+	None = 0,
+	Defulat,
+	Combat = 1 << 7,
 };
 
 UCLASS()
 class MANNEQUINHUNTER_API URYUHFSMComponent : public UHFSMComponent
 {
 	GENERATED_BODY()
-	
+public:
+	bool IsCombat() { return (GetCurrentStateMachineID() & StaticCast<uint8>(ERYUStateMachine::Combat)); }
+
+private:
+	void ChangeCombat(bool isCombat);
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void SetStateMachine() override;
+	virtual void SetConditions() override;
+
+private:
+	UPROPERTY()
+	TObjectPtr<class ARYU> ryuCharacter;
 };

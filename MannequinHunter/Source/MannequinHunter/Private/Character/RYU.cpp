@@ -12,6 +12,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "CombatSystem/PlayerCharacterCombatComponent.h"
 #include "HFSM/RYUHFSMComponent.h"
+#include "InputMappingContext.h"
+#include "DebugLog.h"
 
 ARYU::ARYU() : Super()
 {
@@ -49,6 +51,7 @@ ARYU::ARYU() : Super()
 	combatComponent = CreateDefaultSubobject<UPlayerCharacterCombatComponent>(TEXT("PlayerCombatSystem"));
 
 	HFSM = CreateDefaultSubobject<URYUHFSMComponent>(TEXT("RYUHFSM"));
+	weaponType = ERYUWeaponType::Fist;
 }
 
 void ARYU::Move(const FInputActionValue& value)
@@ -61,20 +64,40 @@ void ARYU::Look(const FInputActionValue& value)
 	APlayerCharacter::Look(value);
 }
 
+void ARYU::ToggleCombat()
+{
+	if (HFSM)
+	{
+		URYUHFSMComponent* ryuHFSM = StaticCast<URYUHFSMComponent*>(HFSM);
+
+		bool isCombat = ryuHFSM->IsCombat();
+
+		//UE_LOG_WARNING(LogTemp,TEXT("IsCombat ? %s") , LOG_BOOL(isCombat));
+
+		if (isCombat)
+			ryuHFSM->ChangeStateMachine(StaticCast<uint8>(ERYUStateMachine::Defulat));
+		else
+			ryuHFSM->ChangeStateMachine(StaticCast<uint8>(ERYUStateMachine::Combat));
+	}
+}
+
 void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(playerInputComponent)) {
 
+
 		//Jumping
-		enhancedInputComponent->BindAction(jumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		enhancedInputComponent->BindAction(jumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		//Moving
-		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &ARYU::Move);
+		enhancedInputComponent->BindAction(inputData.moveAction, ETriggerEvent::Triggered, this, &ARYU::Move);
 
 		//Looking
-		enhancedInputComponent->BindAction(lookAction, ETriggerEvent::Triggered, this, &ARYU::Look);
+		enhancedInputComponent->BindAction(inputData.lookAction, ETriggerEvent::Triggered, this, &ARYU::Look);
+		
+		enhancedInputComponent->BindAction(inputData.combatAction, ETriggerEvent::Triggered, this, &ARYU::ToggleCombat);
 
 	}
 }

@@ -26,7 +26,7 @@ public:
 	bool IsCombat() { return (GetCurrentStateMachineID() & StaticCast<uint8>(ERYUStateMachine::Combat)); }
 
 private:
-	void ChangeCombat(bool isCombat);
+	void ChangeCombat(OUT uint8& stateMachineID);
 
 protected:
 	virtual void BeginPlay() override;

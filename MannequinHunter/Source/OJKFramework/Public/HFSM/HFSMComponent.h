@@ -24,6 +24,9 @@ public:
 	//Forced Conversion StateMachine
 	void ChangeStateMachine(uint8 changeStateID);
 
+	// Current StateMachine Condition
+	void CheckStateMachineCondition();
+
 protected:
 	TSharedPtr<FStateMachine>* AddStateMachine(uint8 id, uint8 defaultSateID = 0);
 
@@ -35,6 +38,8 @@ protected:
 	template<typename T>
 	TSharedPtr<FStateMachine>* FindStateMachine(T id);
 
+private:	
+	void ChangeStateMachine();
 
 protected:
 	// Called when the game starts
@@ -43,7 +48,7 @@ protected:
 	virtual void SetStateMachine() {};
 	virtual void SetConditions() {};
 
-
+	
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

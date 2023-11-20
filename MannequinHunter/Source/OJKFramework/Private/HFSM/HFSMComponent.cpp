@@ -45,6 +45,19 @@ void UHFSMComponent::ChangeStateMachine(uint8 changeStateID)
 	}
 }
 
+void UHFSMComponent::CheckStateMachineCondition()
+{
+	uint8 stateID = currentStateMachine->Condition();
+	if (currentStateMachine->GetStateMachineID() != stateID)
+		ChangeStateMachine(stateID);
+}
+
+void UHFSMComponent::ChangeStateMachine()
+{
+	uint8 stateID = currentStateMachine->UpdateCondition();
+	if (currentStateMachine->GetStateMachineID() != stateID)
+		ChangeStateMachine(stateID);
+}
 
 // Called when the game starts
 void UHFSMComponent::BeginPlay()
@@ -81,9 +94,7 @@ void UHFSMComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	if (currentStateMachine)
 	{
-		uint8 stateID = currentStateMachine->Condition();
-		if (currentStateMachine->GetStateMachineID() != stateID)
-			ChangeStateMachine(stateID);
+		ChangeStateMachine();
 		currentStateMachine->Update();
 	}
 }

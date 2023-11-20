@@ -36,5 +36,7 @@ public:
 public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	
+private:
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool isInputMoveKey;
 };

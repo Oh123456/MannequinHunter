@@ -14,10 +14,10 @@ void URYUHFSMComponent::SetStateMachine()
 void URYUHFSMComponent::SetConditions()
 {
 	TSharedPtr<FStateMachine>* stateMachine = FindStateMachine(ERYUStateMachine::Defulat);
-	//(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::CommonToCombatCondition);
+	(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::ChangeCombat);
 
 	stateMachine = FindStateMachine(ERYUStateMachine::Combat);
-	//(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::CommonToCombatCondition);
+	(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::ChangeCombat);
 }
 
 
@@ -28,6 +28,10 @@ void URYUHFSMComponent::BeginPlay()
 	ryuCharacter = static_cast<ARYU*>(GetOwner());
 }
 
-void URYUHFSMComponent::ChangeCombat(bool isCombat)
+void URYUHFSMComponent::ChangeCombat(OUT uint8& stateMachineID)
 {
+	if (IsCombat())
+		stateMachineID = StaticCast<uint8>(ERYUStateMachine::Defulat);
+	else
+		stateMachineID = StaticCast<uint8>(ERYUStateMachine::Combat);
 }

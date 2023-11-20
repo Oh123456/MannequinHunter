@@ -74,6 +74,11 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void APlayerCharacter::MoveCompleted(const FInputActionValue& Value)
+{
+	inputDirection = FVector2D::ZeroVector;
+}
+
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {

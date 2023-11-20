@@ -63,7 +63,17 @@ void FStateMachine::Exit()
 uint8 FStateMachine::Condition()
 {
 	uint8 stateID = -1;
+
 	OnStateMachineCondition.Broadcast(OUT stateID);
+
+	return stateID;
+	
+}
+
+uint8 FStateMachine::UpdateCondition()
+{
+	uint8 stateID = -1;
+	OnUpdateStateMachineCondition.Broadcast(OUT stateID);
 
 	return stateID;
 }

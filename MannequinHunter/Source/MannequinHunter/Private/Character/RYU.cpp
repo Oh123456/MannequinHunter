@@ -68,18 +68,10 @@ void ARYU::ToggleCombat()
 {
 	if (HFSM)
 	{
-		URYUHFSMComponent* ryuHFSM = StaticCast<URYUHFSMComponent*>(HFSM);
-
-		bool isCombat = ryuHFSM->IsCombat();
-
-		//UE_LOG_WARNING(LogTemp,TEXT("IsCombat ? %s") , LOG_BOOL(isCombat));
-
-		if (isCombat)
-			ryuHFSM->ChangeStateMachine(StaticCast<uint8>(ERYUStateMachine::Defulat));
-		else
-			ryuHFSM->ChangeStateMachine(StaticCast<uint8>(ERYUStateMachine::Combat));
+		HFSM->CheckStateMachineCondition();
 	}
 }
+
 
 void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {
@@ -93,6 +85,7 @@ void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 
 		//Moving
 		enhancedInputComponent->BindAction(inputData.moveAction, ETriggerEvent::Triggered, this, &ARYU::Move);
+		enhancedInputComponent->BindAction(inputData.moveAction, ETriggerEvent::Completed, this, &ARYU::MoveCompleted);
 
 		//Looking
 		enhancedInputComponent->BindAction(inputData.lookAction, ETriggerEvent::Triggered, this, &ARYU::Look);

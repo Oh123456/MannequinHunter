@@ -43,6 +43,7 @@ private:
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* playerInputComponent) override;

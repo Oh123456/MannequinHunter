@@ -22,10 +22,13 @@ public:
 	void Update();
 	void Exit();
 	uint8 Condition();
-
+	uint8 UpdateCondition();
 
 	inline uint8 GetStateMachineID() const { return stateMachineID; }
 	uint8 GetCurrentState();
+
+	template<typename UClass>
+	inline void AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint8&));
 
 	template<typename UClass>
 	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint8&));
@@ -39,12 +42,19 @@ private:
 	UPROPERTY()
 	TObjectPtr<ACharacter> ownerCharacter;
 
+	FStateMachineCondition OnUpdateStateMachineCondition;
 	FStateMachineCondition OnStateMachineCondition;
 };
 
 
 template<typename UClass>
-void FStateMachine::AddStateCondition(UClass* uclass,void(UClass::* condition)(uint8&))
+void FStateMachine::AddUpdateStateCondition(UClass* uclass,void(UClass::* condition)(uint8&))
+{
+	OnUpdateStateMachineCondition.AddUObject(uclass, condition);
+}
+
+template<typename UClass>
+inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(uint8&))
 {
 	OnStateMachineCondition.AddUObject(uclass, condition);
 }

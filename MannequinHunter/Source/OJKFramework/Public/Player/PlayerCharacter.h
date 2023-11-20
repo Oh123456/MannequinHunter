@@ -46,6 +46,10 @@ public:
 
 	UHFSMComponent* GetHFSM() { return HFSM; }
 
+	bool IsMoveInput() 
+	{
+		return !FVector2D::ZeroVector.Equals(inputDirection);
+	}
 public:
 	UFUNCTION(BlueprintCallable , Category = PlayerCharacter)
 	uint8 GetCurrentStateMachineID() { return HFSM->GetCurrentStateMachineID(); }
@@ -57,6 +61,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Look(const FInputActionValue& Value);
 	virtual void Move(const FInputActionValue& Value);
+	virtual void MoveCompleted(const FInputActionValue& Value);
 
 protected:
 	TObjectPtr<UHFSMComponent> HFSM;

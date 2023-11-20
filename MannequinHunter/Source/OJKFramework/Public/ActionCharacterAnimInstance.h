@@ -28,7 +28,7 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 private:
-	void SetBlendSpaceValue();
+	void SetBlendSpaceValue(const class UCharacterMovementComponent* const characterMovement);
 protected:
 	TObjectPtr<ABaseActionCharacter> ownerCharacter;
 
@@ -37,4 +37,9 @@ private:
 	float angle;
 	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float speed;
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	bool isFalling;
+
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	FVector velocity;
 };

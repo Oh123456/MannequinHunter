@@ -39,7 +39,8 @@ public:
 private:
 	void ToggleCombat();
 
-
+	void InputJumpKey();
+	void InputJumpKeyCompleted();
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }
@@ -51,12 +52,6 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-
-	/** Called for movement input */
-	virtual void Move(const FInputActionValue& value) override;
-
-	/** Called for looking input */
-	virtual void Look(const FInputActionValue& value) override;
 
 private:
 	ERYUWeaponType weaponType;

@@ -12,6 +12,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "CombatSystem/PlayerCharacterCombatComponent.h"
 #include "HFSM/RYUHFSMComponent.h"
+#include "Animation/RYUAnimInstance.h"
 #include "InputMappingContext.h"
 #include "DebugLog.h"
 
@@ -54,15 +55,6 @@ ARYU::ARYU() : Super()
 	weaponType = ERYUWeaponType::Fist;
 }
 
-void ARYU::Move(const FInputActionValue& value)
-{
-	APlayerCharacter::Move(value);
-}
-
-void ARYU::Look(const FInputActionValue& value)
-{
-	APlayerCharacter::Look(value);
-}
 
 void ARYU::ToggleCombat()
 {
@@ -70,6 +62,19 @@ void ARYU::ToggleCombat()
 	{
 		HFSM->CheckStateMachineCondition();
 	}
+}
+
+void ARYU::InputJumpKey()
+{
+	URYUAnimInstance* ryuAnimInstance = StaticCast<URYUAnimInstance*>(GetMesh()->GetAnimInstance());
+	ryuAnimInstance->SetIsInputJumpKey(true);
+}
+
+void ARYU::InputJumpKeyCompleted()
+{
+	URYUAnimInstance* ryuAnimInstance = StaticCast<URYUAnimInstance*>(GetMesh()->GetAnimInstance());
+	ryuAnimInstance->SetIsInputJumpKey(false);
+	Super::StopJumping();
 }
 
 
@@ -80,8 +85,8 @@ void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 
 
 		//Jumping
-		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Triggered, this, &ARYU::InputJumpKey);
+		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Completed, this, &ARYU::InputJumpKeyCompleted);
 
 		//Moving
 		enhancedInputComponent->BindAction(inputData.moveAction, ETriggerEvent::Triggered, this, &ARYU::Move);

@@ -15,7 +15,8 @@ UCLASS()
 class MANNEQUINHUNTER_API URYUAnimInstance : public UPlayerCharacterAnimInstance
 {
 	GENERATED_BODY()
-
+public:
+	void SetIsInputJumpKey(bool b) { isInputJumpKey = b; }
 public:
 	UFUNCTION(BlueprintPure, Category = HFSM, meta = (BlueprintThreadSafe))
 	bool IsCombat() { return (StaticCast<uint8>(ryuStateMachineState) & StaticCast<uint8>(ERYUStateMachine::Combat)); }
@@ -31,4 +32,7 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
 	ERYUStateMachine ryuStateMachineState;
+
+	UPROPERTY(BlueprintReadOnly, Category = InputState, meta = (AllowPrivateAccess = "true"))
+	bool isInputJumpKey = false;
 };

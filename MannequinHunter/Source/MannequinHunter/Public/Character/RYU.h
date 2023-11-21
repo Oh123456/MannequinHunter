@@ -13,10 +13,10 @@
 UENUM(BlueprintType)
 enum class ERYUWeaponType : uint8
 {
-	Katana = 0,
+	None = 0,
+	Katana = 1,
 	Fist,
 
-	None = UINT8_MAX,
 };
 
 UCLASS()
@@ -41,6 +41,7 @@ private:
 
 	void InputJumpKey();
 	void InputJumpKeyCompleted();
+	void Dodge();
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }
@@ -64,5 +65,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* followCamera;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	TMap<ERYUWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;
 };

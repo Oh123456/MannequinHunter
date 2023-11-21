@@ -34,6 +34,9 @@ struct FPlayerInputData
 	/** PlayerCombat NotCombat Action*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* combatAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* dodgeAction;
 };
 
 UCLASS()

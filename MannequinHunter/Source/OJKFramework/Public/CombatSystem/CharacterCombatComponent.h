@@ -116,6 +116,8 @@ public:
 
 	void AddAttackCount();
 
+	void SetCombatAnimationData(class UCombatAnimationData* animationData) { combatAnimationData = animationData; }
+
 	inline bool IsLockOn() { return targetActor != nullptr; }
 	inline FDodgeDirection& DodgeDirectionDelegate() { return dodgeDirectionDelegate; }
 

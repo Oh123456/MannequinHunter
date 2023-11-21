@@ -15,6 +15,7 @@
 #include "Animation/RYUAnimInstance.h"
 #include "InputMappingContext.h"
 #include "DebugLog.h"
+#include "CombatSystem/CombatAnimationData.h"
 
 ARYU::ARYU() : Super()
 {
@@ -52,7 +53,7 @@ ARYU::ARYU() : Super()
 	combatComponent = CreateDefaultSubobject<UPlayerCharacterCombatComponent>(TEXT("PlayerCombatSystem"));
 
 	HFSM = CreateDefaultSubobject<URYUHFSMComponent>(TEXT("RYUHFSM"));
-	weaponType = ERYUWeaponType::Fist;
+	weaponType = ERYUWeaponType::None;
 }
 
 
@@ -77,6 +78,11 @@ void ARYU::InputJumpKeyCompleted()
 	Super::StopJumping();
 }
 
+void ARYU::Dodge()
+{	
+	combatComponent->Dodge(ECharacterCombatontageType::E_Dodge1);
+}
+
 
 void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {
@@ -97,6 +103,8 @@ void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 		
 		enhancedInputComponent->BindAction(inputData.combatAction, ETriggerEvent::Triggered, this, &ARYU::ToggleCombat);
 
+		enhancedInputComponent->BindAction(inputData.dodgeAction, ETriggerEvent::Triggered, this, &ARYU::Dodge);
+
 	}
 }
 
@@ -104,6 +112,9 @@ void ARYU::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	weaponType = ERYUWeaponType::Fist;
+	combatComponent->SetCombatAnimationData(weaponTypeAnimationData[ERYUWeaponType::Fist]);
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))

@@ -17,7 +17,7 @@
 
 
 APlayerCharacter::APlayerCharacter() : Super(),
-inputDirection(0.0f,0.0f) , HFSM(nullptr)
+inputDirection(0.0f,0.0f) , HFSM(nullptr) , stateOrder(EStateOrder::None)
 {
 	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputMappingContext, inputMappingContext, TEXT("/Game/ThirdPerson/Input/IMC_Default.IMC_Default"));
 

@@ -26,7 +26,7 @@ void FStateMachine::Enter()
 		return;
 	currentState = *states.Find(defaultStateID);
 	if (currentState)
-		currentState->Enter();
+		currentState->Enter(ownerCharacter);
 }
 
 void FStateMachine::Update()
@@ -37,17 +37,11 @@ void FStateMachine::Update()
 		
 		if (stateID != currentState->GetStateID())
 		{
-			TSharedPtr<FState>* findState = states.Find(defaultStateID);
-			if (findState)
-			{
-				currentState->Exit();
-				currentState = *findState;
-				if (currentState)
-					currentState->Enter();
-			}
+			ChangeState(stateID);
 		}
 
-		currentState->Update();
+		if (currentState->IsUpdate())
+			currentState->Update(ownerCharacter);
 	}
 }
 
@@ -55,7 +49,7 @@ void FStateMachine::Exit()
 {
 	if (currentState)
 	{
-		currentState->Exit();
+		currentState->Exit(ownerCharacter);
 		currentState = nullptr;
 	}
 }
@@ -76,6 +70,18 @@ uint8 FStateMachine::UpdateCondition()
 	OnUpdateStateMachineCondition.Broadcast(OUT stateID);
 
 	return stateID;
+}
+
+void FStateMachine::ChangeState(uint8 stateID)
+{
+	TSharedPtr<FState>* findState = states.Find(stateID);
+	if (findState)
+	{
+		currentState->Exit(ownerCharacter);
+		currentState = *findState;
+		if (currentState)
+			currentState->Enter(ownerCharacter);
+	}
 }
 
 uint8 FStateMachine::GetCurrentState()

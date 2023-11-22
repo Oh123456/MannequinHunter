@@ -21,6 +21,9 @@ public:
 	uint8 GetCurrentStateMachineID();
 	uint8 GetCurrentStateID();
 
+	//Forced Conversion State
+	void ChangeState(uint8 changeStateID);
+
 	//Forced Conversion StateMachine
 	void ChangeStateMachine(uint8 changeStateID);
 

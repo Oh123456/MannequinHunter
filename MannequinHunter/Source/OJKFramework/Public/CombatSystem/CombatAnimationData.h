@@ -28,28 +28,28 @@ struct OJKFRAMEWORK_API FAnimMontageArray
 UENUM(BlueprintType)
 enum class ECharacterCombatontageType : uint8
 {
-	E_None = 0,
+	None = 0,
 
-	E_Attack1 = 10	UMETA(DisplayName = "Attack1"),
-	E_Attack2		UMETA(DisplayName = "Attack2"),
-	E_Attack3		UMETA(DisplayName = "Attack3"),
-	E_Attack4		UMETA(DisplayName = "Attack4"),
-	E_Attack5		UMETA(DisplayName = "Attack5"),
-	E_Attack6		UMETA(DisplayName = "Attack6"),
-	E_Attack7		UMETA(DisplayName = "Attack7"),
-	E_Attack8		UMETA(DisplayName = "Attack8"),
-	E_Attack9		UMETA(DisplayName = "Attack9"),
-	E_Attack10		UMETA(DisplayName = "Attack10"),
+	Attack1 = 10	UMETA(DisplayName = "Attack1"),
+	Attack2			UMETA(DisplayName = "Attack2"),
+	Attack3			UMETA(DisplayName = "Attack3"),
+	Attack4			UMETA(DisplayName = "Attack4"),
+	Attack5			UMETA(DisplayName = "Attack5"),
+	Attack6			UMETA(DisplayName = "Attack6"),
+	Attack7			UMETA(DisplayName = "Attack7"),
+	Attack8			UMETA(DisplayName = "Attack8"),
+	Attack9			UMETA(DisplayName = "Attack9"),
+	Attack10		UMETA(DisplayName = "Attack10"),
 
 
-	E_Dodge1 = 20	UMETA(DisplayName = "Dodge1"),
-	E_Dodge2		UMETA(DisplayName = "Dodge2"),
-	E_Dodge3		UMETA(DisplayName = "Dodge3"),
-	E_Dodge4		UMETA(DisplayName = "Dodge4"),
-	E_Dodge5		UMETA(DisplayName = "Dodge5"),
+	Dodge1 = 20		UMETA(DisplayName = "Dodge1"),
+	Dodge2			UMETA(DisplayName = "Dodge2"),
+	Dodge3			UMETA(DisplayName = "Dodge3"),
+	Dodge4			UMETA(DisplayName = "Dodge4"),
+	Dodge5			UMETA(DisplayName = "Dodge5"),
 
-	E_Turn1 = 250	UMETA(DisplayName = "Turn1"),
-	E_Turn2			UMETA(DisplayName = "Turn2"),
+	Turn1 = 250		UMETA(DisplayName = "Turn1"),
+	Turn2			UMETA(DisplayName = "Turn2"),
 };
 
 

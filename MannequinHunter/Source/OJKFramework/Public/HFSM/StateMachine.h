@@ -24,6 +24,8 @@ public:
 	uint8 Condition();
 	uint8 UpdateCondition();
 
+	void ChangeState(uint8 stateID);
+
 	inline uint8 GetStateMachineID() const { return stateMachineID; }
 	uint8 GetCurrentState();
 
@@ -33,6 +35,9 @@ public:
 	template<typename UClass>
 	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint8&));
 
+	inline void AddState(uint8 stateid, TSharedPtr<FState>& newState) { states.Add(stateid, newState); }
+	template<typename TStateEnum>
+	inline void AddState(TStateEnum stateid, TSharedPtr<FState>& newState) { states.Add(StaticCast<uint8>(stateid), newState); }
 private:
 	uint8 stateMachineID;
 	uint8 defaultStateID;

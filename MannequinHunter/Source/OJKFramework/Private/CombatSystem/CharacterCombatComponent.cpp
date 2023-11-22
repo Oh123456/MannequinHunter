@@ -13,7 +13,7 @@
 const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
 
 UCharacterCombatComponent::UCharacterCombatComponent() : Super(),
-attackCount(0) , currentAnimType(ECharacterCombatontageType::E_None) , combatAbleFlag(ECombatAble::Default) , 
+attackCount(0) , currentAnimType(ECharacterCombatontageType::None) , combatAbleFlag(ECombatAble::Default) , 
 eightDodgeDirectionIndexMap(), fourDodgeDirectionIndexMap() , targetActor(nullptr), ownerController(nullptr),
 owner(nullptr) , lockOnCharacterInterpSpeed(9.0f), lockOnInterpSpeed(7.0f), isActorRotation(true)
 {
@@ -86,6 +86,90 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype)
 		animInstance->Montage_SetEndDelegate(montageEnded, attackMontage);
 		SubtractCombatAbleFlag((ECombatAble::AttackAble | ECombatAble::DodgeAble));
 	}
+}
+void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::function<void()> callback)
+{
+	ChangeCombatType(animtype);
+
+	if (currentAnimMontage == nullptr)
+		return;
+
+	bool is8Direction = currentAnimMontage->montages.Num() > 4;
+
+	FVector2D directionVector = UKismetMathLibrary::Normal2D(dodgeDirectionDelegate.Execute());
+	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
+	UAnimMontage* dodgeMontage = nullptr;
+
+	int8 dodgeDirection = 0;
+
+	if (directionVector.Y > 0.f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::F);
+	else if (directionVector.Y < 0.f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::B);
+
+	if (directionVector.X > 0.0f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::R);
+	else if (directionVector.X < 0.0f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::L);
+
+	EDodgeDirection eDodgeDirection = static_cast<EDodgeDirection>(dodgeDirection);
+
+
+	std::function<void()> IsLockOnCallBack = nullptr;
+
+	if (IsLockOn())
+	{
+		SetIsActorRotation(false);
+		IsLockOnCallBack = [this]()
+			{
+				SetIsActorRotation(true);
+				this->lockOnCharacterInterpSpeed = 9.0f;
+			};
+	}
+	int8 index = 0;
+	if (is8Direction)
+	{
+		index = eightDodgeDirectionIndexMap.FindRef(eDodgeDirection);
+	}
+	else
+	{
+
+		int8 LR = static_cast<int8>(EDodgeDirection::LR);
+		if (dodgeDirection & static_cast<int8>(EDodgeDirection::FB) &&
+			dodgeDirection & LR)
+		{
+			FRotator ownerRotator = owner->GetActorRotation();
+			FRotator rotator = ownerRotator;
+			float yaw = dodgeDirection & static_cast<int8>(EDodgeDirection::F) ? 45.0f : -45.0f;
+			if (directionVector.X > 0.0f)
+				rotator.Yaw += yaw;
+			else if (directionVector.X < 0.0f)
+				rotator.Yaw += -yaw;
+			dodgeDirection &= ~LR;
+			eDodgeDirection = static_cast<EDodgeDirection>(dodgeDirection);
+
+			owner->SetActorRotation(rotator);
+
+		}
+		index = eightDodgeDirectionIndexMap.FindRef(eDodgeDirection);
+	}
+	FOnMontageEnded montageEnded;
+	dodgeMontage = currentAnimMontage->montages[index];
+
+	animInstance->Montage_Play(dodgeMontage);
+	lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
+	montageEnded.BindLambda([this, IsLockOnCallBack, callback](UAnimMontage* animMontage, bool bInterrupted)
+		{
+			this->attackCount = 0;
+			if (IsLockOnCallBack)
+				IsLockOnCallBack();
+			if (callback)
+				callback();
+			//if (!bInterrupted)
+			//	this->AddCombatAbleFlag(ECombatAble::Default);
+
+		});
+	animInstance->Montage_SetEndDelegate(montageEnded, dodgeMontage);
 }
 
 void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype)
@@ -230,7 +314,6 @@ void UCharacterCombatComponent::SetLockOnTarget()
 	isActorRotation = true;
 }
 
-
 void UCharacterCombatComponent::LockOn()
 {
 	if (targetActor)
@@ -260,7 +343,7 @@ void UCharacterCombatComponent::LockOn()
 
 void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatontageType animtype, std::function<void()> callBack)
 {
-	if (currentAnimType == ECharacterCombatontageType::E_None || currentAnimType != animtype)
+	if (currentAnimType == ECharacterCombatontageType::None || currentAnimType != animtype)
 	{
 		currentAnimType = animtype;
 		currentAnimMontage = combatAnimationData->GetMontageArray(animtype);

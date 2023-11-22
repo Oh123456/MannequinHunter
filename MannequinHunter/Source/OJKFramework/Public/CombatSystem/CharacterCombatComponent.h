@@ -127,6 +127,9 @@ public:
 	AEquipment* CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex = 0);
 
 	inline void SeCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::Default); }
+
+	void Dodge(ECharacterCombatontageType animtype, std::function<void()> callback);
+
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);
 	inline void SubtractCombatAbleFlag(ECombatAble combatAble);
@@ -139,8 +142,14 @@ protected:
 private:
 	int32 GetPreviousAttackCount();
 public:
+	// Not Use HFSM !!
+	// if UserCharacter Use HFSM ,
+	// Use other functions of the same name
 	UFUNCTION(BlueprintCallable)
 	void Attack(ECharacterCombatontageType animtype);
+	// Not Use HFSM !!
+	// if UserCharacter Use HFSM ,
+	// Use other functions of the same name
 	UFUNCTION(BlueprintCallable)
 	void Dodge(ECharacterCombatontageType animtype);
 

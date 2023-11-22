@@ -32,6 +32,15 @@ uint8 UHFSMComponent::GetCurrentStateID()
 	return currentStateMachine->GetCurrentState();
 }
 
+void UHFSMComponent::ChangeState(uint8 changeStateID)
+{
+	TSharedPtr<FStateMachine>* findSateMachine = stateMachines.Find(changeStateID);
+	if (findSateMachine)
+	{
+		(*findSateMachine)->ChangeState(changeStateID);
+	}
+}
+
 void UHFSMComponent::ChangeStateMachine(uint8 changeStateID)
 {
 	TSharedPtr<FStateMachine>* findSateMachine = stateMachines.Find(changeStateID);

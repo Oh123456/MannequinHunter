@@ -79,8 +79,13 @@ void ARYU::InputJumpKeyCompleted()
 }
 
 void ARYU::Dodge()
-{	
-	combatComponent->Dodge(ECharacterCombatontageType::E_Dodge1);
+{
+	stateOrder = EStateOrder::Dodge;
+	//if (HFSM)
+	//{
+	//	
+	//}
+	//combatComponent->Dodge(ECharacterCombatontageType::Dodge1);
 }
 
 

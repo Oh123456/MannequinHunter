@@ -3,8 +3,8 @@
 
 #include "HFSM/State.h"
 
-FState::FState(uint8 id) :
-	stateID(id)
+FState::FState(uint8 id, bool isUpdate) :
+	stateID(id) , isUpdate(isUpdate)
 {
 }
 

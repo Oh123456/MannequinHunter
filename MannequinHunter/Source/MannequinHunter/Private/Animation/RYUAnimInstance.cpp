@@ -33,5 +33,5 @@ void URYUAnimInstance::NativeUpdateAnimation(float deltaSeconds)
 
 	weaponType = GetWeaponType();
 
-	ryuStateMachineState = StaticCast<ERYUStateMachine>(GetCurrentStateMachineID());
+	ryuStateMachineState = StaticCast<EPlayerStateMachine>(GetCurrentStateMachineID());
 }

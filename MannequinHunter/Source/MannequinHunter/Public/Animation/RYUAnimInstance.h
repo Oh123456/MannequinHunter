@@ -19,7 +19,7 @@ public:
 	void SetIsInputJumpKey(bool b) { isInputJumpKey = b; }
 public:
 	UFUNCTION(BlueprintPure, Category = HFSM, meta = (BlueprintThreadSafe))
-	bool IsCombat() { return (StaticCast<uint8>(ryuStateMachineState) & StaticCast<uint8>(ERYUStateMachine::Combat)); }
+	bool IsCombat() { return (StaticCast<uint8>(ryuStateMachineState) & StaticCast<uint8>(EPlayerStateMachine::Combat)); }
 private:
 	UFUNCTION(BlueprintPure, Category = WeaponType , meta = (BlueprintThreadSafe))
 	ERYUWeaponType GetWeaponType();
@@ -31,7 +31,7 @@ private:
 	ERYUWeaponType weaponType;
 
 	UPROPERTY(BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
-	ERYUStateMachine ryuStateMachineState;
+	EPlayerStateMachine ryuStateMachineState;
 
 	UPROPERTY(BlueprintReadOnly, Category = InputState, meta = (AllowPrivateAccess = "true"))
 	bool isInputJumpKey = false;

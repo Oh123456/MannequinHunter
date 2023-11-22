@@ -43,6 +43,14 @@ UCLASS()
 class OJKFRAMEWORK_API APlayerCharacter : public ABaseActionCharacter
 {
 	GENERATED_BODY()
+public:
+	enum EStateOrder
+	{
+		None = 0,
+		Attack,
+		Dodge,
+		ToggleCombat,
+	};
 
 public:
 	APlayerCharacter();
@@ -53,6 +61,12 @@ public:
 	{
 		return !FVector2D::ZeroVector.Equals(inputDirection);
 	}
+
+	template<typename T>
+	T GetCurrentStateMachineID() { return StaticCast<T>(HFSM->GetCurrentStateMachineID()); }
+
+	EStateOrder GetStateOrder() { EStateOrder rValue = stateOrder; stateOrder = EStateOrder::None; return rValue; }
+
 public:
 	UFUNCTION(BlueprintCallable , Category = PlayerCharacter)
 	uint8 GetCurrentStateMachineID() { return HFSM->GetCurrentStateMachineID(); }
@@ -71,6 +85,8 @@ protected:
 
 	FVector2D inputDirection;
 
+	// 큐로 할지 고민 할것
+	EStateOrder stateOrder;
 protected:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)

@@ -4,28 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "HFSM/HFSMComponent.h"
+#include "PlayerStateMachineEnum.h"
 #include "RYUHFSMComponent.generated.h"
 
 /**
  * 
  */
 
-UENUM(BlueprintType)
-enum class ERYUStateMachine : uint8
-{
-	None = 0,
-	Defulat,
-	Falling,
-	Hit,
-	Combat = 1 << 7,
-};
+//UENUM(BlueprintType)
+//enum class ERYUStateMachine : uint8
+//{
+//	None = 0,
+//	Defulat,
+//	Falling,
+//	Hit,
+//	Combat = 1 << 7,
+//};
+
 
 UCLASS()
 class MANNEQUINHUNTER_API URYUHFSMComponent : public UHFSMComponent
 {
 	GENERATED_BODY()
 public:
-	bool IsCombat() { return (GetCurrentStateMachineID() & StaticCast<uint8>(ERYUStateMachine::Combat)); }
+	bool IsCombat() { return (GetCurrentStateMachineID() & StaticCast<uint8>(EPlayerStateMachine::Combat)); }
 
 private:
 	void ChangeCombat(OUT uint8& stateMachineID);
@@ -39,3 +41,4 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ARYU> ryuCharacter;
 };
+

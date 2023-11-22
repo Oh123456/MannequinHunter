@@ -12,6 +12,8 @@ class
 {
    GENERATED_BODY
 
+   constructor, destructor
+
    static, const
 
    class struct enum

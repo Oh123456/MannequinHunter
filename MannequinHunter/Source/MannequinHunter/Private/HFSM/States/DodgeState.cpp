@@ -7,6 +7,8 @@
 #include "Character/PlayerCommonEnums.h"
 #include "CombatSystem/CharacterCombatComponent.h"
 #include "HFSM/PlayerStateMachineEnum.h"
+#include "HFSM/StateMachine.h"
+#include "DebugLog.h"
 
 FDodgeState::FDodgeState() : 
 	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge))
@@ -17,10 +19,10 @@ FDodgeState::~FDodgeState()
 {
 }
 
-void FDodgeState::Enter(ACharacter* owner)
+void FDodgeState::Enter()
 {
 	isDodgeEnd = false;
-	APlayerCharacter* player = StaticCast<APlayerCharacter*>(owner);
+	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 	if (player)
 	{
 
@@ -43,10 +45,12 @@ void FDodgeState::Enter(ACharacter* owner)
 	}
 }
 
-uint8 FDodgeState::Condition(ACharacter* owner)
+uint8 FDodgeState::Condition()
 {
-	uint8 stateid = FState::Condition(owner);
+	uint8 stateid = FState::Condition();
 	if (isDodgeEnd)
-		stateid = StaticCast< uint8>(EPlayerStateEnum::Idle);
+	{
+		stateid = StaticCast<uint8>(EPlayerStateEnum::Idle);
+	}
 	return stateid;
 }

@@ -3,7 +3,9 @@
 
 #include "HFSM/States/IdleState.h"
 #include "HFSM/States/PlayerStateEnum.h"
-#include "Player/PlayerCharacter.h"
+#include "HFSM/StateMachine.h"
+#include "Character/PlayerCommonEnums.h"
+#include "DebugLog.h"
 
 FIdleState::FIdleState() : 
 	FState(StaticCast<uint8>(EPlayerStateEnum::Idle), 
@@ -15,31 +17,25 @@ FIdleState::~FIdleState()
 {
 }
 
-uint8 FIdleState::Condition(ACharacter* owner)
+uint8 FIdleState::Condition()
 {
-	uint8 newstateID = FState::Condition(owner);
+	uint8 newStateID = FState::Condition();
 	
-	APlayerCharacter* player = StaticCast<APlayerCharacter*>(owner);
-	if (player)
+	EStateOrder order = ownerStateMachine->GetStateOrder<EStateOrder>();
+
+	switch (order)
 	{
-		using EStateOrder = APlayerCharacter::EStateOrder;
 
-		EStateOrder order = player->GetStateOrder();
-
-		if (order == EStateOrder::Dodge)
-			newstateID = StaticCast<uint8>(EPlayerStateEnum::Dodge);
-		else if(order == EStateOrder::Attack)
-			newstateID = StaticCast<uint8>(EPlayerStateEnum::Attack);
-		//switch (order)
-		//{
-		//case EStateOrder::Dodge:
-		//	newstateID = StaticCast<uint8>(EPlayerStateEnum::Dodge);
-		//case EStateOrder::Attack:
-		//	newstateID = StaticCast<uint8>(EPlayerStateEnum::Attack);
-		//	break;
-		//}
-		
+	case EStateOrder::Dodge:
+		newStateID = StaticCast<uint8>(EPlayerStateEnum::Dodge);
+		break;
+	case EStateOrder::Attack:
+		newStateID = StaticCast<uint8>(EPlayerStateEnum::Attack);
+		break;
+	case EStateOrder::Jump:
+		newStateID = StaticCast<uint8>(EPlayerStateEnum::Jump);
+		break;
 	}
 
-	return newstateID;
+	return newStateID;
 }

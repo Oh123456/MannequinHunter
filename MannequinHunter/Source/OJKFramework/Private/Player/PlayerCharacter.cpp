@@ -17,7 +17,7 @@
 
 
 APlayerCharacter::APlayerCharacter() : Super(),
-inputDirection(0.0f,0.0f) , HFSM(nullptr) , stateOrder(EStateOrder::None)
+inputDirection(0.0f,0.0f) , HFSM(nullptr) 
 {
 	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputMappingContext, inputMappingContext, TEXT("/Game/ThirdPerson/Input/IMC_Default.IMC_Default"));
 
@@ -94,6 +94,8 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
+
+
 
 void APlayerCharacter::BeginPlay()
 {

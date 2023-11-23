@@ -3,37 +3,51 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "State.h"
 
 /**
  * 
  */
-class FState;
+//class FState;
 class UHFSMComponent;
 
-class OJKFRAMEWORK_API FStateMachine
+class OJKFRAMEWORK_API FStateMachine : public TSharedFromThis<FStateMachine>
 {
 public:
-	DECLARE_MULTICAST_DELEGATE_OneParam(FStateMachineCondition, OUT uint8&)
+	//FUNC_DECLARE_MULTICAST_DELEGATE(FStateMachineCondition, uint8, uint16)
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FStateMachineCondition, uint16 ,OUT uint8&)
 public:
-	FStateMachine(ACharacter* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
+	FStateMachine(UHFSMComponent* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
 	~FStateMachine();
 
 	void Enter();
 	void Update();
 	void Exit();
-	uint8 Condition();
-	uint8 UpdateCondition();
+	uint8 Condition(uint16 stateMachineOrder);
+	uint8 UpdateCondition(uint16 stateMachineOrder);
+
+	template<typename TState, typename TStateEnum>
+	void CreateState(TStateEnum id);
 
 	void ChangeState(uint8 stateID);
+
+	void SetStateOrder(uint16 order) { this->stateOrder = order; }
+	uint16 GetStateOrder() { uint16 value = stateOrder; stateOrder = 0; return value; }
+	 
+	template<typename T>
+	T GetStateOrder() { return StaticCast<T>(GetStateOrder()); }
+
+	UHFSMComponent* GetOwnerHFSM() { return ownerHFSM; }
+	ACharacter* GetOwnerCharacter() { return ownerCharacter; }
 
 	inline uint8 GetStateMachineID() const { return stateMachineID; }
 	uint8 GetCurrentState();
 
 	template<typename UClass>
-	inline void AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint8&));
+	inline void AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&));
 
 	template<typename UClass>
-	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint8&));
+	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&));
 
 	inline void AddState(uint8 stateid, TSharedPtr<FState>& newState) { states.Add(stateid, newState); }
 	template<typename TStateEnum>
@@ -43,23 +57,38 @@ private:
 	uint8 defaultStateID;
 	TMap<uint8, TSharedPtr<FState>> states;
 	TSharedPtr<FState> currentState;
-
-	UPROPERTY()
-	TObjectPtr<ACharacter> ownerCharacter;
-
+	
 	FStateMachineCondition OnUpdateStateMachineCondition;
 	FStateMachineCondition OnStateMachineCondition;
+
+	uint16 stateOrder;
+private:
+	UPROPERTY()
+	TObjectPtr<ACharacter> ownerCharacter;
+	UPROPERTY()
+	TObjectPtr<UHFSMComponent> ownerHFSM;
+
 };
 
 
 template<typename UClass>
-void FStateMachine::AddUpdateStateCondition(UClass* uclass,void(UClass::* condition)(uint8&))
+void FStateMachine::AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&))
 {
 	OnUpdateStateMachineCondition.AddUObject(uclass, condition);
 }
 
 template<typename UClass>
-inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(uint8&))
+inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&))
 {
 	OnStateMachineCondition.AddUObject(uclass, condition);
+}
+
+
+template<typename TState, typename TStateEnum>
+void FStateMachine::CreateState(TStateEnum id)
+{
+	TSharedPtr<FState> createState = MakeShared<TState>();
+
+	createState->SetOwner(AsShared());
+	AddState(id, createState);
 }

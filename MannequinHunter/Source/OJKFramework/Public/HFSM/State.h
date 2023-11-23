@@ -10,9 +10,8 @@
 
 #define DONT_STATE_UPDATE false
 //
-//DECLARE_EVENT_OneParam(FState, FEnterEvnet, ACharacter*);
-//DECLARE_EVENT_OneParam(FState, FUpdateEvnet, ACharacter*);
-//DECLARE_EVENT_OneParam(FState, FExitEvnet, ACharacter*);
+
+class FStateMachine;
 
 class OJKFRAMEWORK_API FState
 {
@@ -25,16 +24,15 @@ public:
 	template <typename T>
 	inline T GetStateID() { return static_cast<T>(stateID); }
 
+	void SetOwner(const TSharedPtr<FStateMachine>& owner) { ownerStateMachine = owner; };
 public:
-	virtual void Enter(ACharacter* owner) {}
-	virtual void Update(ACharacter* owner) {}
-	virtual void Exit(ACharacter* owner) {}
-	virtual uint8 Condition(ACharacter* owner);
-	// º¸·ù
-//public: 
-//	FEnterEvnet OnEnter;
-//	FUpdateEvnet OnUpdate;
-//	FExitEvnet OnExit;
+	virtual void Enter() {}
+	virtual void Update() {}
+	virtual void Exit() {}
+	virtual uint8 Condition();
+
+protected:
+	TSharedPtr<FStateMachine> ownerStateMachine;
 private:
 	uint8 stateID;
 	bool isUpdate;

@@ -1,6 +1,6 @@
 #pragma once
 
-
+UENUM(BlueprintType)
 enum class EPlayerStateEnum : uint8
 {
 	Idle = 0,

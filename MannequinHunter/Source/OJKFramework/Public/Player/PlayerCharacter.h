@@ -39,18 +39,11 @@ struct FPlayerInputData
 	UInputAction* dodgeAction;
 };
 
+
 UCLASS()
 class OJKFRAMEWORK_API APlayerCharacter : public ABaseActionCharacter
 {
 	GENERATED_BODY()
-public:
-	enum EStateOrder
-	{
-		None = 0,
-		Attack,
-		Dodge,
-		ToggleCombat,
-	};
 
 public:
 	APlayerCharacter();
@@ -65,7 +58,7 @@ public:
 	template<typename T>
 	T GetCurrentStateMachineID() { return StaticCast<T>(HFSM->GetCurrentStateMachineID()); }
 
-	EStateOrder GetStateOrder() { EStateOrder rValue = stateOrder; stateOrder = EStateOrder::None; return rValue; }
+
 
 public:
 	UFUNCTION(BlueprintCallable , Category = PlayerCharacter)
@@ -81,13 +74,12 @@ protected:
 	virtual void MoveCompleted(const FInputActionValue& Value);
 
 protected:
-	TObjectPtr<UHFSMComponent> HFSM;
 
 	FVector2D inputDirection;
-
-	// 큐로 할지 고민 할것
-	EStateOrder stateOrder;
 protected:
+
+	UPROPERTY()
+	TObjectPtr<UHFSMComponent> HFSM;
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputMappingContext* defaultMappingContext;	

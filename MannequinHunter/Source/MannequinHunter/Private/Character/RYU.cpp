@@ -16,6 +16,7 @@
 #include "InputMappingContext.h"
 #include "DebugLog.h"
 #include "CombatSystem/CombatAnimationData.h"
+#include "Character/PlayerCommonEnums.h"
 
 ARYU::ARYU() : Super()
 {
@@ -61,7 +62,8 @@ void ARYU::ToggleCombat()
 {
 	if (HFSM)
 	{
-		HFSM->CheckStateMachineCondition();
+		HFSM->SetStateOrder(EStateOrder::ToggleCombat | EStateOrder::Idle);
+		//HFSM->CheckStateMachineCondition();
 	}
 }
 
@@ -80,14 +82,20 @@ void ARYU::InputJumpKeyCompleted()
 
 void ARYU::Dodge()
 {
-	stateOrder = EStateOrder::Dodge;
-	//if (HFSM)
-	//{
-	//	
-	//}
-	//combatComponent->Dodge(ECharacterCombatontageType::Dodge1);
+	if (HFSM)
+	{
+		HFSM->SetStateOrder(EStateOrder::Dodge);
+	}
 }
 
+
+void ARYU::Falling()
+{
+	if (HFSM)
+	{
+		HFSM->SetStateOrder(EStateOrder::Jump);
+	}
+}
 
 void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {

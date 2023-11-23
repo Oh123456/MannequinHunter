@@ -13,7 +13,7 @@ FState::~FState()
 
 }
 
-uint8 FState::Condition(ACharacter* owner)
+uint8 FState::Condition()
 {
 	return stateID;
 }

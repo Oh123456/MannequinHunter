@@ -15,8 +15,9 @@ public:
 	virtual ~FDodgeState();
 
 public:
-	virtual void Enter(ACharacter* owner) override;
-	virtual uint8 Condition(ACharacter* owner) override;
+	virtual void Enter() override;
+	virtual uint8 Condition() override;
+
 
 private:
 	bool isDodgeEnd;

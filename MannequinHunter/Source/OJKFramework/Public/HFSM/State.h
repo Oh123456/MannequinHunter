@@ -29,7 +29,8 @@ public:
 	virtual void Enter() {}
 	virtual void Update() {}
 	virtual void Exit() {}
-	virtual uint8 Condition();
+	virtual uint8 Condition(uint16 order);
+	virtual uint8 UpdateCondition();
 
 protected:
 	TSharedPtr<FStateMachine> ownerStateMachine;

@@ -5,11 +5,11 @@
 #include "HFSM/HFSMComponent.h"
 #include "Player/PlayerCharacter.h"
 
-uint8 UKismetHFSMLibrary::GetCurrentStateID(UHFSMComponent* HFSM)
+uint8 UKismetHFSMLibrary::GetCurrentStateID(UHFSMComponent* hfsm)
 {
-	if (HFSM == nullptr)
+	if (hfsm == nullptr)
 		return 0;
-	return HFSM->GetCurrentStateID();
+	return hfsm->GetCurrentStateID();
 }
 
 uint8 UKismetHFSMLibrary::GetCurrentStateIDFromPlayerCharacter(APlayerCharacter* player)
@@ -20,11 +20,11 @@ uint8 UKismetHFSMLibrary::GetCurrentStateIDFromPlayerCharacter(APlayerCharacter*
 	return GetCurrentStateID(player->GetHFSM());
 }
 
-uint8 UKismetHFSMLibrary::GetCurrentStateMachineID(UHFSMComponent* HFSM)
+uint8 UKismetHFSMLibrary::GetCurrentStateMachineID(UHFSMComponent* hfsm)
 {
-	if (HFSM == nullptr)
+	if (hfsm == nullptr)
 		return 0;
-	return HFSM->GetCurrentStateMachineID();
+	return hfsm->GetCurrentStateMachineID();
 }
 
 uint8 UKismetHFSMLibrary::GetCurrentStateMachineIDFromPlayerCharacter(APlayerCharacter* player)

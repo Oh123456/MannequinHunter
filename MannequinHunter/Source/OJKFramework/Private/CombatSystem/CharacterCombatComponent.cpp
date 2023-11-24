@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "OJKFramework.h"
-#include "CombatSystem/CharacterCombatComponent.inl"
 #include "CombatSystem/CharacterCombatComponent.h"
+#include "CombatSystem/CharacterCombatComponent.inl"
 #include "CombatSystem/CombatAnimationData.h"
 #include "GameFramework/Character.h"
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "OJKFramework.h"
 #include "TimerManager.h"
 #include "DebugLog.h"
 

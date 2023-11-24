@@ -13,7 +13,12 @@ FState::~FState()
 
 }
 
-uint8 FState::Condition()
+uint8 FState::Condition(uint16 order)
+{
+	return stateID;
+}
+
+uint8 FState::UpdateCondition()
 {
 	return stateID;
 }

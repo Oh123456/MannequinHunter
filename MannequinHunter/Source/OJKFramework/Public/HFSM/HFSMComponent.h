@@ -42,16 +42,19 @@ protected:
 	template<typename T>
 	TSharedPtr<FStateMachine>* AddStateMachine(T id, uint8 defaultSateID = 0);
 
+	template<typename T, typename T1>
+	TSharedPtr<FStateMachine>* AddStateMachine(T id, T1 defaultSateID = 0);
+
 	TSharedPtr<FStateMachine>* FindStateMachine(uint8 id);
 
 	template<typename T>
 	TSharedPtr<FStateMachine>* FindStateMachine(T id);
 
 	template<typename T>
-	T GetStateOrder() { return StaticCast<T>(GetStateOrder()); }
+	T GetStateOrder(uint16 order) { return StaticCast<T>(GetStateOrder(uint16 order)); }
 
 	template<typename T>
-	T GetStateMachineOrder() { return StaticCast<T>(GetStateOrder()); }
+	T GetStateMachineOrder(uint16 order) { return StaticCast<T>(GetStateOrder(uint16 order)); }
 private:	
 	void ChangeStateMachine();
 
@@ -63,8 +66,8 @@ protected:
 	virtual void SetConditions() {};
 
 
-	virtual uint16 GetStateOrder();
-	virtual uint16 GetStateMachineOrder();
+	virtual uint16 GetStateOrder(uint16 order);
+	virtual uint16 GetStateMachineOrder(uint16 order);
 	
 public:	
 	// Called every frame
@@ -72,7 +75,6 @@ public:
 
 private:
 
-	uint16 stateOrder;
 	uint16 stateMachineOrder;
 	TMap<uint8, TSharedPtr<FStateMachine>> stateMachines;
 	TSharedPtr<FStateMachine> currentStateMachine;
@@ -95,4 +97,10 @@ template<typename T>
 TSharedPtr<FStateMachine>* UHFSMComponent::FindStateMachine(T id)
 {
 	return FindStateMachine(static_cast<uint8>(id));
+}
+
+template<typename T, typename T1>
+TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T id, T1 defaultSateID)
+{
+	return AddStateMachine(static_cast<uint8>(id), static_cast<uint8>(defaultSateID));
 }

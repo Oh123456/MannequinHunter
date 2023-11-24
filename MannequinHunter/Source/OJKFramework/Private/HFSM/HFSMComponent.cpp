@@ -4,6 +4,7 @@
 #include "HFSM/HFSMComponent.h"
 #include "HFSM/StateMachine.h"
 #include "GameFramework/Character.h"
+#include "DebugLog.h"
 
 // Sets default values for this component's properties
 UHFSMComponent::UHFSMComponent()
@@ -56,7 +57,9 @@ void UHFSMComponent::ChangeStateMachine(uint8 changeStateID)
 
 void UHFSMComponent::CheckStateMachineCondition()
 {
+	
 	uint8 stateID = currentStateMachine->Condition(stateMachineOrder);
+
 	if (currentStateMachine->GetStateMachineID() != stateID)
 		ChangeStateMachine(stateID);
 
@@ -66,11 +69,11 @@ void UHFSMComponent::CheckStateMachineCondition()
 
 void UHFSMComponent::SetStateOrder(uint16 order)
 {
-	stateOrder = order; 
-	stateMachineOrder = GetStateMachineOrder();
-	CheckStateMachineCondition();
+	stateMachineOrder = GetStateMachineOrder(order);
+	if (stateMachineOrder != 0)
+		CheckStateMachineCondition();
 	// 현재 스테이트 머신에 스테이트 오더 전달
-	currentStateMachine->SetStateOrder(GetStateOrder());
+	currentStateMachine->SetStateOrder(GetStateOrder(order));
 }
 
 void UHFSMComponent::ChangeStateMachine()
@@ -119,18 +122,15 @@ void UHFSMComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		currentStateMachine->Update();
 	}
 }
-uint16 UHFSMComponent::GetStateOrder()
+uint16 UHFSMComponent::GetStateOrder(uint16 order)
 {
-	uint16 value = stateOrder & HFSM_STATE_ORDER;
-	stateOrder = stateOrder & (HFSM_STATE_ORDER << 8);
+	//uint16 value = stateOrder & HFSM_STATE_ORDER;
+	//stateOrder = stateOrder & (HFSM_STATE_ORDER << 8);
 
-	return value;
+	return order & HFSM_STATE_ORDER;
 } 
 
-uint16 UHFSMComponent::GetStateMachineOrder()
+uint16 UHFSMComponent::GetStateMachineOrder(uint16 order)
 {
-	uint16 value = stateOrder & (HFSM_STATE_ORDER << 8);
-	stateOrder = stateOrder & HFSM_STATE_ORDER;
-
-	return value;
+	return order & (HFSM_STATE_ORDER << 8);
 }

@@ -2,7 +2,6 @@
 
 
 #include "HFSM/States/JumpState.h"
-#include "HFSM/States/PlayerStateEnum.h"
 #include "Character/PlayerCommonEnums.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -19,15 +18,11 @@ FJumpState::~FJumpState()
 
 }
 
-uint8 FJumpState::Condition()
+uint8 FJumpState::Condition(uint16 order)
 {
-	uint8 newState = FState::Condition();
-	bool isFalling = ownerStateMachine->GetOwnerCharacter()->GetMovementComponent()->IsFalling();
-	if (!isFalling)
-		return StaticCast<uint8>(EPlayerStateEnum::Idle);
-	
+	uint8 newState = FState::Condition(order);	
 
-	EStateOrder stateOrder = ownerStateMachine->GetStateOrder<EStateOrder>();
+	EStateOrder stateOrder = StaticCast<EStateOrder>(order);
 
 	switch (stateOrder)
 	{
@@ -36,4 +31,12 @@ uint8 FJumpState::Condition()
 		break;
 	}
 	return newState;
+}
+
+uint8 FJumpState::UpdateCondition()
+{
+	bool isFalling = ownerStateMachine->GetOwnerCharacter()->GetMovementComponent()->IsFalling();
+	if (!isFalling)
+		return StaticCast<uint8>(EPlayerStateEnum::Idle);
+	return FState::UpdateCondition();
 }

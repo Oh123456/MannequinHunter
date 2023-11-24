@@ -8,6 +8,25 @@
 /**
  * 
  */
+
+struct FStateMachineConditionResult
+{
+	uint8 stateID = 0;
+	bool isChange = false;
+
+	void SetStateID(uint8 id)
+	{
+		stateID = id;
+		isChange = true;
+	}
+
+	void SetDefaultStateID(uint8 id)
+	{
+		stateID = id;
+		isChange = false;
+	}
+};
+
 //class FState;
 class UHFSMComponent;
 
@@ -15,7 +34,7 @@ class OJKFRAMEWORK_API FStateMachine : public TSharedFromThis<FStateMachine>
 {
 public:
 	//FUNC_DECLARE_MULTICAST_DELEGATE(FStateMachineCondition, uint8, uint16)
-	DECLARE_MULTICAST_DELEGATE_TwoParams(FStateMachineCondition, uint16 ,OUT uint8&)
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FStateMachineCondition, uint16 ,OUT FStateMachineConditionResult&)
 public:
 	FStateMachine(UHFSMComponent* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
 	~FStateMachine();
@@ -31,8 +50,8 @@ public:
 
 	void ChangeState(uint8 stateID);
 
-	void SetStateOrder(uint16 order) { this->stateOrder = order; }
-	uint16 GetStateOrder() { uint16 value = stateOrder; stateOrder = 0; return value; }
+	void SetStateOrder(uint16 order);
+	//uint16 GetStateOrder() { uint16 value = stateOrder; stateOrder = 0; return value; }
 	 
 	template<typename T>
 	T GetStateOrder() { return StaticCast<T>(GetStateOrder()); }
@@ -44,10 +63,10 @@ public:
 	uint8 GetCurrentState();
 
 	template<typename UClass>
-	inline void AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&));
+	inline void AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&));
 
 	template<typename UClass>
-	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&));
+	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&));
 
 	inline void AddState(uint8 stateid, TSharedPtr<FState>& newState) { states.Add(stateid, newState); }
 	template<typename TStateEnum>
@@ -61,7 +80,7 @@ private:
 	FStateMachineCondition OnUpdateStateMachineCondition;
 	FStateMachineCondition OnStateMachineCondition;
 
-	uint16 stateOrder;
+	//uint16 stateOrder;
 private:
 	UPROPERTY()
 	TObjectPtr<ACharacter> ownerCharacter;
@@ -72,13 +91,13 @@ private:
 
 
 template<typename UClass>
-void FStateMachine::AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&))
+void FStateMachine::AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&))
 {
 	OnUpdateStateMachineCondition.AddUObject(uclass, condition);
 }
 
 template<typename UClass>
-inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, uint8&))
+inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&))
 {
 	OnStateMachineCondition.AddUObject(uclass, condition);
 }

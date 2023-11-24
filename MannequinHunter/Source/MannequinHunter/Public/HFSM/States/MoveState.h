@@ -8,13 +8,14 @@
 /**
  * 
  */
-class MANNEQUINHUNTER_API FIdleState : public FState
+class MANNEQUINHUNTER_API FMoveState : public FState
 {
 public:
-	FIdleState();
-	virtual ~FIdleState();
+	FMoveState();
+	virtual ~FMoveState();
 
-public:
+
+	virtual void Enter() override;
 	virtual uint8 Condition(uint16 order) override;
-	virtual uint8 UpdateCondition()  override;
+	virtual uint8 UpdateCondition() override;
 };

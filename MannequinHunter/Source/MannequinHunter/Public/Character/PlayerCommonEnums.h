@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CombatSystem/CombatAnimationData.h"
-#include "HFSM/States/PlayerStateEnum.h"
 
 enum class EPlayerCombatEnums : uint8
 {
@@ -9,6 +8,30 @@ enum class EPlayerCombatEnums : uint8
 	CombatDodge = static_cast<uint8>(ECharacterCombatontageType::Dodge2),
 };
 
+
+UENUM(BlueprintType)
+enum class EPlayerStateEnum : uint8
+{
+	Idle = 0,
+	Move,
+	Sprint,
+	Hit,
+	Attack,
+	Dodge,
+	Jump,
+
+};
+
+
+UENUM(BlueprintType)
+enum class EPlayerStateMachine : uint8
+{
+	None = 0,
+	Defulat,
+	Falling,
+	Hit,
+	Combat = 1 << 7,
+};
 
 
 enum class EStateOrder : uint16
@@ -20,7 +43,7 @@ enum class EStateOrder : uint16
 	Jump,
 
 	ToggleCombat = 1 << 8,
-
+	Falling = 2 << 8,
 
 
 	StateOrderBit = UINT8_MAX,

@@ -2,11 +2,10 @@
 
 
 #include "HFSM/States/DodgeState.h"
-#include "HFSM/States/PlayerStateEnum.h"
+#include "Character/PlayerCommonEnums.h"
 #include "Player/PlayerCharacter.h"
 #include "Character/PlayerCommonEnums.h"
 #include "CombatSystem/CharacterCombatComponent.h"
-#include "HFSM/PlayerStateMachineEnum.h"
 #include "HFSM/StateMachine.h"
 #include "DebugLog.h"
 
@@ -45,9 +44,21 @@ void FDodgeState::Enter()
 	}
 }
 
-uint8 FDodgeState::Condition()
+uint8 FDodgeState::Condition(uint16 order)
 {
-	uint8 stateid = FState::Condition();
+	uint8 stateid = FState::Condition(order);
+
+	if (order == StaticCast<uint16>(EStateOrder::Idle))
+	{
+		stateid = StaticCast<uint16>(EPlayerStateEnum::Idle);
+	}
+
+	return stateid;
+}
+
+uint8 FDodgeState::UpdateCondition()
+{
+	uint8 stateid = FState::UpdateCondition();
 	if (isDodgeEnd)
 	{
 		stateid = StaticCast<uint8>(EPlayerStateEnum::Idle);

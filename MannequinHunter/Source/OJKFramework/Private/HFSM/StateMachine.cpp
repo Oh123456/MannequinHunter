@@ -34,7 +34,7 @@ void FStateMachine::Update()
 {
 	if (currentState)
 	{
-		int32 stateID = currentState->Condition();
+		int32 stateID = currentState->UpdateCondition();
 		
 		if (stateID != currentState->GetStateID())
 		{
@@ -56,18 +56,17 @@ void FStateMachine::Exit()
 }
 
 uint8 FStateMachine::Condition(uint16 stateMachineOrder)
-{
-	uint8 stateID = 0;
-	OnStateMachineCondition.Broadcast(stateMachineOrder, OUT stateID);
-	return stateID;
+{	
+	FStateMachineConditionResult result;
+	OnStateMachineCondition.Broadcast(stateMachineOrder, OUT result);
+	return result.stateID;
 }
 
 uint8 FStateMachine::UpdateCondition(uint16 stateMachineOrder)
 {
-
-	uint8 stateID = 0;
-	OnUpdateStateMachineCondition.Broadcast(stateMachineOrder, OUT stateID);
-	return stateID;
+	FStateMachineConditionResult result;
+	OnUpdateStateMachineCondition.Broadcast(stateMachineOrder, OUT result);
+	return result.stateID;
 }
 
 void FStateMachine::ChangeState(uint8 stateID)
@@ -80,6 +79,17 @@ void FStateMachine::ChangeState(uint8 stateID)
 		if (currentState)
 			currentState->Enter();
 	}
+}
+
+void FStateMachine::SetStateOrder(uint16 order)
+{
+	 //this->stateOrder = order; 
+	 if (currentState)
+	 {
+		 uint8 stateID = currentState->Condition(order);
+		 if (stateID != currentState->GetStateID())
+			 ChangeState(stateID);
+	 }
 }
 
 uint8 FStateMachine::GetCurrentState()

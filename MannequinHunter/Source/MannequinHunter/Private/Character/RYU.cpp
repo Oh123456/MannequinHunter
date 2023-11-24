@@ -93,7 +93,7 @@ void ARYU::Falling()
 {
 	if (HFSM)
 	{
-		HFSM->SetStateOrder(EStateOrder::Jump);
+		HFSM->SetStateOrder(EStateOrder::Jump | EStateOrder::Falling);
 	}
 }
 

@@ -10,7 +10,7 @@
 #include "DebugLog.h"
 
 FDodgeState::FDodgeState() : 
-	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge))
+	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge)) , isDodgeEnd(true)
 {
 }
 
@@ -20,6 +20,8 @@ FDodgeState::~FDodgeState()
 
 void FDodgeState::Enter()
 {
+	if (!isDodgeEnd)
+		return;
 	isDodgeEnd = false;
 	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 	if (player)
@@ -50,7 +52,12 @@ uint8 FDodgeState::Condition(uint16 order)
 
 	if (order == StaticCast<uint16>(EStateOrder::Idle))
 	{
-		stateid = StaticCast<uint16>(EPlayerStateEnum::Idle);
+		APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
+		if (!player->IsMoveInput())
+			stateid = StaticCast<uint16>(EPlayerStateEnum::Idle);
+		else
+			stateid = StaticCast<uint16>(EPlayerStateEnum::Move);
+		isDodgeEnd = false;
 	}
 
 	return stateid;

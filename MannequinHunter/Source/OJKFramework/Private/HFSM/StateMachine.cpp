@@ -87,6 +87,7 @@ void FStateMachine::SetStateOrder(uint16 order)
 	 if (currentState)
 	 {
 		 uint8 stateID = currentState->Condition(order);
+		 
 		 if (stateID != currentState->GetStateID())
 			 ChangeState(stateID);
 	 }

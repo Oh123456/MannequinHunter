@@ -20,6 +20,7 @@
 
 ARYU::ARYU() : Super()
 {
+	SetInputAction();
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -58,6 +59,38 @@ ARYU::ARYU() : Super()
 }
 
 
+void ARYU::SetInputAction()
+{
+	
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findCombatAction, TEXT("/Game/BP/Input/IA_Combat.IA_Combat"));
+
+	if (findCombatAction.Succeeded())
+	{
+		inputData.combatAction = findCombatAction.Object;
+	}
+
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findDodgeAction, TEXT("/Game/BP/Input/IA_Dodge.IA_Dodge"))
+
+	if (findDodgeAction.Succeeded())
+	{
+		inputData.dodgeAction = findDodgeAction.Object;
+	}
+
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findLAttackAction, TEXT("/Game/BP/Input/IA_LAttack.IA_LAttack"))
+
+	if (findLAttackAction.Succeeded())
+	{
+		inputData.AttackAction = findLAttackAction.Object;
+	}
+
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findRAttackAction, TEXT("/Game/BP/Input/IA_RAttack.IA_RAttack"))
+
+	if (findRAttackAction.Succeeded())
+	{
+		inputData.Attack2Action = findRAttackAction.Object;
+	}
+}
+
 void ARYU::ToggleCombat()
 {
 	if (HFSM)
@@ -85,6 +118,17 @@ void ARYU::Dodge()
 	if (HFSM)
 	{
 		HFSM->SetStateOrder(EStateOrder::Dodge);
+	}
+}
+
+void ARYU::LAttack()
+{
+	if (HFSM)
+	{
+		EStateOrder stateOrder = EStateOrder::Attack;
+		if (HFSM->GetCurrentStateMachineID() == StaticCast<uint8>(EPlayerStateMachine::Defulat))
+			stateOrder |= EStateOrder::ToggleCombat;
+		HFSM->SetStateOrder(stateOrder);
 	}
 }
 
@@ -118,6 +162,9 @@ void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 
 		enhancedInputComponent->BindAction(inputData.dodgeAction, ETriggerEvent::Triggered, this, &ARYU::Dodge);
 
+		enhancedInputComponent->BindAction(inputData.AttackAction, ETriggerEvent::Triggered, this, &ARYU::LAttack);
+		
+		//enhancedInputComponent->BindAction(inputData.Attack2Action, ETriggerEvent::Triggered, this, &ARYU::Dodge);
 	}
 }
 

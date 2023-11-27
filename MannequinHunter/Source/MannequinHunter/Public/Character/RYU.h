@@ -37,11 +37,14 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return followCamera; }
 
 private:
+	void SetInputAction();
+
 	void ToggleCombat();
 
 	void InputJumpKey();
 	void InputJumpKeyCompleted();
 	void Dodge();
+	void LAttack();
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }

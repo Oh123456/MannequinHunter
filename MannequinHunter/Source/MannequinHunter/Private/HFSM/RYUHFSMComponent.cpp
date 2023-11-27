@@ -10,19 +10,21 @@
 #include "HFSM/States/DodgeState.h"
 #include "HFSM/States/JumpState.h"
 #include "HFSM/States/MoveState.h"
+#include "HFSM/States/AttackState.h"
 #include "DebugLog.h"
 
 void URYUHFSMComponent::SetStateMachine()
 {
-	TSharedPtr<FStateMachine>* stateMachine = AddStateMachine(EPlayerStateMachine::Defulat);
+	TSharedPtr<FStateMachine>* stateMachine = AddStateMachine(EPlayerStateMachine::Defulat, EPlayerStateEnum::Idle);
 	(*stateMachine)->CreateState<FIdleState>(EPlayerStateEnum::Idle);
 	(*stateMachine)->CreateState<FMoveState>(EPlayerStateEnum::Move);
 	(*stateMachine)->CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
 
-	stateMachine = AddStateMachine(EPlayerStateMachine::Combat);
+	stateMachine = AddStateMachine(EPlayerStateMachine::Combat,EPlayerStateEnum::Idle);
 	(*stateMachine)->CreateState<FIdleState>(EPlayerStateEnum::Idle);
 	(*stateMachine)->CreateState<FMoveState>(EPlayerStateEnum::Move);
 	(*stateMachine)->CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
+	(*stateMachine)->CreateState<FAttackState>(EPlayerStateEnum::Attack);
 
 	stateMachine = AddStateMachine(EPlayerStateMachine::Falling, EPlayerStateEnum::Jump);
 	(*stateMachine)->CreateState<FJumpState>(EPlayerStateEnum::Jump);

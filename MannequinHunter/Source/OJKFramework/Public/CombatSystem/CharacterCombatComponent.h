@@ -128,7 +128,11 @@ public:
 
 	inline void SeCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::Default); }
 
-	void Dodge(ECharacterCombatontageType animtype, std::function<void()> callback);
+	inline int32 GetAttackCount() { return attackCount; }
+	void ResetAttackCount() { attackCount = 0; }
+
+	void Dodge(ECharacterCombatontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
+	void Attack(ECharacterCombatontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
 
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);

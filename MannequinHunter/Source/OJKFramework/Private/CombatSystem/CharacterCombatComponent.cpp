@@ -87,7 +87,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype)
 		SubtractCombatAbleFlag((ECombatAble::AttackAble | ECombatAble::DodgeAble));
 	}
 }
-void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::function<void()> callback)
+void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype);
 
@@ -102,7 +102,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 
 	int8 dodgeDirection = 0;
 
-	if (directionVector.Y > 0.f)
+	if (directionVector.Y >= 0.f)
 		dodgeDirection |= static_cast<int8>(EDodgeDirection::F);
 	else if (directionVector.Y < 0.f)
 		dodgeDirection |= static_cast<int8>(EDodgeDirection::B);
@@ -158,18 +158,69 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 
 	animInstance->Montage_Play(dodgeMontage);
 	lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
-	montageEnded.BindLambda([this, IsLockOnCallBack, callback](UAnimMontage* animMontage, bool bInterrupted)
+	montageEnded.BindLambda([this, IsLockOnCallBack, callback, cancelCallback](UAnimMontage* animMontage, bool bInterrupted)
 		{
 			this->attackCount = 0;
 			if (IsLockOnCallBack)
 				IsLockOnCallBack();
-			if (callback)
-				callback();
+			if (!bInterrupted)
+			{
+				if (callback)
+					callback();
+			}
+			else
+			{
+				if (cancelCallback)
+					cancelCallback();
+			}
 			//if (!bInterrupted)
 			//	this->AddCombatAbleFlag(ECombatAble::Default);
 
 		});
 	animInstance->Montage_SetEndDelegate(montageEnded, dodgeMontage);
+}
+
+void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
+{
+	ChangeCombatType(animtype, [this]() ->
+		void
+		{
+			this->attackCount = 0;
+		});
+
+	if (currentAnimMontage == nullptr)
+		return;
+
+	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
+	UAnimMontage* attackMontage = currentAnimMontage->montages[attackCount];
+
+
+	FAnimMontageInstance* animMontageInstance = animInstance->GetActiveInstanceForMontage(currentAnimMontage->montages[GetPreviousAttackCount()]);
+	if (animMontageInstance && animMontageInstance->OnMontageEnded.IsBound())
+	{
+		animMontageInstance->OnMontageEnded.Unbind();
+	}
+
+	animInstance->Montage_Play(attackMontage);
+	FOnMontageEnded montageEnded;
+	montageEnded.BindLambda([this, callback, cancelCallback](UAnimMontage* animMontage, bool bInterrupted)
+		{
+			if (!bInterrupted)
+			{
+				this->attackCount = 0;
+				if (callback)
+					callback();
+			}
+			else
+			{
+				if (cancelCallback)
+					cancelCallback();
+			}
+			//if (!bInterrupted)
+			//	this->AddCombatAbleFlag(ECombatAble::Default);
+		});
+	animInstance->Montage_SetEndDelegate(montageEnded, attackMontage);
+	AddAttackCount();
 }
 
 void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype)

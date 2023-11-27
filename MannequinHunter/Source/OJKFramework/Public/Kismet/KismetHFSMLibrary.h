@@ -30,4 +30,5 @@ class OJKFRAMEWORK_API UKismetHFSMLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintPure, DisplayName = "GetCurrentStateMachineID From PlayerCharacter")
 	static uint8 GetCurrentStateMachineIDFromPlayerCharacter(APlayerCharacter* player);
+
 };

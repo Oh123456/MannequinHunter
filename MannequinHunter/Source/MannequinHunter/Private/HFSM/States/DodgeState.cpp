@@ -10,7 +10,7 @@
 #include "DebugLog.h"
 
 FDodgeState::FDodgeState() : 
-	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge)) , isDodgeEnd(true)
+	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge))
 {
 }
 
@@ -20,13 +20,10 @@ FDodgeState::~FDodgeState()
 
 void FDodgeState::Enter()
 {
-	if (!isDodgeEnd)
-		return;
-	isDodgeEnd = false;
+
 	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 	if (player)
 	{
-
 		UCharacterCombatComponent* characterCombatComponent = player->GetCombatComponent();
 		if (characterCombatComponent)
 		{
@@ -37,11 +34,11 @@ void FDodgeState::Enter()
 			else
 				type = StaticCast<ECharacterCombatontageType>(EPlayerCombatEnums::NomalDodge);
 
-			characterCombatComponent->Dodge(type, [this]()
+			characterCombatComponent->Dodge(type, nullptr);/*[this]()
 				{
 					this->isDodgeEnd = true;
 				}
-			);
+			)*/
 		}
 	}
 }
@@ -57,18 +54,9 @@ uint8 FDodgeState::Condition(uint16 order)
 			stateid = StaticCast<uint16>(EPlayerStateEnum::Idle);
 		else
 			stateid = StaticCast<uint16>(EPlayerStateEnum::Move);
-		isDodgeEnd = false;
 	}
 
 	return stateid;
 }
 
-uint8 FDodgeState::UpdateCondition()
-{
-	uint8 stateid = FState::UpdateCondition();
-	if (isDodgeEnd)
-	{
-		stateid = StaticCast<uint8>(EPlayerStateEnum::Idle);
-	}
-	return stateid;
-}
+

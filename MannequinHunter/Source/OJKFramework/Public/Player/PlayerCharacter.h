@@ -37,6 +37,12 @@ struct FPlayerInputData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* dodgeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* Attack2Action;
 };
 
 
@@ -66,6 +72,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = PlayerCharacter)
 	uint8 GetCurrentStateID() { return HFSM->GetCurrentStateID(); }
 
+protected:
+	UFUNCTION(BlueprintCallable, Category = PlayerCharacter)
+	FVector2D GetInputDirection() const { return inputDirection; }
 protected:
 	// To add mapping context
 	virtual void BeginPlay() override;

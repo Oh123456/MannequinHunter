@@ -21,7 +21,6 @@ uint8 FIdleState::Condition(uint16 order)
 	uint8 newStateID = FState::Condition(order);
 	
 	EStateOrder eOrder = StaticCast<EStateOrder>(order);
-
 	switch (eOrder)
 	{
 

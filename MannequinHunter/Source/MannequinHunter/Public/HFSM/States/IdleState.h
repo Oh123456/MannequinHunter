@@ -15,6 +15,7 @@ public:
 	virtual ~FIdleState();
 
 public:
+	virtual void Enter() override;
 	virtual uint8 Condition(uint16 order) override;
 	virtual uint8 UpdateCondition()  override;
 };

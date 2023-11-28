@@ -6,6 +6,7 @@
 #include "HFSM/StateMachine.h"
 #include "Player/PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Controller/ActionPlayerController.h"
 
 FIdleState::FIdleState() : 
 	FState(StaticCast<uint8>(EPlayerStateEnum::Idle))
@@ -14,6 +15,13 @@ FIdleState::FIdleState() :
 
 FIdleState::~FIdleState()
 {
+}
+
+void FIdleState::Enter()
+{
+	AActionPlayerController* controller = Cast<AActionPlayerController>(ownerStateMachine->GetOwnerCharacter()->GetController());
+	if (controller)
+		controller->ExecuteInputBuffer();
 }
 
 uint8 FIdleState::Condition(uint16 order)

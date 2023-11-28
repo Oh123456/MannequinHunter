@@ -17,6 +17,7 @@
 #include "DebugLog.h"
 #include "CombatSystem/CombatAnimationData.h"
 #include "Character/PlayerCommonEnums.h"
+#include "Controller/ActionPlayerController.h"
 
 ARYU::ARYU() : Super()
 {
@@ -123,6 +124,14 @@ void ARYU::Dodge()
 
 void ARYU::LAttack()
 {
+	if (actionPlayerController)
+	{
+		if (!actionPlayerController->IsInputBuffer() && actionPlayerController->GetIsAddableInputBuffer())
+		{
+			actionPlayerController->AddInputBufferAction(this, &ARYU::LAttack);
+		}
+	}
+
 	if (HFSM)
 	{
 		EStateOrder stateOrder = EStateOrder::Attack;
@@ -175,6 +184,7 @@ void ARYU::BeginPlay()
 
 	weaponType = ERYUWeaponType::Fist;
 	combatComponent->SetCombatAnimationData(weaponTypeAnimationData[ERYUWeaponType::Fist]);
+	actionPlayerController = Cast<AActionPlayerController>(GetController());
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))

@@ -72,4 +72,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	TMap<ERYUWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;
+
+	UPROPERTY()
+	TObjectPtr<class AActionPlayerController> actionPlayerController;
 };

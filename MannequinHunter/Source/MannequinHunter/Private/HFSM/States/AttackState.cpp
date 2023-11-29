@@ -7,9 +7,12 @@
 #include "Player/PlayerCharacter.h"
 #include "CombatSystem/CharacterCombatComponent.h"
 #include "Character/PlayerCommonEnums.h"
+#include "Singleton/StateManager.h"
 
-FAttackState::FAttackState() : FState(StaticCast<uint8>( EPlayerStateEnum::Attack),DONT_STATE_UPDATE)
+FAttackState::FAttackState() : FState(StaticCast<uint8>( EPlayerStateEnum::Attack), EStateInitOption::DontUpdataAndConvertOrder)
 {
+	convertOrder->Add(StaticCast<uint16>(EStateOrder::Idle));
+	convertOrder->Add(StaticCast<uint16>(EStateOrder::InputWait));
 }
 
 FAttackState::~FAttackState()
@@ -41,9 +44,10 @@ void FAttackState::Enter()
 uint8 FAttackState::Condition(uint16 order)
 {
 	uint8 newState = FState::Condition(order);
-	if (order == StaticCast<uint16>(EStateOrder::Idle))
+	//if (order == StaticCast<uint16>(EStateOrder::Idle))
+	if (convertOrder->Contains(order))
 	{
-		newState = StaticCast<uint8>(EPlayerStateEnum::Idle);
+		newState = FStateManager::GetInstance()->GetStateID(order); //StaticCast<uint8>(EPlayerStateEnum::Idle);
 	}
 	return newState;
 }

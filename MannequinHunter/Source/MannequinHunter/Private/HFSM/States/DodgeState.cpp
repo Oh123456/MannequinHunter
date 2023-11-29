@@ -10,8 +10,9 @@
 #include "DebugLog.h"
 
 FDodgeState::FDodgeState() : 
-	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge))
+	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge), EStateInitOption::UpdataAndConvertOrder)
 {
+	convertOrder->Add(StaticCast<uint16>(EStateOrder::Idle));
 }
 
 FDodgeState::~FDodgeState()
@@ -47,7 +48,8 @@ uint8 FDodgeState::Condition(uint16 order)
 {
 	uint8 stateid = FState::Condition(order);
 
-	if (order == StaticCast<uint16>(EStateOrder::Idle))
+	if (convertOrder->Contains(order))
+	//if (order == StaticCast<uint16>(EStateOrder::Idle))
 	{
 		APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 		if (!player->IsMoveInput())

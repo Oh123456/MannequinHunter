@@ -6,29 +6,27 @@
 #include "HFSM/StateMachine.h"
 #include "Player/PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Controller/ActionPlayerController.h"
+#include "Singleton/StateManager.h"
 
 FIdleState::FIdleState() : 
-	FState(StaticCast<uint8>(EPlayerStateEnum::Idle))
+	FState(StaticCast<uint8>(EPlayerStateEnum::Idle), EStateInitOption::UpdataAndConvertOrder)
 {
+	convertOrder->Add(StaticCast<uint16>(EStateOrder::Dodge));
+	convertOrder->Add(StaticCast<uint16>(EStateOrder::Attack));
 }
 
 FIdleState::~FIdleState()
 {
 }
 
-void FIdleState::Enter()
-{
-	AActionPlayerController* controller = Cast<AActionPlayerController>(ownerStateMachine->GetOwnerCharacter()->GetController());
-	if (controller)
-		controller->ExecuteInputBuffer();
-}
-
 uint8 FIdleState::Condition(uint16 order)
 {
 	uint8 newStateID = FState::Condition(order);
 	
-	EStateOrder eOrder = StaticCast<EStateOrder>(order);
+	if (convertOrder->Contains(order))
+		newStateID = FStateManager::GetInstance()->GetStateID(order);
+
+	/*EStateOrder eOrder = StaticCast<EStateOrder>(order);
 	switch (eOrder)
 	{
 
@@ -38,7 +36,7 @@ uint8 FIdleState::Condition(uint16 order)
 	case EStateOrder::Attack:
 		newStateID = StaticCast<uint8>(EPlayerStateEnum::Attack);
 		break;
-	}
+	}*/
 
 	return newStateID;
 }
@@ -46,8 +44,6 @@ uint8 FIdleState::Condition(uint16 order)
 uint8 FIdleState::UpdateCondition()
 {
 	APlayerCharacter* character = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
-	//double speed = characterMovementComponent->Velocity.SizeSquared();
-	//if (speed > 0.0)
 	if (character->IsMoveInput())
 		return StaticCast<uint8>(EPlayerStateEnum::Move);
 	return GetStateID();

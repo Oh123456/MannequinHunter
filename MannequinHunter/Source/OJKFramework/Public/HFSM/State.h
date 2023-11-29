@@ -7,16 +7,35 @@
 /**
  * 
  */
-
-#define DONT_STATE_UPDATE false
 //
 
 class FStateMachine;
 
 class OJKFRAMEWORK_API FState
 {
+protected:
+	enum EStateInitOption : uint8
+	{
+		UseUpdate = 1,
+		IgonereOrder = 1 << 1,
+		ConvertOrder = 1 << 2,
+
+
+		OnlyUpdate = UseUpdate,
+		DontUpdatea = 0,
+
+		UpdataAndIgonereOrder = UseUpdate | IgonereOrder,
+		UpdataAndConvertOrder = UseUpdate | ConvertOrder,
+
+		DontUpdataAndIgonereOrder = IgonereOrder,
+		DontUpdataAndConvertOrder = ConvertOrder,
+
+		IgonereOrderAndConvertOrder = IgonereOrder | ConvertOrder,
+
+		ALL = OnlyUpdate | IgonereOrderAndConvertOrder,
+	};
 public:
-	FState(uint8 id, bool isUpdate = true);
+	FState(uint8 id, EStateInitOption option = EStateInitOption::UseUpdate);
 	virtual ~FState();
 
 	inline uint8 GetStateID() const { return stateID; }
@@ -34,6 +53,8 @@ public:
 
 protected:
 	TSharedPtr<FStateMachine> ownerStateMachine;
+	TUniquePtr<TArray<uint16>> ignoreOrder;
+	TUniquePtr<TArray<uint16>> convertOrder;
 private:
 	uint8 stateID;
 	bool isUpdate;

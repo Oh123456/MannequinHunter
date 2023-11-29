@@ -11,6 +11,7 @@
 #include "HFSM/States/JumpState.h"
 #include "HFSM/States/MoveState.h"
 #include "HFSM/States/AttackState.h"
+#include "HFSM/States/InputWaitState.h"
 #include "DebugLog.h"
 
 void URYUHFSMComponent::SetStateMachine()
@@ -22,6 +23,7 @@ void URYUHFSMComponent::SetStateMachine()
 
 	stateMachine = AddStateMachine(EPlayerStateMachine::Combat,EPlayerStateEnum::Idle);
 	(*stateMachine)->CreateState<FIdleState>(EPlayerStateEnum::Idle);
+	(*stateMachine)->CreateState<FInputWaitState>(EPlayerStateEnum::InputWait);
 	(*stateMachine)->CreateState<FMoveState>(EPlayerStateEnum::Move);
 	(*stateMachine)->CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
 	(*stateMachine)->CreateState<FAttackState>(EPlayerStateEnum::Attack);

@@ -12,13 +12,15 @@ enum class EPlayerCombatEnums : uint8
 UENUM(BlueprintType)
 enum class EPlayerStateEnum : uint8
 {
-	Idle = 0,
+	None = 0,
+	Idle,
 	Move,
 	Sprint,
 	Hit,
 	Attack,
 	Dodge,
 	Jump,
+	InputWait,
 
 };
 
@@ -41,6 +43,7 @@ enum class EStateOrder : uint16
 	Attack,
 	Dodge,
 	Jump,
+	InputWait,
 
 	ToggleCombat = 1 << 8,
 	Falling = 2 << 8,

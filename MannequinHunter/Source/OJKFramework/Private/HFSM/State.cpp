@@ -3,9 +3,13 @@
 
 #include "HFSM/State.h"
 
-FState::FState(uint8 id, bool isUpdate) :
-	stateID(id) , isUpdate(isUpdate)
+FState::FState(uint8 id, EStateInitOption option) :
+	stateID(id) , isUpdate(option & EStateInitOption::UseUpdate), ignoreOrder(nullptr), convertOrder(nullptr)
 {
+	if (option & EStateInitOption::IgonereOrder)
+		ignoreOrder = MakeUnique<TArray<uint16>>();
+	if (option & EStateInitOption::ConvertOrder)
+		convertOrder = MakeUnique<TArray<uint16>>();
 }
 
 FState::~FState()

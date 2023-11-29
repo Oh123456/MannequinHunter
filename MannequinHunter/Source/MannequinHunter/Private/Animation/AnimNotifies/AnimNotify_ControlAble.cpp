@@ -23,7 +23,9 @@ void UAnimNotify_ControlAble::Notify(USkeletalMeshComponent* meshComp, UAnimSequ
 	APlayerCharacter* playerCharacter = Cast<APlayerCharacter>(character);
 	if (playerCharacter)
 	{
-		playerCharacter->GetHFSM()->SetStateOrder(EStateOrder::Idle);
+		UHFSMComponent* hfsm = playerCharacter->GetHFSM();
+		if (hfsm)
+		hfsm->SetStateOrder(EStateOrder::Idle);
 	}
 
 }

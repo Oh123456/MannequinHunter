@@ -13,27 +13,25 @@
 const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
 
 UCharacterCombatComponent::UCharacterCombatComponent() : Super(),
-attackCount(0) , currentAnimType(ECharacterCombatontageType::None) , combatAbleFlag(ECombatAble::Default) , 
-eightDodgeDirectionIndexMap(), fourDodgeDirectionIndexMap() , targetActor(nullptr), ownerController(nullptr),
-owner(nullptr) , lockOnCharacterInterpSpeed(9.0f), lockOnInterpSpeed(7.0f), isActorRotation(true)
+characterCombatData(), characterRotationData(), characterCombatAnimationData()
 {
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDodgeDirectionIndex::Front);
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDodgeDirectionIndex::Front_Left);
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDodgeDirectionIndex::Front_Right);
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDodgeDirectionIndex::Left);
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDodgeDirectionIndex::Right);
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDodgeDirectionIndex::Back);
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDodgeDirectionIndex::Back_Left);
-	eightDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDodgeDirectionIndex::Back_Right);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDodgeDirectionIndex::Front);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDodgeDirectionIndex::Front_Left);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDodgeDirectionIndex::Front_Right);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDodgeDirectionIndex::Left);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDodgeDirectionIndex::Right);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDodgeDirectionIndex::Back);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDodgeDirectionIndex::Back_Left);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDodgeDirectionIndex::Back_Right);
 
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDodgeDirectionIndex::Front);
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDodgeDirectionIndex::Front);
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDodgeDirectionIndex::Front);
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDodgeDirectionIndex::Left);
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDodgeDirectionIndex::Right);
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDodgeDirectionIndex::Back);
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDodgeDirectionIndex::Back);
-	fourDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDodgeDirectionIndex::Back);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDodgeDirectionIndex::Front);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDodgeDirectionIndex::Front);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDodgeDirectionIndex::Front);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDodgeDirectionIndex::Left);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDodgeDirectionIndex::Right);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDodgeDirectionIndex::Back);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDodgeDirectionIndex::Back);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDodgeDirectionIndex::Back);
 
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -41,10 +39,10 @@ owner(nullptr) , lockOnCharacterInterpSpeed(9.0f), lockOnInterpSpeed(7.0f), isAc
 
 void UCharacterCombatComponent::AddAttackCount()
 {
-	int32 attackMontageNum = currentAnimMontage->montages.Num();
-	attackCount++;
-	if (attackMontageNum <= attackCount)
-		attackCount = 0;
+	int32 attackMontageNum = characterCombatAnimationData.currentAnimMontage->montages.Num();
+	characterCombatData.attackCount++;
+	if (attackMontageNum <= characterCombatData.attackCount)
+		characterCombatData.attackCount = 0;
 
 	//юс╫ц
 	AddCombatAbleFlag(ECombatAble::Default);
@@ -57,16 +55,18 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype)
 	ChangeCombatType(animtype, [this]() ->
 		void
 		{
-			this->attackCount = 0;
+			this->characterCombatData.attackCount = 0;
 		});
+
+	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
 
 	if (currentAnimMontage == nullptr)
 		return;
 
-	if (combatAbleFlag & ECombatAble::AttackAble)
+	if (characterCombatData.combatAbleFlag & ECombatAble::AttackAble)
 	{
-		UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
-		UAnimMontage* attackMontage = currentAnimMontage->montages[attackCount];
+		UAnimInstance* animInstance = characterCombatData.owner->GetMesh()->GetAnimInstance();
+		UAnimMontage* attackMontage = currentAnimMontage->montages[characterCombatData.attackCount];
 
 
 		FAnimMontageInstance* animMontageInstance = animInstance->GetActiveInstanceForMontage(currentAnimMontage->montages[GetPreviousAttackCount()]);
@@ -79,7 +79,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype)
 		FOnMontageEnded montageEnded;
 		montageEnded.BindLambda([this](UAnimMontage* animMontage, bool bInterrupted)
 			{
-				this->attackCount = 0;
+				this->characterCombatData.attackCount = 0;
 				if (!bInterrupted)
 					this->AddCombatAbleFlag(ECombatAble::Default);
 			});
@@ -91,12 +91,16 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 {
 	ChangeCombatType(animtype);
 
+	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+
 	if (currentAnimMontage == nullptr)
 		return;
 
 	bool is8Direction = currentAnimMontage->montages.Num() > 4;
 
-	FVector2D directionVector = UKismetMathLibrary::Normal2D(dodgeDirectionDelegate.Execute());
+	ACharacter* owner = characterCombatData.owner;
+
+	FVector2D directionVector = UKismetMathLibrary::Normal2D(characterCombatAnimationData.dodgeDirectionDelegate.Execute());
 	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
 	UAnimMontage* dodgeMontage = nullptr;
 
@@ -114,7 +118,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 
 	EDodgeDirection eDodgeDirection = static_cast<EDodgeDirection>(dodgeDirection);
 
-
+	const TMap<EDodgeDirection, EDodgeDirectionIndex>& eightDodgeDirectionIndexMap = characterCombatAnimationData.eightDodgeDirectionIndexMap;
 	std::function<void()> IsLockOnCallBack = nullptr;
 
 	if (IsLockOn())
@@ -123,7 +127,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 		IsLockOnCallBack = [this]()
 			{
 				SetIsActorRotation(true);
-				this->lockOnCharacterInterpSpeed = 9.0f;
+				this->characterRotationData.lockOnCharacterInterpSpeed = 9.0f;
 			};
 	}
 	int8 index = 0;
@@ -157,10 +161,10 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 	dodgeMontage = currentAnimMontage->montages[index];
 
 	animInstance->Montage_Play(dodgeMontage);
-	lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
+	characterRotationData.lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
 	montageEnded.BindLambda([this, IsLockOnCallBack, callback, cancelCallback](UAnimMontage* animMontage, bool bInterrupted)
 		{
-			this->attackCount = 0;
+			this->characterCombatData.attackCount = 0;
 			if (IsLockOnCallBack)
 				IsLockOnCallBack();
 			if (!bInterrupted)
@@ -173,8 +177,6 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 				if (cancelCallback)
 					cancelCallback();
 			}
-			//if (!bInterrupted)
-			//	this->AddCombatAbleFlag(ECombatAble::Default);
 
 		});
 	animInstance->Montage_SetEndDelegate(montageEnded, dodgeMontage);
@@ -185,14 +187,18 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype, std:
 	ChangeCombatType(animtype, [this]() ->
 		void
 		{
-			this->attackCount = 0;
+			this->characterCombatData.attackCount = 0;
 		});
+
+	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
 
 	if (currentAnimMontage == nullptr)
 		return;
 
+	ACharacter* owner = characterCombatData.owner;
+
 	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
-	UAnimMontage* attackMontage = currentAnimMontage->montages[attackCount];
+	UAnimMontage* attackMontage = currentAnimMontage->montages[characterCombatData.attackCount];
 
 
 	FAnimMontageInstance* animMontageInstance = animInstance->GetActiveInstanceForMontage(currentAnimMontage->montages[GetPreviousAttackCount()]);
@@ -207,7 +213,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype, std:
 		{
 			if (!bInterrupted)
 			{
-				this->attackCount = 0;
+				this->characterCombatData.attackCount = 0;
 				if (callback)
 					callback();
 			}
@@ -227,15 +233,20 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype)
 {
 	ChangeCombatType(animtype);
 
+	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+
 	if (currentAnimMontage == nullptr)
 		return;
 
-	if (combatAbleFlag & ECombatAble::DodgeAble)
+	if (characterCombatData.combatAbleFlag & ECombatAble::DodgeAble)
 	{
 
 		bool is8Direction = currentAnimMontage->montages.Num() > 4;
 
-		FVector2D directionVector = UKismetMathLibrary::Normal2D(dodgeDirectionDelegate.Execute());
+		ACharacter* owner = characterCombatData.owner;
+		const TMap<EDodgeDirection, EDodgeDirectionIndex>& eightDodgeDirectionIndexMap = characterCombatAnimationData.eightDodgeDirectionIndexMap;
+
+		FVector2D directionVector = UKismetMathLibrary::Normal2D(characterCombatAnimationData.dodgeDirectionDelegate.Execute());
 		UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
 		UAnimMontage* dodgeMontage = nullptr;
 
@@ -262,7 +273,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype)
 			IsLockOnCallBack = [this]()
 				{
 					SetIsActorRotation(true);
-					this->lockOnCharacterInterpSpeed = 9.0f;
+					this->characterRotationData.lockOnCharacterInterpSpeed = 9.0f;
 				};
 		}
 		int8 index = 0;
@@ -296,10 +307,10 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype)
 		dodgeMontage = currentAnimMontage->montages[index];
 
 		animInstance->Montage_Play(dodgeMontage);
-		lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
+		characterRotationData.lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
 		montageEnded.BindLambda([this, IsLockOnCallBack](UAnimMontage* animMontage, bool bInterrupted)
 			{
-				this->attackCount = 0;
+				this->characterCombatData.attackCount = 0;
 				if (IsLockOnCallBack)
 					IsLockOnCallBack();
 				if (!bInterrupted)
@@ -317,10 +328,11 @@ void UCharacterCombatComponent::Turn(ECharacterCombatontageType animtype, float 
 {
 	ChangeCombatType(animtype);
 
-	combatAbleFlag = ECombatAble::Default;
+	characterCombatData.combatAbleFlag = ECombatAble::Default;
 
 	UAnimMontage* montage = nullptr;
-
+	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+	ACharacter* owner = characterCombatData.owner;
 	if (yaw < 180.0f)
 	{
 		if (yaw > 135.0f)
@@ -352,7 +364,7 @@ void UCharacterCombatComponent::Turn(ECharacterCombatontageType animtype, float 
 		montageEnded.BindLambda(
 			[this](UAnimMontage* animMontage, bool bInterrupted) 
 			{
-				this->owner->bUseControllerRotationYaw = true; 
+				this->characterCombatData.owner->bUseControllerRotationYaw = true;
 			});
 		animInstance->Montage_Play(montage, 2.0f);
 		animInstance->Montage_SetEndDelegate(montageEnded, montage);
@@ -361,29 +373,32 @@ void UCharacterCombatComponent::Turn(ECharacterCombatontageType animtype, float 
 
 void UCharacterCombatComponent::SetLockOnTarget()
 {
-	targetActor = nullptr;
-	isActorRotation = true;
+	characterRotationData.targetActor = nullptr;
+	characterRotationData.isActorRotation = true;
 }
 
 void UCharacterCombatComponent::LockOn()
 {
+	AActor* targetActor = characterRotationData.targetActor;
 	if (targetActor)
 	{
-		
+		ACharacter* owner = characterCombatData.owner;
+		AController* ownerController = characterCombatData.ownerController;
+
 		FRotator ownerRotator = ownerController->GetControlRotation();;
 		
 		FVector ownerLocation = owner->GetActorLocation();
 
 		FRotator lookAtRotator = UKismetMathLibrary::FindLookAtRotation(ownerLocation, targetActor->GetActorLocation());
-		FRotator newCamRotator = UKismetMathLibrary::RInterpTo(ownerRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), lockOnInterpSpeed); 
+		FRotator newCamRotator = UKismetMathLibrary::RInterpTo(ownerRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), characterRotationData.lockOnInterpSpeed);
 		newCamRotator.Roll = ownerRotator.Roll;
 		
 		
 		ownerController->SetControlRotation(newCamRotator);
-		if (isActorRotation)
+		if (characterRotationData.isActorRotation)
 		{
 			FRotator ownerActorRotator = owner->GetActorRotation();
-			FRotator newActorRotator = UKismetMathLibrary::RInterpTo(ownerActorRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), lockOnCharacterInterpSpeed);
+			FRotator newActorRotator = UKismetMathLibrary::RInterpTo(ownerActorRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), characterRotationData.lockOnCharacterInterpSpeed);
 			newActorRotator.Roll = ownerRotator.Roll;
 			owner->SetActorRotation(newActorRotator);
 		}
@@ -394,10 +409,11 @@ void UCharacterCombatComponent::LockOn()
 
 void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatontageType animtype, std::function<void()> callBack)
 {
-	if (currentAnimType == ECharacterCombatontageType::None || currentAnimType != animtype)
+
+	if (characterCombatAnimationData.currentAnimType == ECharacterCombatontageType::None || characterCombatAnimationData.currentAnimType != animtype)
 	{
-		currentAnimType = animtype;
-		currentAnimMontage = combatAnimationData->GetMontageArray(animtype);
+		characterCombatAnimationData.currentAnimType = animtype;
+		characterCombatAnimationData.currentAnimMontage = combatAnimationData->GetMontageArray(animtype);
 		if (callBack)
 			callBack();
 
@@ -407,8 +423,8 @@ void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatontageType anim
 
 int32 UCharacterCombatComponent::GetPreviousAttackCount()
 {
-	int32 attackMontageNum = currentAnimMontage->montages.Num();
-	int32 _attackCount = this->attackCount - 1;
+	int32 attackMontageNum = characterCombatAnimationData.currentAnimMontage->montages.Num();
+	int32 _attackCount = this->characterCombatData.attackCount - 1;
 	if (_attackCount < 0)
 		_attackCount = attackMontageNum - 1;
 
@@ -426,6 +442,6 @@ void UCharacterCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	owner = Cast<ACharacter>(GetOwner());
-	ownerController = owner->GetController();
+	characterCombatData.owner = Cast<ACharacter>(GetOwner());
+	characterCombatData.ownerController = characterCombatData.owner->GetController();
 }

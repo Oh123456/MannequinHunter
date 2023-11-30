@@ -114,24 +114,18 @@ void ARYU::InputJumpKeyCompleted()
 	Super::StopJumping();
 }
 
-void ARYU::Dodge()
+void ARYU::Dodge(const FInputActionInstance& inputActionInstance)
 {
+	AddInputBuffer(inputActionInstance);
 	if (HFSM)
 	{
 		HFSM->SetStateOrder(EStateOrder::Dodge);
 	}
 }
 
-void ARYU::LAttack()
+void ARYU::LAttack(const FInputActionInstance& inputActionInstance)
 {
-	if (actionPlayerController)
-	{
-		if (!actionPlayerController->IsInputBuffer() && actionPlayerController->GetIsAddableInputBuffer())
-		{
-			actionPlayerController->AddInputBufferAction(this, &ARYU::LAttack);
-		}
-	}
-
+	AddInputBuffer(inputActionInstance);
 	if (HFSM)
 	{
 		EStateOrder stateOrder = EStateOrder::Attack;
@@ -174,6 +168,8 @@ void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 		enhancedInputComponent->BindAction(inputData.AttackAction, ETriggerEvent::Triggered, this, &ARYU::LAttack);
 		
 		//enhancedInputComponent->BindAction(inputData.Attack2Action, ETriggerEvent::Triggered, this, &ARYU::Dodge);
+
+
 	}
 }
 
@@ -184,7 +180,9 @@ void ARYU::BeginPlay()
 
 	weaponType = ERYUWeaponType::Fist;
 	combatComponent->SetCombatAnimationData(weaponTypeAnimationData[ERYUWeaponType::Fist]);
-	actionPlayerController = Cast<AActionPlayerController>(GetController());
+	
+
+
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))

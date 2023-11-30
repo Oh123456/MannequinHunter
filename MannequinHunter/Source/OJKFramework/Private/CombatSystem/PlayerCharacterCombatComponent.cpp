@@ -20,8 +20,12 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 	UCameraComponent* cameraComponent = findCameraComponentDelegate.Execute();
 
 
+	ACharacter* owner = characterCombatData.owner;
+
 	FVector cameraForwardVector = cameraComponent->GetForwardVector();
 	FVector ownerLocation = owner->GetActorLocation();
+
+	const AActor* targetActor = GetTargetActor();
 
 	FHitResult hitResult;
 	
@@ -47,7 +51,8 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 		}
 	}
 
- 	targetActor = hitActor;
+ 	//targetActor = hitActor;
+	SetTargetActor(hitActor);
 	owner->GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovement;
 	//owner->bUseControllerRotationYaw = !bOrientRotationToMovement;
 }
@@ -58,10 +63,10 @@ void UPlayerCharacterCombatComponent::BeginPlay()
 	findCameraComponentDelegate.BindLambda([this]() -> 
 		UCameraComponent* 
 		{
-			return owner->GetComponentByClass<UCameraComponent>(); 
+			return characterCombatData.owner->GetComponentByClass<UCameraComponent>();
 		});
 
-	lockOnTargetIgnoreActor.Add(owner);
+	lockOnTargetIgnoreActor.Add(characterCombatData.owner);
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> objectType;
 	lockOnTargetObjectType.Add(static_cast<EObjectTypeQuery>(ECollisionChannel::ECC_Pawn));

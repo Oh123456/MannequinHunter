@@ -28,28 +28,28 @@ inline void FEquipmentItems::SetEquipment(int32 intdex, AEquipment* equipment)
 
 inline void UCharacterCombatComponent::AddCombatAbleFlag(ECombatAble combatAble)
 {
-	this->combatAbleFlag = static_cast<ECombatAble>(this->combatAbleFlag | combatAble);
+	this->characterCombatData.combatAbleFlag = static_cast<ECombatAble>(this->characterCombatData.combatAbleFlag | combatAble);
 }
 
 inline void UCharacterCombatComponent::SubtractCombatAbleFlag(ECombatAble combatAble)
 {
-	this->combatAbleFlag = static_cast<ECombatAble>(this->combatAbleFlag & ~combatAble);
+	this->characterCombatData.combatAbleFlag = static_cast<ECombatAble>(this->characterCombatData.combatAbleFlag & ~combatAble);
 }
 
 inline void UCharacterCombatComponent::AddCombatAbleFlag(int32 combatAble)
 {
-	this->combatAbleFlag = static_cast<ECombatAble>(this->combatAbleFlag | combatAble);
+	this->characterCombatData.combatAbleFlag = static_cast<ECombatAble>(this->characterCombatData.combatAbleFlag | combatAble);
 }
 
 inline void UCharacterCombatComponent::SubtractCombatAbleFlag(int32 combatAble)
 {
-	this->combatAbleFlag = static_cast<ECombatAble>(this->combatAbleFlag & ~combatAble);
+	this->characterCombatData.combatAbleFlag = static_cast<ECombatAble>(this->characterCombatData.combatAbleFlag & ~combatAble);
 }
 
 
 inline void UCharacterCombatComponent::SetIsActorRotation(bool b)
 {
-	this->isActorRotation = b;
+	this->characterRotationData.isActorRotation = b;
 }
 
 
@@ -58,13 +58,13 @@ inline void UCharacterCombatComponent::SetIsActorRotation(bool b)
 template<typename TEquipmentItems>
 AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex)
 {
-	TSharedPtr<IEquipmentItem>* findItem = equipmentItem.Find(slot);
+	TSharedPtr<IEquipmentItem>* findItem = characterCombatData.equipmentItem.Find(slot);
 
 	if (findItem == nullptr)
 	{
 		TSharedPtr<IEquipmentItem> newObejct = MakeShared<FEquipmentItem>();
 
-		equipmentItem.Add(slot, newObejct);
+		characterCombatData.equipmentItem.Add(slot, newObejct);
 
 		findItem = &newObejct;
 	}
@@ -77,7 +77,7 @@ AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> c
 
 inline AEquipment* UCharacterCombatComponent::GetEquipment(ECombatEquipmentSlot slot, int32 index)
 {
-	TSharedPtr<IEquipmentItem>* findItem = equipmentItem.Find(slot);
+	TSharedPtr<IEquipmentItem>* findItem = characterCombatData.equipmentItem.Find(slot);
 
 	if (findItem == nullptr)
 		return nullptr;

@@ -42,8 +42,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	FStatus status;
 private:
-	UPROPERTY()
-	TArray<ABaseWeapon*> weapones;
 	UPROPERTY(EditDefaultsOnly)
 	bool isImmortality;
 

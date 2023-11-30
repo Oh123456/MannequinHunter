@@ -14,6 +14,7 @@
  */
 
 class UInputAction;
+class UInputMappingContext;
 
 USTRUCT(BlueprintType)
 struct FPlayerInputData
@@ -21,28 +22,31 @@ struct FPlayerInputData
 	GENERATED_BODY()
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* jumpAction;
+	TObjectPtr<UInputAction> jumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* moveAction;
+	TObjectPtr<UInputAction> moveAction;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* lookAction;
+	TObjectPtr<UInputAction> lookAction;
 
 	/** PlayerCombat NotCombat Action*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* combatAction;
+	TObjectPtr<UInputAction> combatAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* dodgeAction;
+	TObjectPtr<UInputAction> dodgeAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* AttackAction;
+	TObjectPtr<UInputAction> AttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* Attack2Action;
+	TObjectPtr<UInputAction> Attack2Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> inputBufferInputAction;
 };
 
 
@@ -65,6 +69,7 @@ public:
 	T GetCurrentStateMachineID() { return StaticCast<T>(HFSM->GetCurrentStateMachineID()); }
 
 
+	//const UInputMappingContext* GetMappingContext() { return defaultMappingContext; }
 
 public:
 	UFUNCTION(BlueprintCallable , Category = PlayerCharacter)
@@ -81,7 +86,7 @@ protected:
 	virtual void Look(const FInputActionValue& Value);
 	virtual void Move(const FInputActionValue& Value);
 	virtual void MoveCompleted(const FInputActionValue& Value);
-
+	virtual void AddInputBuffer(const struct FInputActionInstance& inputActionInstance);
 protected:
 
 	FVector2D inputDirection;
@@ -91,8 +96,11 @@ protected:
 	TObjectPtr<UHFSMComponent> HFSM;
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputMappingContext* defaultMappingContext;	
+	UInputMappingContext* defaultMappingContext;	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	FPlayerInputData inputData;
+
+	UPROPERTY()
+	TObjectPtr<class AActionPlayerController> actionPlayerController;
 };

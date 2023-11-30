@@ -22,7 +22,7 @@ UCombatComponent::UCombatComponent() :
 
 UCombatComponent::~UCombatComponent()
 {
-	weapones.Empty();
+
 }
 
 void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser, TSubclassOf<UDamageType> damageTypeClass)

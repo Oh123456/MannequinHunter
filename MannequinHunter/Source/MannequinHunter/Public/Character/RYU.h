@@ -43,8 +43,8 @@ private:
 
 	void InputJumpKey();
 	void InputJumpKeyCompleted();
-	void Dodge();
-	void LAttack();
+	void Dodge(const struct FInputActionInstance& inputActionInstance);
+	void LAttack(const struct FInputActionInstance& inputActionInstance);
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }
@@ -73,6 +73,5 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	TMap<ERYUWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;
 
-	UPROPERTY()
-	TObjectPtr<class AActionPlayerController> actionPlayerController;
+
 };

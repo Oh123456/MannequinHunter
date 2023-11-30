@@ -11,6 +11,7 @@
 #include "Components/InputComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Controller/ActionPlayerController.h"
 #include "DebugLog.h"
 #include "Defines.h"
 #include "OJKFramework.h"
@@ -79,6 +80,11 @@ void APlayerCharacter::MoveCompleted(const FInputActionValue& Value)
 	inputDirection = FVector2D::ZeroVector;
 }
 
+void APlayerCharacter::AddInputBuffer(const FInputActionInstance& inputActionInstance)
+{
+	actionPlayerController->AddInputBuffer(inputActionInstance);
+}
+
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
@@ -95,11 +101,11 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-
-
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	actionPlayerController = Cast<AActionPlayerController>(GetController());
 
 	if (combatComponent == nullptr)
 	{

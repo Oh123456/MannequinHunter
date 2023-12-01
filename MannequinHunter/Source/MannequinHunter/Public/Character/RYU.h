@@ -45,6 +45,10 @@ private:
 	void InputJumpKeyCompleted();
 	void Dodge(const struct FInputActionInstance& inputActionInstance);
 	void LAttack(const struct FInputActionInstance& inputActionInstance);
+	void RAttack(const struct FInputActionInstance& inputActionInstance);
+
+	void Attack(EPlayerInputType type);
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }

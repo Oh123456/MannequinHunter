@@ -10,7 +10,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "CombatSystem/PlayerCharacterCombatComponent.h"
 #include "HFSM/RYUHFSMComponent.h"
 #include "Animation/RYUAnimInstance.h"
 #include "InputMappingContext.h"
@@ -18,6 +17,7 @@
 #include "CombatSystem/CombatAnimationData.h"
 #include "Character/PlayerCommonEnums.h"
 #include "Controller/ActionPlayerController.h"
+#include "CombatSystem/MannequinHunterCombatComponent.h"
 
 ARYU::ARYU() : Super()
 {
@@ -53,7 +53,7 @@ ARYU::ARYU() : Super()
 	followCamera->SetupAttachment(cameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	followCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	combatComponent = CreateDefaultSubobject<UPlayerCharacterCombatComponent>(TEXT("PlayerCombatSystem"));
+	combatComponent = CreateDefaultSubobject<UMannequinHunterCombatComponent>(TEXT("PlayerCombatSystem"));
 
 	HFSM = CreateDefaultSubobject<URYUHFSMComponent>(TEXT("RYUHFSM"));
 	weaponType = ERYUWeaponType::None;
@@ -126,8 +126,23 @@ void ARYU::Dodge(const FInputActionInstance& inputActionInstance)
 void ARYU::LAttack(const FInputActionInstance& inputActionInstance)
 {
 	AddInputBuffer(inputActionInstance);
+	Attack(EPlayerInputType::LButton);
+
+}
+
+void ARYU::RAttack(const FInputActionInstance& inputActionInstance)
+{
+	AddInputBuffer(inputActionInstance);
+	Attack(EPlayerInputType::RButton);
+}
+
+void ARYU::Attack(EPlayerInputType type)
+{
 	if (HFSM)
 	{
+		UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
+		mannequinHunterCombatComponent->SetPlyerInputType(type);
+
 		EStateOrder stateOrder = EStateOrder::Attack;
 		if (HFSM->GetCurrentStateMachineID() == StaticCast<uint8>(EPlayerStateMachine::Defulat))
 			stateOrder |= EStateOrder::ToggleCombat;
@@ -167,7 +182,7 @@ void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 
 		enhancedInputComponent->BindAction(inputData.AttackAction, ETriggerEvent::Triggered, this, &ARYU::LAttack);
 		
-		//enhancedInputComponent->BindAction(inputData.Attack2Action, ETriggerEvent::Triggered, this, &ARYU::Dodge);
+		enhancedInputComponent->BindAction(inputData.Attack2Action, ETriggerEvent::Triggered, this, &ARYU::RAttack);
 
 
 	}

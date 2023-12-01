@@ -54,3 +54,10 @@ enum class EStateOrder : uint16
 };
 
 ENUM_CLASS_FLAGS(EStateOrder)
+
+enum class EPlayerInputType : uint8
+{
+	None = 0,
+	LButton,
+	RButton,
+};

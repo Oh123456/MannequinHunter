@@ -184,11 +184,11 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 
 void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
 {
-	ChangeCombatType(animtype, [this]() ->
+	ChangeCombatType(animtype /*[this]() ->
 		void
 		{
 			this->characterCombatData.attackCount = 0;
-		});
+		}*/);
 
 	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
 

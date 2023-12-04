@@ -158,6 +158,8 @@ public:
 
 	void SetCombatAnimationData(class UCombatAnimationData* animationData) { combatAnimationData = animationData; }
 
+	const class UCombatAnimationData* const GetCombatAnimationData() const { return combatAnimationData; }
+
 	inline bool IsLockOn() { return characterRotationData.targetActor != nullptr; }
 	inline FDodgeDirection& DodgeDirectionDelegate() { return characterCombatAnimationData.dodgeDirectionDelegate; }
 

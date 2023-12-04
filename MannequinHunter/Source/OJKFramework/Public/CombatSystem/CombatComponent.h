@@ -10,7 +10,6 @@
 struct FDeathInfo;
 class ABaseWeapon;
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class OJKFRAMEWORK_API UCombatComponent : public UActorComponent
 {

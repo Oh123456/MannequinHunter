@@ -10,14 +10,12 @@
  * 
  */
 
-UENUM(BlueprintType)
-enum class ERYUWeaponType : uint8
-{
-	None = 0,
-	Katana = 1,
-	Fist,
+/*
 
-};
+*/
+
+enum class ERYUWeaponType : uint8;
+enum class EPlayerInputType : uint8;
 
 UCLASS()
 class MANNEQUINHUNTER_API ARYU : public APlayerCharacter
@@ -73,9 +71,6 @@ private:
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* followCamera;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-	TMap<ERYUWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;
 
 
 };

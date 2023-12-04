@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "CombatComponent.h"
 #include "CombatAnimationData.generated.h"
 
 /**
@@ -11,7 +12,7 @@
  */
 
 class UAnimMontage;
-
+class UDataTable;
 USTRUCT()
 struct OJKFRAMEWORK_API FAnimMontageArray
 {
@@ -74,10 +75,14 @@ public:
 
 	const FAnimMontageArray* GetMontageArray(const ECharacterCombatontageType type) const;
 	const UAnimMontage* GetMontage(const ECharacterCombatontageType type, const int32 index) const;
+	const UDataTable* GetCommendDataTable() const { return commendDataTable; }
 
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("AssetItems", GetFName()); }
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<ECharacterCombatontageType, FAnimMontageArray> combatMontageMap;
-	
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> commendDataTable;
 };

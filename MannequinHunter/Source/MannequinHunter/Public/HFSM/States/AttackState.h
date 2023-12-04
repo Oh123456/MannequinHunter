@@ -16,7 +16,11 @@ public:
 
 protected:
 	void CheckState();
+private:
+
+	ECharacterCombatontageType GetAnimSlot();
 public:
 	virtual void Enter();
 	virtual uint8 Condition(uint16 order);
+
 };

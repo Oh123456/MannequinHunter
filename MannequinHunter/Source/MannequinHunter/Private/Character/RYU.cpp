@@ -194,7 +194,9 @@ void ARYU::BeginPlay()
 	Super::BeginPlay();
 
 	weaponType = ERYUWeaponType::Fist;
-	combatComponent->SetCombatAnimationData(weaponTypeAnimationData[ERYUWeaponType::Fist]);
+
+	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
+	mannequinHunterCombatComponent->SetCombatAnimationData(ERYUWeaponType::Fist);
 	
 
 

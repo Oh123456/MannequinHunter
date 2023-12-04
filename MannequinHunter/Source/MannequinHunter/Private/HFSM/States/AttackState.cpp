@@ -24,6 +24,17 @@ void FAttackState::CheckState()
 	ownerStateMachine->SetStateOrder(StaticCast<uint16>(EStateOrder::Idle));
 }
 
+ECharacterCombatontageType FAttackState::GetAnimSlot()
+{
+	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
+
+	UMannequinHunterCombatComponent* combatComponent = Cast<UMannequinHunterCombatComponent>(player->GetCombatComponent());
+
+	const UCombatAnimationData* const animationData = combatComponent->GetCombatAnimationData();
+
+	return ECharacterCombatontageType();
+}
+
 void FAttackState::Enter()
 {
 	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());

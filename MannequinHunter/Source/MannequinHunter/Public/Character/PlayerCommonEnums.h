@@ -55,6 +55,7 @@ enum class EStateOrder : uint16
 
 ENUM_CLASS_FLAGS(EStateOrder)
 
+UENUM(BlueprintType)
 enum class EPlayerInputType : uint8
 {
 	None = 0,

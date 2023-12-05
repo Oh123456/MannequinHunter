@@ -3,6 +3,11 @@
 
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 
+UMannequinHunterCombatComponent::~UMannequinHunterCombatComponent()
+{
+	ClearInputList();
+}
+
 void UMannequinHunterCombatComponent::AddInputList(EPlayerInputType type)
 {
 	if (inputListHead == nullptr)

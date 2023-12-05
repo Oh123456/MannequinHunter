@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "HFSM/State.h"
 
+enum class ECharacterCombatontageType :uint8;
+
 /**
  * 
  */

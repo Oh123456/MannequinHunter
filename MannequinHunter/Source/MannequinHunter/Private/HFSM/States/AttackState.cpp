@@ -26,11 +26,17 @@ void FAttackState::CheckState()
 
 ECharacterCombatontageType FAttackState::GetAnimSlot()
 {
-	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
+	//APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 
-	UMannequinHunterCombatComponent* combatComponent = Cast<UMannequinHunterCombatComponent>(player->GetCombatComponent());
+	//UMannequinHunterCombatComponent* combatComponent = Cast<UMannequinHunterCombatComponent>(player->GetCombatComponent());
 
-	const UCombatAnimationData* const animationData = combatComponent->GetCombatAnimationData();
+	//const UCombatAnimationData* const animationData = combatComponent->GetCombatAnimationData();
+
+	//const UDataTable* commendDataTable = animationData->GetCommendDataTable();
+
+	//TArray<FName> names = commendDataTable->GetRowNames();
+
+	//TList<EPlayerInputType>* inputList = combatComponent->GetInputListHead();
 
 	return ECharacterCombatontageType();
 }

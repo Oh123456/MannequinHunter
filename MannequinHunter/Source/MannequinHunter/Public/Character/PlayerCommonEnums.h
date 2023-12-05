@@ -62,3 +62,14 @@ enum class EPlayerInputType : uint8
 	LButton,
 	RButton,
 };
+
+
+
+UENUM(BlueprintType)
+enum class ERYUWeaponType : uint8
+{
+	None = 0,
+	Katana = 1,
+	Fist,
+
+};

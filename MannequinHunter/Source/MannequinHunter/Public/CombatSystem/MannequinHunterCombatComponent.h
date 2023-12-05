@@ -7,17 +7,10 @@
 #include "Character/PlayerCommonEnums.h"
 #include "Engine/DataTable.h"
 #include "CombatSystem/CombatComponent.h"
+#include "CommandListTree.h"
 #include "MannequinHunterCombatComponent.generated.h"
 
 
-UENUM(BlueprintType)
-enum class ERYUWeaponType : uint8
-{
-	None = 0,
-	Katana = 1,
-	Fist,
-
-};
 
 /**
  * 
@@ -26,7 +19,6 @@ USTRUCT(Blueprinttype)
 struct FCommandDataTable : public FTableRowBase
 {
 	GENERATED_BODY()
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	TArray<EPlayerInputType> attackButton;
@@ -43,6 +35,7 @@ class MANNEQUINHUNTER_API UMannequinHunterCombatComponent : public UPlayerCharac
 	
 
 public:
+	virtual ~UMannequinHunterCombatComponent();
 	void SetPlyerInputType(EPlayerInputType type) { playerInputType = type; }
 	EPlayerInputType GetPlayerInputType() const { return playerInputType; }
 
@@ -64,4 +57,5 @@ private:
 	//TODO:: 난중에 커스텀 리스트 만들것..
 	TList<EPlayerInputType>* inputListHead;
 
+	TCommandListTree<EPlayerInputType, ECharacterCombatontageType> commandListTree ;
 };

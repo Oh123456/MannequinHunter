@@ -10,9 +10,11 @@ void UAnimNotify_InputWait::Notify(USkeletalMeshComponent* meshComp, UAnimSequen
 	Super::Notify(meshComp, animation, eventReference);
 
 
-	APlayerCharacter* player = StaticCast<APlayerCharacter*>(meshComp->GetOwner());
-	UHFSMComponent* hfsm = player->GetHFSM();
-	if (hfsm)
-		hfsm->SetStateOrder(EStateOrder::InputWait);
-
+	APlayerCharacter* player = Cast<APlayerCharacter>(meshComp->GetOwner());
+	if (player)
+	{
+		UHFSMComponent* hfsm = player->GetHFSM();
+		if (hfsm)
+			hfsm->SetStateOrder(EStateOrder::InputWait);
+	}
 }

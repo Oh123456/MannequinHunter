@@ -133,7 +133,7 @@ protected:
 	struct FCharacterCombatAnimationData
 	{
 		const struct FAnimMontageArray* currentAnimMontage = nullptr;
-		ECharacterCombatontageType currentAnimType;
+		ECharacterCombatMontageType currentAnimType;
 
 		TMap<EDodgeDirection, EDodgeDirectionIndex> eightDodgeDirectionIndexMap = {};
 		TMap<EDodgeDirection, EDodgeDirectionIndex> fourDodgeDirectionIndexMap = {};
@@ -173,8 +173,8 @@ public:
 	inline int32 GetAttackCount() { return characterCombatData.attackCount; }
 	void ResetAttackCount() { characterCombatData.attackCount = 0; }
 
-	void Dodge(ECharacterCombatontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
-	void Attack(ECharacterCombatontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
+	
+	
 
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);
@@ -182,13 +182,17 @@ protected:
 	inline void AddCombatAbleFlag(int32 combatAble);
 	inline void SubtractCombatAbleFlag(int32 combatAble);
 	void LockOn();
-	void ChangeCombatType(ECharacterCombatontageType animtype, std::function<void()> callBack = nullptr);
+	void ChangeCombatType(ECharacterCombatMontageType animtype, std::function<void()> callBack = nullptr);
 	//사용안함
-	void Turn(ECharacterCombatontageType animtype, float yaw);
+	void Turn(ECharacterCombatMontageType animtype, float yaw);
 
 
 	void SetTargetActor(AActor* target) { characterRotationData.targetActor = target; }
 	const AActor* GetTargetActor() const { return characterRotationData.targetActor; }
+
+public:
+	virtual void Dodge(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
+	virtual void Attack(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
 private:
 	int32 GetPreviousAttackCount();
 public:
@@ -196,12 +200,12 @@ public:
 	// if UserCharacter Use HFSM ,
 	// Use other functions of the same name
 	UFUNCTION(BlueprintCallable)
-	void Attack(ECharacterCombatontageType animtype);
+	void Attack(ECharacterCombatMontageType animtype);
 	// Not Use HFSM !!
 	// if UserCharacter Use HFSM ,
 	// Use other functions of the same name
 	UFUNCTION(BlueprintCallable)
-	void Dodge(ECharacterCombatontageType animtype);
+	void Dodge(ECharacterCombatMontageType animtype);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SetLockOnTarget();

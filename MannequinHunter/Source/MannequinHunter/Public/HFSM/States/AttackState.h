@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "HFSM/State.h"
 
-enum class ECharacterCombatontageType :uint8;
+enum class ECharacterCombatMontageType :uint8;
 
 /**
  * 
@@ -20,7 +20,7 @@ protected:
 	void CheckState();
 private:
 
-	ECharacterCombatontageType GetAnimSlot();
+	ECharacterCombatMontageType GetAnimSlot();
 public:
 	virtual void Enter();
 	virtual uint8 Condition(uint16 order);

@@ -4,8 +4,8 @@
 
 enum class EPlayerCombatEnums : uint8
 {
-	NomalDodge = static_cast<uint8>(ECharacterCombatontageType::Dodge1),
-	CombatDodge = static_cast<uint8>(ECharacterCombatontageType::Dodge2),
+	NomalDodge = static_cast<uint8>(ECharacterCombatMontageType::Dodge1),
+	CombatDodge = static_cast<uint8>(ECharacterCombatMontageType::Dodge2),
 };
 
 
@@ -66,7 +66,7 @@ enum class EPlayerInputType : uint8
 
 
 UENUM(BlueprintType)
-enum class ERYUWeaponType : uint8
+enum class EWeaponType : uint8
 {
 	None = 0,
 	Katana = 1,

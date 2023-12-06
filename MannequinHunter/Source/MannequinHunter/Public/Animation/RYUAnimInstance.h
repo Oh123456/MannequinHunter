@@ -22,13 +22,13 @@ public:
 	bool IsCombat() { return (StaticCast<uint8>(ryuStateMachineState) & StaticCast<uint8>(EPlayerStateMachine::Combat)); }
 private:
 	UFUNCTION(BlueprintPure, Category = WeaponType , meta = (BlueprintThreadSafe))
-	ERYUWeaponType GetWeaponType();
+	EWeaponType GetWeaponType();
 
 public:
 	virtual void NativeUpdateAnimation(float deltaSeconds) override;
 private:
 	UPROPERTY(BlueprintReadOnly, Category = WeaponType, meta = (AllowPrivateAccess = "true"))
-	ERYUWeaponType weaponType;
+	EWeaponType weaponType;
 
 	UPROPERTY(BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
 	EPlayerStateMachine ryuStateMachineState;

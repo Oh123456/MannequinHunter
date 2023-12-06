@@ -2,38 +2,50 @@
 
 
 #include "CombatSystem/MannequinHunterCombatComponent.h"
+#include "Singleton/CommandListManager.h"
 
 UMannequinHunterCombatComponent::~UMannequinHunterCombatComponent()
 {
-	ClearInputList();
+
 }
 
-void UMannequinHunterCombatComponent::AddInputList(EPlayerInputType type)
+void UMannequinHunterCombatComponent::ResetCommandList()
 {
-	if (inputListHead == nullptr)
+	if (currentCommandListTree)
+		currentCommandListNode = currentCommandListTree->GetRoot(); 
+}
+
+ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
+{
+	return GetCommandMontageType(playerInputType);	
+}
+
+ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType(EPlayerInputType input)
+{
+	if (currentCommandListTree && currentCommandListNode)
 	{
-		inputListHead = new TList<EPlayerInputType>(type);
-		return;
+		const TSharedPtr<CommandListNode>* nextCommandListNode =  currentCommandListNode->FindChild(input);
+		if (nextCommandListNode)
+		{
+			currentCommandListNode = *nextCommandListNode;
+			return *(currentCommandListNode->GetValue()->Get());
+		}
 	}
-
-
-	inputListHead->Next = new TList<EPlayerInputType>(type);
-
+	return ECharacterCombatMontageType::None;
 }
 
-void UMannequinHunterCombatComponent::ClearInputList()
+void UMannequinHunterCombatComponent::ChangeCommandList(EWeaponType type)
 {
-	if (inputListHead == nullptr)
-		return;
-	UnLinkInputList(inputListHead);
-	inputListHead = nullptr;
+	currentCommandListTree = *FCommandListManager::GetInstance()->GetCommandList(type);
+	currentCommandListNode = currentCommandListTree->GetRoot();
 }
 
-void UMannequinHunterCombatComponent::UnLinkInputList(TList<EPlayerInputType>* list)
+void UMannequinHunterCombatComponent::BeginPlay()
 {
-	if (list->Next)
-		UnLinkInputList(list->Next);
+	Super::BeginPlay();
 
-	delete list->Next;
-	list->Next = nullptr;
+
+	OnChangeWeaponType.AddUObject(this,&UMannequinHunterCombatComponent::ChangeCommandList);
 }
+
+

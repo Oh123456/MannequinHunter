@@ -27,40 +27,70 @@ struct OJKFRAMEWORK_API FAnimMontageArray
 };
 
 UENUM(BlueprintType)
-enum class ECharacterCombatontageType : uint8
+enum class ECharacterCombatMontageType : uint8
 {
 	None = 0,
 
-	Attack1 = 10				UMETA(DisplayName = "Attack1"),
-	Attack2						UMETA(DisplayName = "Attack2"),
-	Attack3						UMETA(DisplayName = "Attack3"),
-	Attack4						UMETA(DisplayName = "Attack4"),
-	Attack5						UMETA(DisplayName = "Attack5"),
-	Attack6						UMETA(DisplayName = "Attack6"),
-	Attack7						UMETA(DisplayName = "Attack7"),
-	Attack8						UMETA(DisplayName = "Attack8"),
-	Attack9						UMETA(DisplayName = "Attack9"),
-	Attack10					UMETA(DisplayName = "Attack10"),
-	Attack11					UMETA(DisplayName = "Attack11"),
-	Attack12					UMETA(DisplayName = "Attack12"),
-	Attack13					UMETA(DisplayName = "Attack13"),
-	Attack14					UMETA(DisplayName = "Attack14"),
-	Attack15					UMETA(DisplayName = "Attack15"),
-	Attack16					UMETA(DisplayName = "Attack16"),
-	Attack17					UMETA(DisplayName = "Attack17"),
-	Attack18					UMETA(DisplayName = "Attack18"),
-	Attack19					UMETA(DisplayName = "Attack19"),
-	Attack20					UMETA(DisplayName = "Attack20"),
+	Attack1 = 10				,				
+	Attack2						,
+	Attack3						,
+	Attack4						,
+	Attack5						,
+	Attack6						,
+	Attack7						,
+	Attack8						,
+	Attack9						,
+	Attack10					,
+	Attack11					,
+	Attack12					,
+	Attack13					,
+	Attack14					,
+	Attack15					,
+	Attack16					,
+	Attack17					,
+	Attack18					,
+	Attack19					,
+	Attack20					,
+	Attack21					,
+	Attack22					,
+	Attack23					,
+	Attack24					,
+	Attack25					,
+	Attack26					,
+	Attack27					,
+	Attack28					,
+	Attack29					,
+	Attack30					,
+	Attack31					,
+	Attack32					,
+	Attack33					,
+	Attack34					,
+	Attack35					,
+	Attack36					,
+	Attack37					,
+	Attack38					,
+	Attack39					,
+	Attack40					,
+	Attack41					,
+	Attack42					,
+	Attack43					,
+	Attack44					,
+	Attack45					,
+	Attack46					,
+	Attack47					,
+	Attack48					,
+	Attack49					,
+	Attack50					,
 
 
-	Dodge1						UMETA(DisplayName = "Dodge1"),
-	Dodge2						UMETA(DisplayName = "Dodge2"),
-	Dodge3						UMETA(DisplayName = "Dodge3"),
-	Dodge4						UMETA(DisplayName = "Dodge4"),
-	Dodge5						UMETA(DisplayName = "Dodge5"),
+	Dodge1 = 100				,
+	Dodge2						,
+	Dodge3						,
+	Dodge4						,
+	Dodge5						,
 
-	Turn1 = 250					UMETA(DisplayName = "Turn1"),
-	Turn2						UMETA(DisplayName = "Turn2"),
+	Turn1 = 250					,
+	Turn2						,
 };
 
 
@@ -73,12 +103,12 @@ public:
 	UCombatAnimationData();
 	virtual ~UCombatAnimationData();
 
-	const FAnimMontageArray* GetMontageArray(const ECharacterCombatontageType type) const;
-	const UAnimMontage* GetMontage(const ECharacterCombatontageType type, const int32 index) const;
+	const FAnimMontageArray* GetMontageArray(const ECharacterCombatMontageType type) const;
+	const UAnimMontage* GetMontage(const ECharacterCombatMontageType type, const int32 index) const;
 
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("AssetItems", GetFName()); }
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TMap<ECharacterCombatontageType, FAnimMontageArray> combatMontageMap;
+	TMap<ECharacterCombatMontageType, FAnimMontageArray> combatMontageMap;
 };

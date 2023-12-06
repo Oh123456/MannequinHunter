@@ -24,21 +24,15 @@ void FAttackState::CheckState()
 	ownerStateMachine->SetStateOrder(StaticCast<uint16>(EStateOrder::Idle));
 }
 
-ECharacterCombatontageType FAttackState::GetAnimSlot()
+ECharacterCombatMontageType FAttackState::GetAnimSlot()
 {
-	//APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
-
-	//UMannequinHunterCombatComponent* combatComponent = Cast<UMannequinHunterCombatComponent>(player->GetCombatComponent());
-
-	//const UCombatAnimationData* const animationData = combatComponent->GetCombatAnimationData();
-
-	//const UDataTable* commendDataTable = animationData->GetCommendDataTable();
-
-	//TArray<FName> names = commendDataTable->GetRowNames();
-
-	//TList<EPlayerInputType>* inputList = combatComponent->GetInputListHead();
-
-	return ECharacterCombatontageType();
+	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
+	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = Cast<UMannequinHunterCombatComponent>(player->GetCombatComponent());
+	if (mannequinHunterCombatComponent)
+	{
+		return mannequinHunterCombatComponent->GetCommandMontageType();
+	}
+	return ECharacterCombatMontageType::None;
 }
 
 void FAttackState::Enter()
@@ -50,11 +44,14 @@ void FAttackState::Enter()
 		
 		if (combatComponent)
 		{
-			ECharacterCombatontageType attackType;
-			if (combatComponent->GetPlayerInputType() == EPlayerInputType::LButton)
-				attackType = ECharacterCombatontageType::Attack1;
-			else
-				attackType = ECharacterCombatontageType::Attack2;
+			ECharacterCombatMontageType attackType = GetAnimSlot();
+			//if (combatComponent->GetPlayerInputType() == EPlayerInputType::LButton)
+			//	attackType = ECharacterCombatMontageType::Attack1;
+			//else
+			//	attackType = ECharacterCombatMontageType::Attack2;
+
+			if (attackType == ECharacterCombatMontageType::None)
+				return;
 
 			combatComponent->Attack(attackType, [this]()
 			{

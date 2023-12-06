@@ -24,9 +24,11 @@ struct FCommandDataTable : public FTableRowBase
 	TArray<EPlayerInputType> attackButton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	ECharacterCombatontageType useAnimSlot;
+	ECharacterCombatMontageType useAnimSlot;
 };
 
+
+DECLARE_EVENT_OneParam(UMannequinHunterCombatComponent,FChangeWeaponType,EWeaponType);
 
 UCLASS()
 class MANNEQUINHUNTER_API UMannequinHunterCombatComponent : public UPlayerCharacterCombatComponent
@@ -34,28 +36,41 @@ class MANNEQUINHUNTER_API UMannequinHunterCombatComponent : public UPlayerCharac
 	GENERATED_BODY()
 	
 
+	using CommandListTree = TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>;
+	using CommandListNode = TCommandListNode<EPlayerInputType, ECharacterCombatMontageType>;
+
 public:
 	virtual ~UMannequinHunterCombatComponent();
+
 	void SetPlyerInputType(EPlayerInputType type) { playerInputType = type; }
 	EPlayerInputType GetPlayerInputType() const { return playerInputType; }
 
-	void SetCombatAnimationData(ERYUWeaponType type) { combatAnimationData = weaponTypeAnimationData[type]; }
+	void SetCombatAnimationData(EWeaponType type) { combatAnimationData = weaponTypeAnimationData[type]; }
 
-	void AddInputList(EPlayerInputType type);
-	void ClearInputList();
-	TList<EPlayerInputType>* GetInputListHead() const { return inputListHead; }
+	void SetWeaponType(EWeaponType type) { playerWeaponType = type; OnChangeWeaponType.Broadcast(type); }
+	EWeaponType GetWeaponType() const { return playerWeaponType; }
+
+
+	void ResetCommandList();
+	ECharacterCombatMontageType GetCommandMontageType();
+	ECharacterCombatMontageType GetCommandMontageType(EPlayerInputType input);
 
 private:
-	void UnLinkInputList(TList<EPlayerInputType>* list);
+	void ChangeCommandList(EWeaponType type);
+public:
+	virtual void BeginPlay() override;
 
+public:
+	FChangeWeaponType OnChangeWeaponType;
 private:
 	EPlayerInputType playerInputType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-	TMap<ERYUWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;
-private:
-	//TODO:: 난중에 커스텀 리스트 만들것..
-	TList<EPlayerInputType>* inputListHead;
+	EWeaponType playerWeaponType;
 
-	TCommandListTree<EPlayerInputType, ECharacterCombatontageType> commandListTree ;
+	TSharedPtr<CommandListTree> currentCommandListTree = nullptr;
+	TSharedPtr<CommandListNode> currentCommandListNode = nullptr;
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	TMap<EWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;
+
 };

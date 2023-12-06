@@ -24,7 +24,7 @@ void FIdleState::Enter()
 {
 	APlayerCharacter* character = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(character->GetCombatComponent());
-	mannequinHunterCombatComponent->ClearInputList();
+	mannequinHunterCombatComponent->ResetCommandList();
 }
 
 uint8 FIdleState::Condition(uint16 order)

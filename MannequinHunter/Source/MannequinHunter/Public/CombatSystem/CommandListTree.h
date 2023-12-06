@@ -23,12 +23,20 @@ public:
 		this->key = key;
 		this->value = value;
 	}
+
+	TCommandListNode(TEnum key, TValue* value)
+	{
+		static_assert(std::is_enum<TEnum>::value, "TCommandListNode Value is Only Enum");
+
+		this->key = key;
+		this->value = MakeShared<TValue>(value);
+	}
 	~TCommandListNode()
 	{
 		childs.Reset();
 	}
 
-	TSharedPtr<TCommandListNode<TEnum, TValue>>* AddChild(TEnum _key, const TSharedPtr<TValue>& _value)
+	TSharedPtr<TCommandListNode<TEnum, TValue>>* AddChild(TEnum _key, const TValue* _value)
 	{
 		TSharedPtr<TCommandListNode<TEnum, TValue>>* find = childs.FindByPredicate([this, &_key](const TSharedPtr<TCommandListNode<TEnum, TValue>>& data)
 			{
@@ -37,7 +45,14 @@ public:
 
 		if (find == nullptr)
 		{
-			TSharedPtr<TCommandListNode<TEnum, TValue>> addNode = MakeShared<TCommandListNode<TEnum, TValue>>(_key, _value);
+			TSharedPtr<TValue> tValue = nullptr;
+			if (_value)
+			{
+				tValue = MakeShared<TValue>();
+				TValue* pValue = ((tValue).Get());
+				*pValue = *_value;
+			}
+			TSharedPtr<TCommandListNode<TEnum, TValue>> addNode = MakeShared<TCommandListNode<TEnum, TValue>>(_key, tValue);
 			int32 index = childs.Add(addNode);
 
 
@@ -46,8 +61,16 @@ public:
 		return find;
 	}
 
+	inline const TSharedPtr<TCommandListNode<TEnum, TValue>>* FindChild(TEnum findKey) 
+	{
+		return childs.FindByPredicate([findKey](const TSharedPtr<TCommandListNode<TEnum, TValue>>& data)
+			{
+				return data->GetKey() == findKey;
+			});
+	}
+
 	inline TEnum GetKey() const { return key; }
-	inline const TValue* GetValue() const { return value; };
+	inline const TSharedPtr<TValue>* GetValue() const { return &value; };
 	inline const TSharedPtr<TCommandListNode<TEnum, TValue>>& GetChild(int index) { return childs[index]; }
 	inline const TArray<TSharedPtr<TCommandListNode<TEnum, TValue>>>& GetChilds() const { return childs; }
 private:
@@ -73,7 +96,7 @@ public:
 		root = nullptr;
 	}
 
-	TSharedPtr<TCommandListNode<TEnum, TValue>>* AddTree(TEnum key, const TSharedPtr<TValue>& value, const TSharedPtr<TCommandListNode<TEnum, TValue>>* parent = nullptr)
+	TSharedPtr<TCommandListNode<TEnum, TValue>>* AddTree(TEnum key, const TValue* value, const TSharedPtr<TCommandListNode<TEnum, TValue>>* parent = nullptr)
 	{
 		if (parent == nullptr)
 		{
@@ -82,6 +105,8 @@ public:
 
 		return (*parent)->AddChild(key, value);
 	}
+
+	TSharedPtr<TCommandListNode<TEnum, TValue>> GetRoot() const { return root; }
 
 private:
 	TSharedPtr<TCommandListNode<TEnum, TValue>> root;

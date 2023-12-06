@@ -28,12 +28,12 @@ void FDodgeState::Enter()
 		UCharacterCombatComponent* characterCombatComponent = player->GetCombatComponent();
 		if (characterCombatComponent)
 		{
-			ECharacterCombatontageType type;
+			ECharacterCombatMontageType type;
 			EPlayerStateMachine stateMachine = player->GetCurrentStateMachineID<EPlayerStateMachine>();
 			if (stateMachine == EPlayerStateMachine::Combat)
-				type = StaticCast<ECharacterCombatontageType>(EPlayerCombatEnums::CombatDodge);
+				type = StaticCast<ECharacterCombatMontageType>(EPlayerCombatEnums::CombatDodge);
 			else
-				type = StaticCast<ECharacterCombatontageType>(EPlayerCombatEnums::NomalDodge);
+				type = StaticCast<ECharacterCombatMontageType>(EPlayerCombatEnums::NomalDodge);
 
 			characterCombatComponent->Dodge(type, nullptr);/*[this]()
 				{

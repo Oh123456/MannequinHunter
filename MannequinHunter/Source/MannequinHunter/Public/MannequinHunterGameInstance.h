@@ -9,7 +9,7 @@
 /**
  * 
  */
-enum class ERYUWeaponType : uint8;
+enum class EWeaponType : uint8;
 
 
 UCLASS()
@@ -23,5 +23,5 @@ public:
 private:
 
 	UPROPERTY(EditDefaultsOnly)
-	TMap<ERYUWeaponType,TObjectPtr<class UDataTable>> commendDataTable;
+	TMap<EWeaponType,TObjectPtr<class UDataTable>> commendDataTable;
 };

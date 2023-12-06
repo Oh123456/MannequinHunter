@@ -14,7 +14,7 @@
 
 */
 
-enum class ERYUWeaponType : uint8;
+enum class EWeaponType : uint8;
 enum class EPlayerInputType : uint8;
 
 UCLASS()
@@ -27,7 +27,6 @@ class MANNEQUINHUNTER_API ARYU : public APlayerCharacter
 public:
 	ARYU();
 
-	ERYUWeaponType GetWeaponType() { return weaponType; }
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
@@ -49,7 +48,7 @@ private:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void TestWeaponTypeChange(ERYUWeaponType type) { weaponType = type; }
+	void TestWeaponTypeChange(EWeaponType type);
 
 public:
 	virtual void Falling() override;
@@ -60,9 +59,6 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-
-private:
-	ERYUWeaponType weaponType;
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

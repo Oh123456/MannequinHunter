@@ -56,7 +56,6 @@ ARYU::ARYU() : Super()
 	combatComponent = CreateDefaultSubobject<UMannequinHunterCombatComponent>(TEXT("PlayerCombatSystem"));
 
 	HFSM = CreateDefaultSubobject<URYUHFSMComponent>(TEXT("RYUHFSM"));
-	weaponType = ERYUWeaponType::None;
 }
 
 
@@ -150,6 +149,12 @@ void ARYU::Attack(EPlayerInputType type)
 	}
 }
 
+void ARYU::TestWeaponTypeChange(EWeaponType type)
+{
+	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
+	mannequinHunterCombatComponent->SetWeaponType(type);
+}
+
 
 void ARYU::Falling()
 {
@@ -192,12 +197,9 @@ void ARYU::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-
-	weaponType = ERYUWeaponType::Fist;
-
 	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
-	mannequinHunterCombatComponent->SetCombatAnimationData(ERYUWeaponType::Fist);
-	
+	mannequinHunterCombatComponent->SetWeaponType(EWeaponType::Fist);
+	mannequinHunterCombatComponent->SetCombatAnimationData(EWeaponType::Fist);
 
 
 

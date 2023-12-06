@@ -49,7 +49,7 @@ void UCharacterCombatComponent::AddAttackCount()
 }
 
 
-void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype)
+void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype)
 {
 
 	ChangeCombatType(animtype, [this]() ->
@@ -87,7 +87,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype)
 		SubtractCombatAbleFlag((ECombatAble::AttackAble | ECombatAble::DodgeAble));
 	}
 }
-void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
+void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype);
 
@@ -182,7 +182,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype, std::
 	animInstance->Montage_SetEndDelegate(montageEnded, dodgeMontage);
 }
 
-void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
+void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype /*[this]() ->
 		void
@@ -229,7 +229,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatontageType animtype, std:
 	AddAttackCount();
 }
 
-void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype)
+void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 {
 	ChangeCombatType(animtype);
 
@@ -324,7 +324,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatontageType animtype)
 	}
 }
 
-void UCharacterCombatComponent::Turn(ECharacterCombatontageType animtype, float yaw)
+void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float yaw)
 {
 	ChangeCombatType(animtype);
 
@@ -407,10 +407,10 @@ void UCharacterCombatComponent::LockOn()
 	}
 }
 
-void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatontageType animtype, std::function<void()> callBack)
+void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatMontageType animtype, std::function<void()> callBack)
 {
 
-	if (characterCombatAnimationData.currentAnimType == ECharacterCombatontageType::None || characterCombatAnimationData.currentAnimType != animtype)
+	if (characterCombatAnimationData.currentAnimType == ECharacterCombatMontageType::None || characterCombatAnimationData.currentAnimType != animtype)
 	{
 		characterCombatAnimationData.currentAnimType = animtype;
 		characterCombatAnimationData.currentAnimMontage = combatAnimationData->GetMontageArray(animtype);

@@ -14,24 +14,15 @@ FCommandListManager::~FCommandListManager()
 {
 }
 
-//void FCommandListManager::LoadCommandListTable(UDataTable* table)
-//{
-//}
-//
-//void FCommandListManager::AddCommandListTree(const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatontageType>>, const TArray<EPlayerInputType>&)
-//{
-//}
-//
 
-
-void FCommandListManager::LoadCommandListTable(const TMap<ERYUWeaponType, TObjectPtr<UDataTable>>& table )
+void FCommandListManager::LoadCommandListTable(const TMap<EWeaponType, TObjectPtr<UDataTable>>& table )
 {
 
-	commandList.Reset();
+	commandListMap.Reset();
 
 	for (const auto& pair : table)
 	{
-		TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatontageType>> commandListTree = MakeShared<TCommandListTree<EPlayerInputType, ECharacterCombatontageType>>();
+		TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>> commandListTree = MakeShared<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>();
 
 
 		TArray<FName> names = pair.Value->GetRowNames();
@@ -41,22 +32,33 @@ void FCommandListManager::LoadCommandListTable(const TMap<ERYUWeaponType, TObjec
 			AddCommandListTree(commandListTree,table);
 		}
 
-		commandList.Add(pair.Key, commandListTree);
+		commandListMap.Add(pair.Key, commandListTree);
 
 	}
 
 }
 
-void FCommandListManager::AddCommandListTree(const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatontageType>>& tree, const FCommandDataTable* table)
+const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>* FCommandListManager::GetCommandList(EWeaponType weaponType) const
 {
-	using CommandListNode = TCommandListNode<EPlayerInputType, ECharacterCombatontageType>;
+	return commandListMap.Find(weaponType);
+}
+
+void FCommandListManager::AddCommandListTree(const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>& tree, const FCommandDataTable* table)
+{
+	using CommandListNode = TCommandListNode<EPlayerInputType, ECharacterCombatMontageType>;
 
 	const TArray<EPlayerInputType>& inputTypes = table->attackButton;
 	TSharedPtr<CommandListNode>* node = nullptr;
-	for (EPlayerInputType inputType : inputTypes)
+	int32 maxCount = inputTypes.Num();
+	ECharacterCombatMontageType* value = nullptr;
+	ECharacterCombatMontageType useAnimSlot = table->useAnimSlot;
+	for(int i = 0 ; i < maxCount; i++)
 	{
-		node = tree->AddTree(inputType, MakeShared<ECharacterCombatontageType>(table->useAnimSlot), node);
+		if (i == (maxCount - 1))
+			value = &useAnimSlot;
+		node = tree->AddTree(inputTypes[i], value, node);
 	}
+
 
 }
 

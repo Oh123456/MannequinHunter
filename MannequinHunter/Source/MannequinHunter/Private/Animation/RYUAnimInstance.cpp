@@ -4,6 +4,7 @@
 #include "Animation/RYUAnimInstance.h"
 #include "Character/RYU.h"
 #include "HFSM/RYUHFSMComponent.h"
+#include "CombatSystem/MannequinHunterCombatComponent.h"
 
 //bool URYUAnimInstance::IsCombat()
 //{
@@ -17,14 +18,14 @@
 //	return RYUHFSMComponent->IsCombat();
 //}
 
-ERYUWeaponType URYUAnimInstance::GetWeaponType()
+EWeaponType URYUAnimInstance::GetWeaponType()
 {
 	ARYU* ryu = StaticCast<ARYU*>(ownerCharacter);
 
 	if (ryu == nullptr)
-		return ERYUWeaponType::None;
+		return EWeaponType::None;
 
-	return ryu->GetWeaponType();
+	return StaticCast<UMannequinHunterCombatComponent*>(ryu->GetCombatComponent())->GetWeaponType();
 }
 
 void URYUAnimInstance::NativeUpdateAnimation(float deltaSeconds)

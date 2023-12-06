@@ -6,8 +6,8 @@
 #include "Singleton.h"
 #include "CombatSystem/CommandListTree.h"
 
-enum class ERYUWeaponType : uint8;
-enum class ECharacterCombatontageType : uint8;
+enum class EWeaponType : uint8;
+enum class ECharacterCombatMontageType : uint8;
 enum class EPlayerInputType : uint8;
 struct FCommandDataTable;
 
@@ -20,10 +20,11 @@ public:
 	FCommandListManager();
 	virtual ~FCommandListManager();
 
-	void LoadCommandListTable(const TMap<ERYUWeaponType, TObjectPtr<class UDataTable>>& table);
+	void LoadCommandListTable(const TMap<EWeaponType, TObjectPtr<class UDataTable>>& table);
 
+	const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>* GetCommandList(EWeaponType weaponType) const;
 private:
-	void AddCommandListTree(const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatontageType>>& tree, const FCommandDataTable* table);
+	void AddCommandListTree(const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>& tree, const FCommandDataTable* table);
 private:
-	TMap<ERYUWeaponType, TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatontageType>>> commandList;
+	TMap<EWeaponType, TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>> commandListMap;
 };

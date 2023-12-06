@@ -18,6 +18,7 @@
 #include "Character/PlayerCommonEnums.h"
 #include "Controller/ActionPlayerController.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
+#include "Utility/PlayerInputLog.h"
 
 ARYU::ARYU() : Super()
 {
@@ -56,6 +57,8 @@ ARYU::ARYU() : Super()
 	combatComponent = CreateDefaultSubobject<UMannequinHunterCombatComponent>(TEXT("PlayerCombatSystem"));
 
 	HFSM = CreateDefaultSubobject<URYUHFSMComponent>(TEXT("RYUHFSM"));
+
+
 }
 
 
@@ -141,6 +144,9 @@ void ARYU::Attack(EPlayerInputType type)
 	{
 		UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
 		mannequinHunterCombatComponent->SetPlyerInputType(type);
+#ifdef UE_BUILD_DEBUG
+		playerInputLog->AddPlayerInput(type);
+#endif
 
 		EStateOrder stateOrder = EStateOrder::Attack;
 		if (HFSM->GetCurrentStateMachineID() == StaticCast<uint8>(EPlayerStateMachine::Defulat))
@@ -211,4 +217,12 @@ void ARYU::BeginPlay()
 			subsystem->AddMappingContext(defaultMappingContext, 0);
 		}
 	}
+
+
+#ifdef UE_BUILD_DEBUG
+	if (playerInputLog == nullptr)
+	{
+		playerInputLog = MakeShared<FPlayerInputLog>();
+	}
+#endif
 }

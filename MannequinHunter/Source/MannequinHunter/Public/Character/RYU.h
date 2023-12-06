@@ -68,5 +68,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* followCamera;
 
+#ifdef UE_BUILD_DEBUG
+	TSharedPtr<class FPlayerInputLog> playerInputLog;
 
+public:
+	const TSharedPtr<class FPlayerInputLog>& GetPlayerInputLog() { return playerInputLog; }
+#endif
 };

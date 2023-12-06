@@ -45,10 +45,6 @@ void FAttackState::Enter()
 		if (combatComponent)
 		{
 			ECharacterCombatMontageType attackType = GetAnimSlot();
-			//if (combatComponent->GetPlayerInputType() == EPlayerInputType::LButton)
-			//	attackType = ECharacterCombatMontageType::Attack1;
-			//else
-			//	attackType = ECharacterCombatMontageType::Attack2;
 
 			if (attackType == ECharacterCombatMontageType::None)
 				return;

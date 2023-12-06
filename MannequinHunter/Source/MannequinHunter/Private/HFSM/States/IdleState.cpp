@@ -8,6 +8,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Singleton/StateManager.h"
+#ifdef UE_BUILD_DEBUG
+#include "Character/RYU.h"
+#include "Utility/PlayerInputLog.h"
+#endif
 
 FIdleState::FIdleState() : 
 	FState(StaticCast<uint8>(EPlayerStateEnum::Idle), EStateInitOption::UpdataAndConvertOrder)
@@ -25,6 +29,18 @@ void FIdleState::Enter()
 	APlayerCharacter* character = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(character->GetCombatComponent());
 	mannequinHunterCombatComponent->ResetCommandList();
+
+#ifdef UE_BUILD_DEBUG
+	ARYU* ryu = Cast<ARYU>(character);
+	if (ryu)
+	{
+		auto playerLog = ryu->GetPlayerInputLog();
+		if (playerLog)
+		{
+			playerLog->ResetPlayerInputs();
+		}
+	}
+#endif
 }
 
 uint8 FIdleState::Condition(uint16 order)

@@ -12,6 +12,7 @@ FCommandListManager::FCommandListManager()
 
 FCommandListManager::~FCommandListManager()
 {
+	commandListMap.Empty();
 }
 
 

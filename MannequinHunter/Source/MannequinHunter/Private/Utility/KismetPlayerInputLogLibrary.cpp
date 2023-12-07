@@ -6,14 +6,26 @@
 #include "Character/PlayerCommonEnums.h"
 #include "Utility/PlayerInputLog.h"
 
-const TArray<EPlayerInputType> UKismetPlayerInputLogLibrary::GetPlayerInputs(ACharacter* character)
+FString UKismetPlayerInputLogLibrary::GetPlayerInputs(ACharacter* character)
 {
+	FString string;
 #ifdef UE_BUILD_DEBUG
 	ARYU* player = Cast<ARYU>(character);
 	if (player)
 	{
-		return player->GetPlayerInputLog()->GetPlayerInputs();
+		const TArray<EPlayerInputType>& array = player->GetPlayerInputLog()->GetPlayerInputs();
+
+		const UEnum* uenum = FindFirstObjectSafe<UEnum>(TEXT("EPlayerInputType"));
+
+		string.Append(TEXT("InputString : "));
+		for (EPlayerInputType type : array)
+		{
+
+			string.Append(uenum->GetDisplayNameTextByValue(StaticCast<int32>(type)).ToString());
+			string.Append(TEXT(", "));
+		}
+
 	}
 #endif
-	return TArray<EPlayerInputType>();
+	return string;
 }

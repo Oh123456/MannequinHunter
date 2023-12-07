@@ -82,10 +82,10 @@ void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)
 
 	if (bUseCylinder)
 	{
-		cylinderComponent = FindComponentByClass<UShapeComponent>();
+		if (cylinderComponent == nullptr)
+			cylinderComponent = FindComponentByClass<UShapeComponent>();
 		if (cylinderComponent == nullptr)
 		{
-
 			return;
 		}
 		hitCheckBeginDelegate.BindLambda(
@@ -93,7 +93,7 @@ void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)
 			{
 				this->SetCylinderActive(true);
 			});
-		cylinderComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseWeapon::HitCheckCylinder);
+		SetCylinder();
 		hitCheckEndDelegate.BindLambda(
 			[this]()
 			{
@@ -112,8 +112,8 @@ void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)
 				this->startLocation = this->weaponMeshComponent->GetSocketLocation(this->weaponTraceHitParameter.startName);
 				this->endLocation = this->weaponMeshComponent->GetSocketLocation(this->weaponTraceHitParameter.endName);
 			});
-		hitCheckDelegate.BindUObject(this, &ABaseWeapon::HitCheckTrace);
-
+		
+		SetTraceHit();
 		hitCheckEndDelegate.BindUObject(this, &ABaseWeapon::ClearHitObjects);
 	}
 }
@@ -158,6 +158,16 @@ void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SetWeaponOwner(GetOwner());
+	//SetWeaponOwner(GetOwner());
+}
+
+void ABaseWeapon::SetCylinder()
+{
+	cylinderComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseWeapon::HitCheckCylinder);
+}
+
+void ABaseWeapon::SetTraceHit()
+{
+	hitCheckDelegate.BindUObject(this, &ABaseWeapon::HitCheckTrace);
 }
 

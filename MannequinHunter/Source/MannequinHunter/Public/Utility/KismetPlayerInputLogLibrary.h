@@ -17,5 +17,5 @@ class MANNEQUINHUNTER_API UKismetPlayerInputLogLibrary : public UBlueprintFuncti
 	GENERATED_BODY()
 	
 	UFUNCTION(BlueprintPure)
-	static const TArray<EPlayerInputType> GetPlayerInputs(ACharacter* character );
+	static FString GetPlayerInputs(ACharacter* character );
 };

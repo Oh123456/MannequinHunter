@@ -3,6 +3,10 @@
 
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Singleton/CommandListManager.h"
+#ifdef UE_BUILD_DEBUG
+#include "Character/RYU.h"
+#include "Utility/PlayerInputLog.h"
+#endif
 
 UMannequinHunterCombatComponent::~UMannequinHunterCombatComponent()
 {
@@ -17,6 +21,13 @@ void UMannequinHunterCombatComponent::ResetCommandList()
 
 ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
 {
+#ifdef UE_BUILD_DEBUG
+	ARYU* ryu = Cast<ARYU>(GetOwner());
+	if (ryu)
+	{
+		ryu->GetPlayerInputLog()->AddPlayerInput(playerInputType);
+	}
+#endif
 	return GetCommandMontageType(playerInputType);	
 }
 

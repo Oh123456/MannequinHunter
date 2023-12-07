@@ -42,7 +42,7 @@ UCLASS()
 class OJKFRAMEWORK_API ABaseWeapon : public AEquipment
 {
 	GENERATED_BODY()
-private:
+protected:
 	
 	struct FAttackObject
 	{
@@ -64,7 +64,7 @@ public:
 	inline void HitCheck() { if (hitCheckDelegate.IsBound()) hitCheckDelegate.Execute(); }
 	inline void HitCheckEnd() { if (hitCheckEndDelegate.IsBound()) hitCheckEndDelegate.Execute(); }
 
-	void SetCylinderActive(bool isActive);
+	
 	
 private:
 	bool CheckHitAble(class UCombatComponent* damagedObject);
@@ -74,16 +74,20 @@ public:
 	inline void ClearHitObjects() { attackObjects.Reset(0); }
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponOwner(class AActor* weaponOwner);
-private:
+protected:
 	UFUNCTION()
-	void HitCheckCylinder(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
+	virtual void HitCheckCylinder(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
 	UFUNCTION()
-	void HitCheckTrace();
-
+	virtual void HitCheckTrace();
+public:
+	virtual void SetCylinderActive(bool isActive);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void SetCylinder();
+	virtual void SetTraceHit();
 
 protected:
 	EHitCheckBeginDelegate hitCheckBeginDelegate;

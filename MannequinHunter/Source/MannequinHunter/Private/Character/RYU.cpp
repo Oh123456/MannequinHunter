@@ -144,9 +144,7 @@ void ARYU::Attack(EPlayerInputType type)
 	{
 		UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
 		mannequinHunterCombatComponent->SetPlyerInputType(type);
-#ifdef UE_BUILD_DEBUG
-		playerInputLog->AddPlayerInput(type);
-#endif
+
 
 		EStateOrder stateOrder = EStateOrder::Attack;
 		if (HFSM->GetCurrentStateMachineID() == StaticCast<uint8>(EPlayerStateMachine::Defulat))

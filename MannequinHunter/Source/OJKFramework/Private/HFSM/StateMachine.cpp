@@ -72,12 +72,13 @@ uint8 FStateMachine::UpdateCondition(uint16 stateMachineOrder)
 void FStateMachine::ChangeState(uint8 stateID)
 {
 	TSharedPtr<FState>* findState = states.Find(stateID);
-	if (findState)
+	if (findState && (*findState)->EnterCondition())
 	{
 		currentState->Exit();
 		currentState = *findState;
 		if (currentState)
 			currentState->Enter();
+
 	}
 }
 

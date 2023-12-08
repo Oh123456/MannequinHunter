@@ -48,7 +48,20 @@ public:
 	virtual void Enter() {}
 	virtual void Update() {}
 	virtual void Exit() {}
+	/// <summary>
+	/// Check Before State Enter
+	/// </summary>
+	virtual bool EnterCondition() { return true; };
+	/// <summary>
+	/// Check if conversion to another state is possible
+	/// </summary>
+	/// <param name="order"> newState </param>
+	/// <returns> if the state changes NewStateID, But Not Change CurrentStateID  </returns>
 	virtual uint8 Condition(uint16 order);
+	/// <summary>
+	/// Check Tick 
+	/// </summary>
+	/// <returns></returns>
 	virtual uint8 UpdateCondition();
 
 protected:

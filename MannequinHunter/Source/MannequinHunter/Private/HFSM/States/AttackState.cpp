@@ -44,12 +44,7 @@ void FAttackState::Enter()
 		
 		if (combatComponent)
 		{
-			ECharacterCombatMontageType attackType = GetAnimSlot();
-
-			if (attackType == ECharacterCombatMontageType::None)
-				return;
-
-			combatComponent->Attack(attackType, [this]()
+			combatComponent->Attack(attackMontageType, [this]()
 			{
 				this->CheckState();
 			});
@@ -60,10 +55,27 @@ void FAttackState::Enter()
 uint8 FAttackState::Condition(uint16 order)
 {
 	uint8 newState = FState::Condition(order);
-	//if (order == StaticCast<uint16>(EStateOrder::Idle))
+	
 	if (convertOrder->Contains(order))
 	{
-		newState = FStateManager::GetInstance()->GetStateID(order); //StaticCast<uint8>(EPlayerStateEnum::Idle);
+		newState = FStateManager::GetInstance()->GetStateID(order); 
 	}
 	return newState;
+}
+
+bool FAttackState::EnterCondition()
+{
+	bool isEnter = FState::EnterCondition();
+	
+	attackMontageType = GetAnimSlot();
+
+	if (attackMontageType == ECharacterCombatMontageType::None)
+		isEnter = false;
+
+	return isEnter;
+}
+
+void FAttackState::Exit()
+{
+	attackMontageType = ECharacterCombatMontageType::None;
 }

@@ -22,7 +22,10 @@ private:
 
 	ECharacterCombatMontageType GetAnimSlot();
 public:
-	virtual void Enter();
-	virtual uint8 Condition(uint16 order);
-
+	virtual void Enter() override;
+	virtual void Exit() override;
+	virtual uint8 Condition(uint16 order) override;
+	virtual bool EnterCondition() override;
+private:
+	ECharacterCombatMontageType attackMontageType;
 };

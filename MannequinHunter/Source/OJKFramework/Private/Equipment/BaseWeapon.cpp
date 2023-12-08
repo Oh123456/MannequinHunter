@@ -10,11 +10,12 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/Actor.h"
 
+using FAttackObject = FWeaponHitData::FAttackObject;
+
 // Sets default values
 ABaseWeapon::ABaseWeapon() : AEquipment(EEquipmentType::E_Weapon),
-bUseCylinder(true), weaponTraceHitParameter(),
-cylinderComponent(nullptr), hitCheckBeginDelegate(), hitCheckDelegate(), hitCheckEndDelegate(),
-numberOfAttackObject(-1), numberOfAttackPerObject(1), attackObjects(),attackAbleTraceType(ETraceTypeQuery::TraceTypeQuery1)
+weaponTraceHitParameter(),
+cylinderComponent(nullptr), hitCheckBeginDelegate(), hitCheckDelegate(), hitCheckEndDelegate()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -35,8 +36,10 @@ void ABaseWeapon::SetCylinderActive(bool isActive)
 
 bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 {
-	if (numberOfAttackPerObject == -1 && numberOfAttackObject == -1)
+	if (weaponHitData.numberOfAttackPerObject == -1 && weaponHitData.numberOfAttackObject == -1)
 		return false;
+
+	TArray<TSharedPtr<FAttackObject>>& attackObjects = weaponHitData.attackObjects;
 
 	TSharedPtr<FAttackObject>* findObject = attackObjects.FindByPredicate(
 		[&damagedObject](const TSharedPtr<FAttackObject>& item)
@@ -47,7 +50,7 @@ bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 	
 	if (findObject == nullptr)
 	{
-		if (numberOfAttackObject > 0 && attackObjects.Num() >= numberOfAttackObject)
+		if (weaponHitData.numberOfAttackObject > 0 && attackObjects.Num() >= weaponHitData.numberOfAttackObject)
 			return false;
 
 		TSharedPtr<FAttackObject> attackObject = MakeShared<FAttackObject>(FAttackObject(damagedObject));
@@ -55,7 +58,7 @@ bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 		findObject = &attackObject;
 	}
 
-	if (numberOfAttackPerObject < 0 || (*findObject)->hitCount >= numberOfAttackPerObject)
+	if (weaponHitData.numberOfAttackPerObject < 0 || (*findObject)->hitCount >= weaponHitData.numberOfAttackPerObject)
 		return false;
 #ifdef UE_BUILD_DEBUG
 	UE_LOG(Framework, Warning, TEXT("hitCount %f "), ((*findObject)->hitCount));
@@ -68,26 +71,28 @@ bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 
 void ABaseWeapon::ApplyDamage(UCombatComponent* damagedObject, const FHitResult& hitResult)
 {
-	UCharacterCombatComponent* ownerCharacterCombat = ownerCharacter->GetCombatComponent();
+	UCharacterCombatComponent* ownerCharacterCombat = weaponData.ownerCharacter->GetCombatComponent();
 	ownerCharacterCombat->ApplyDamage(damagedObject, Owner->GetInstigatorController(), this, UDamageType::StaticClass());
 }
 
 void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)
 {
-	ownerCharacter = Cast<ABaseActionCharacter>(weaponOwner);
+	weaponData.ownerCharacter = Cast<ABaseActionCharacter>(weaponOwner);
+	ABaseActionCharacter* ownerCharacter = weaponData.ownerCharacter;
 	SetOwner(ownerCharacter);
 
 	if (ownerCharacter == nullptr)
 		return;
 
+	
 	if (bUseCylinder)
 	{
-		if (cylinderComponent == nullptr)
+		if (!CheckCylinderComponent())
 			cylinderComponent = FindComponentByClass<UShapeComponent>();
-		if (cylinderComponent == nullptr)
-		{
+
+		if (!CheckCylinderComponent())
 			return;
-		}
+		
 		hitCheckBeginDelegate.BindLambda(
 			[this]()
 			{
@@ -100,7 +105,7 @@ void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)
 				this->ClearHitObjects();
 				this->SetCylinderActive(false);
 			});
-		cylinderComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SetCylinderActive(false);
 	}
 	else
 	{
@@ -109,13 +114,14 @@ void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)
 			[this]()
 			{
 				this->ClearHitObjects();
-				this->startLocation = this->weaponMeshComponent->GetSocketLocation(this->weaponTraceHitParameter.startName);
-				this->endLocation = this->weaponMeshComponent->GetSocketLocation(this->weaponTraceHitParameter.endName);
+				this->weaponHitData.startLocation = this->weaponMeshComponent->GetSocketLocation(this->weaponTraceHitParameter.startName);
+				this->weaponHitData.endLocation = this->weaponMeshComponent->GetSocketLocation(this->weaponTraceHitParameter.endName);
 			});
 		
 		SetTraceHit();
 		hitCheckEndDelegate.BindUObject(this, &ABaseWeapon::ClearHitObjects);
 	}
+
 }
 
 void ABaseWeapon::HitCheckCylinder(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)
@@ -136,8 +142,8 @@ void ABaseWeapon::HitCheckCylinder(UPrimitiveComponent* overlappedComp, AActor* 
 void ABaseWeapon::HitCheckTrace()
 {
 	TArray<FHitResult> hits;
-	bool isHit = UKismetSystemLibrary::SphereTraceMulti(this, startLocation,endLocation
-														, weaponTraceHitParameter.radius, attackAbleTraceType
+	bool isHit = UKismetSystemLibrary::SphereTraceMulti(this, weaponHitData.startLocation, weaponHitData.endLocation
+														, weaponTraceHitParameter.radius, weaponHitData.attackAbleTraceType
 														,false, weaponTraceHitParameter.ignoreActor,EDrawDebugTrace::Type::ForOneFrame,
 														OUT hits, true);
 
@@ -169,5 +175,10 @@ void ABaseWeapon::SetCylinder()
 void ABaseWeapon::SetTraceHit()
 {
 	hitCheckDelegate.BindUObject(this, &ABaseWeapon::HitCheckTrace);
+}
+
+bool ABaseWeapon::CheckCylinderComponent()
+{
+	return cylinderComponent != nullptr;
 }
 

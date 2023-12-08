@@ -10,8 +10,12 @@ AHitBoxActor::AHitBoxActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	defaultComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(defaultComponent);
+
 	hitBox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitBox"));
-	hitBox->InitCapsuleSize(35.0f, 35.0f);
+	hitBox->InitCapsuleSize(20.0f, 20.0f);
+	hitBox->SetupAttachment(defaultComponent);
 }
 
 void AHitBoxActor::SetCylinderActive(bool isActive)

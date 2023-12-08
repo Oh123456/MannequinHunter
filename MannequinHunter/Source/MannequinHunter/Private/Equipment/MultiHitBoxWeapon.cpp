@@ -10,13 +10,13 @@ void AMultiHitBoxWeapon::SetupCylinderAttachment(TSubclassOf<AHitBoxActor> creat
 	AHitBoxActor* hitBox = GetWorld()->SpawnActor<AHitBoxActor>(createHitBox);
 
 	hitBox->AttachToComponent(InParent, FAttachmentTransformRules::KeepRelativeTransform, InSocketName);
-	hitBoxs.Add(hitBox);
+	multiHitBoxWeaponData.hitBoxs.Add(hitBox);
 
 }
 
 void AMultiHitBoxWeapon::SetCylinderActive(bool isActive)
 {
-	if (hitBoxs.Num() <= 0)
+	if (multiHitBoxWeaponData.hitBoxs.Num() <= 0)
 		return;
 	uint8 index = 0;
 
@@ -24,22 +24,30 @@ void AMultiHitBoxWeapon::SetCylinderActive(bool isActive)
 	{
 		while (activeCylinderIndexQueue.Dequeue(index))
 		{
-			hitBoxs[index]->SetCylinderActive(isActive);
+			multiHitBoxWeaponData.hitBoxs[index]->SetCylinderActive(isActive);
 			hideCylinderIndexQueue.Dequeue(index);
 		}
 	}
 	else
 	{
-		while (activeCylinderIndexQueue.Dequeue(index))
+		if (activeCylinderIndexQueue.IsEmpty())
 		{
-			hitBoxs[index]->SetCylinderActive(isActive);
+			for(AHitBoxActor* hitBox : multiHitBoxWeaponData.hitBoxs)
+				hitBox->SetCylinderActive(isActive);
+		}
+		else
+		{
+			while (activeCylinderIndexQueue.Dequeue(index))
+			{
+				multiHitBoxWeaponData.hitBoxs[index]->SetCylinderActive(isActive);
+			}
 		}
 	}
 }
 
 void AMultiHitBoxWeapon::SetCylinder()
 {
-	for (const TObjectPtr<AHitBoxActor> hitBox : hitBoxs)
+	for (const TObjectPtr<AHitBoxActor> hitBox : multiHitBoxWeaponData.hitBoxs)
 	{
 		hitBox->GetHitBox()->OnComponentBeginOverlap.AddDynamic(this, &AMultiHitBoxWeapon::HitCheckCylinder);
 	}
@@ -49,4 +57,9 @@ void AMultiHitBoxWeapon::SetCylinder()
 void AMultiHitBoxWeapon::SetTraceHit()
 {
 	Super::SetTraceHit();
+}
+
+bool AMultiHitBoxWeapon::CheckCylinderComponent()
+{
+	return multiHitBoxWeaponData.hitBoxs.Num() > 0;
 }

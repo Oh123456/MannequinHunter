@@ -9,6 +9,13 @@
 /**
  * 
  */
+
+struct FMultiHitBoxWeaponData
+{
+	UPROPERTY()
+	TArray<TObjectPtr<class AHitBoxActor>> hitBoxs = {};
+};
+
 UCLASS()
 class MANNEQUINHUNTER_API AMultiHitBoxWeapon : public ABaseWeapon
 {
@@ -21,6 +28,7 @@ public:
 protected:
 	virtual void SetCylinder() override;
 	virtual void SetTraceHit() override;
+	virtual bool CheckCylinderComponent() override;
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetupCylinderAttachment(TSubclassOf<AHitBoxActor> createHitBox, USceneComponent* InParent, FName InSocketName);
@@ -29,9 +37,5 @@ private:
 	TQueue<uint8> hideCylinderIndexQueue;
 protected:
 
-	//UPROPERTY(VisibleAnywhere, Category = Cylinder)
-	//TArray<TObjectPtr<class UShapeComponent>> cylinderComponents = {};
-
-	UPROPERTY()
-	TArray<TObjectPtr<class AHitBoxActor>> hitBoxs = {};
+	FMultiHitBoxWeaponData multiHitBoxWeaponData;
 };

@@ -27,6 +27,18 @@ struct FCommandDataTable : public FTableRowBase
 	ECharacterCombatMontageType useAnimSlot;
 };
 
+struct FCommandListData
+{
+	using CommandListTree = TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>;
+	using CommandListNode = TCommandListNode<EPlayerInputType, ECharacterCombatMontageType>;
+
+	EPlayerInputType playerInputType;
+
+	EWeaponType playerWeaponType;
+
+	TSharedPtr<CommandListTree> currentCommandListTree = nullptr;
+	TSharedPtr<CommandListNode> currentCommandListNode = nullptr;
+};
 
 DECLARE_EVENT_OneParam(UMannequinHunterCombatComponent,FChangeWeaponType,EWeaponType);
 
@@ -42,13 +54,13 @@ class MANNEQUINHUNTER_API UMannequinHunterCombatComponent : public UPlayerCharac
 public:
 	virtual ~UMannequinHunterCombatComponent();
 
-	void SetPlyerInputType(EPlayerInputType type) { playerInputType = type; }
-	EPlayerInputType GetPlayerInputType() const { return playerInputType; }
+	void SetPlyerInputType(EPlayerInputType type) { commandListData.playerInputType = type; }
+	EPlayerInputType GetPlayerInputType() const { return commandListData.playerInputType; }
 
 	void SetCombatAnimationData(EWeaponType type) { combatAnimationData = weaponTypeAnimationData[type]; }
 
-	void SetWeaponType(EWeaponType type) { playerWeaponType = type; OnChangeWeaponType.Broadcast(type); }
-	EWeaponType GetWeaponType() const { return playerWeaponType; }
+	void SetWeaponType(EWeaponType type) { commandListData.playerWeaponType = type; OnChangeWeaponType.Broadcast(type); }
+	EWeaponType GetWeaponType() const { return commandListData.playerWeaponType; }
 
 
 	void ResetCommandList();
@@ -63,12 +75,7 @@ public:
 public:
 	FChangeWeaponType OnChangeWeaponType;
 private:
-	EPlayerInputType playerInputType;
-
-	EWeaponType playerWeaponType;
-
-	TSharedPtr<CommandListTree> currentCommandListTree = nullptr;
-	TSharedPtr<CommandListNode> currentCommandListNode = nullptr;
+	FCommandListData commandListData;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	TMap<EWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;

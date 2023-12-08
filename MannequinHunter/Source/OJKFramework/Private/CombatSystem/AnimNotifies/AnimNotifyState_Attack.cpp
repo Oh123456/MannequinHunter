@@ -24,8 +24,8 @@ void UAnimNotifyState_Attack::NotifyBegin(USkeletalMeshComponent* meshComp, UAni
 			return;
 
 		baseWeapon = Cast<ABaseWeapon>(characterCombat->GetEquipment(ECombatEquipmentSlot::E_MainWeapon));
-		if (baseWeapon)
-			baseWeapon->HitCheckBegin();
+
+		BeginAttack(characterCombat);
 	}
 	
 
@@ -46,3 +46,11 @@ void UAnimNotifyState_Attack::NotifyEnd(USkeletalMeshComponent* meshComp, UAnimS
 		baseWeapon->HitCheckEnd();
 	baseWeapon = nullptr;
 }
+
+void UAnimNotifyState_Attack::BeginAttack(UCharacterCombatComponent* characterCombatComponent)
+{
+	
+	if (baseWeapon)
+		baseWeapon->HitCheckBegin();
+}
+

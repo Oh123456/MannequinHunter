@@ -15,8 +15,8 @@ UMannequinHunterCombatComponent::~UMannequinHunterCombatComponent()
 
 void UMannequinHunterCombatComponent::ResetCommandList()
 {
-	if (currentCommandListTree)
-		currentCommandListNode = currentCommandListTree->GetRoot(); 
+	if (commandListData.currentCommandListTree)
+		commandListData.currentCommandListNode = commandListData.currentCommandListTree->GetRoot();
 }
 
 ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
@@ -25,21 +25,23 @@ ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageTy
 	ARYU* ryu = Cast<ARYU>(GetOwner());
 	if (ryu)
 	{
-		ryu->GetPlayerInputLog()->AddPlayerInput(playerInputType);
+		ryu->GetPlayerInputLog()->AddPlayerInput(commandListData.playerInputType);
 	}
 #endif
-	return GetCommandMontageType(playerInputType);	
+	return GetCommandMontageType(commandListData.playerInputType);
 }
 
 ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType(EPlayerInputType input)
 {
+	const TSharedPtr<CommandListTree>& currentCommandListTree = commandListData.currentCommandListTree;
+	const TSharedPtr<CommandListNode>& currentCommandListNode = commandListData.currentCommandListNode;
 	if (currentCommandListTree && currentCommandListNode)
 	{
 		const TSharedPtr<CommandListNode>* nextCommandListNode =  currentCommandListNode->FindChild(input);
 		if (nextCommandListNode)
 		{
-			currentCommandListNode = *nextCommandListNode;
-			return *(currentCommandListNode->GetValue()->Get());
+			commandListData.currentCommandListNode = *nextCommandListNode;
+			return *(commandListData.currentCommandListNode->GetValue()->Get());
 		}
 	}
 	return ECharacterCombatMontageType::None;
@@ -47,8 +49,8 @@ ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageTy
 
 void UMannequinHunterCombatComponent::ChangeCommandList(EWeaponType type)
 {
-	currentCommandListTree = *FCommandListManager::GetInstance()->GetCommandList(type);
-	currentCommandListNode = currentCommandListTree->GetRoot();
+	commandListData.currentCommandListTree = *FCommandListManager::GetInstance()->GetCommandList(type);
+	commandListData.currentCommandListNode = commandListData.currentCommandListTree->GetRoot();
 }
 
 void UMannequinHunterCombatComponent::BeginPlay()

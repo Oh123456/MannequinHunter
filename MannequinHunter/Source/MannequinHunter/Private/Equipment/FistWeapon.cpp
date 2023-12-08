@@ -2,12 +2,24 @@
 
 
 #include "Equipment/FistWeapon.h"
-#include "Components/ShapeComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Equipment/HitBoxActor.h"
+#include "Gameframework/Character.h"
 
 AFistWeapon::AFistWeapon()
 {
 
 
+}
+
+void AFistWeapon::SetWeaponOwner(AActor* weaponOwner)
+{
+	ACharacter* character = Cast<ACharacter>(weaponOwner);
+	if (character)
+	{
+		for (const FFistHitBoxData& hitBox : fistWeaponData.useHitBoxData)
+		{
+			SetupCylinderAttachment(hitBox.hitBox, character->GetMesh(), hitBox.socketNames);
+		}
+	}
+	Super::SetWeaponOwner(weaponOwner);
 }

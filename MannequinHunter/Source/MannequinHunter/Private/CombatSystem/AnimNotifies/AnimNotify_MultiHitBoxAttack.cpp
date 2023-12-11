@@ -4,6 +4,11 @@
 #include "CombatSystem/AnimNotifies/AnimNotify_MultiHitBoxAttack.h"
 #include "Equipment/MultiHitBoxWeapon.h"
 
+UAnimNotify_MultiHitBoxAttack::UAnimNotify_MultiHitBoxAttack()
+{
+	NotifyColor = FColor::Red;
+}
+
 void UAnimNotify_MultiHitBoxAttack::BeginAttack(UCharacterCombatComponent* characterCombatComponent)
 {
 	AMultiHitBoxWeapon* multiHitBoxWeapon = Cast<AMultiHitBoxWeapon>(baseWeapon);

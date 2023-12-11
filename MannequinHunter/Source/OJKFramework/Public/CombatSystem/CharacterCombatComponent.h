@@ -132,7 +132,9 @@ protected:
 	
 	struct FCharacterCombatAnimationData
 	{
-		const struct FAnimMontageArray* currentAnimMontage = nullptr;
+		//const struct FAnimMontageArray* currentAnimMontage = nullptr;
+		UPROPERTY()
+		const TArray<UAnimMontage*>* currentAnimMontages = nullptr;
 		ECharacterCombatMontageType currentAnimType;
 
 		TMap<EDodgeDirection, EDodgeDirectionIndex> eightDodgeDirectionIndexMap = {};
@@ -156,9 +158,9 @@ public:
 
 	void AddAttackCount();
 
-	void SetCombatAnimationData(class UCombatAnimationData* animationData) { combatAnimationData = animationData; }
+	void SetCombatAnimationData(class UBaseCombatAnimationData* animationData) { combatAnimationData = animationData; }
 
-	const class UCombatAnimationData* const GetCombatAnimationData() const { return combatAnimationData; }
+	const class UBaseCombatAnimationData* const GetCombatAnimationData() const { return combatAnimationData; }
 
 	inline bool IsLockOn() { return characterRotationData.targetActor != nullptr; }
 	inline FDodgeDirection& DodgeDirectionDelegate() { return characterCombatAnimationData.dodgeDirectionDelegate; }
@@ -224,7 +226,7 @@ private:
 	FCharacterCombatRotationData characterRotationData;
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UCombatAnimationData> combatAnimationData;
+	TObjectPtr<class UBaseCombatAnimationData> combatAnimationData;
 
 
 

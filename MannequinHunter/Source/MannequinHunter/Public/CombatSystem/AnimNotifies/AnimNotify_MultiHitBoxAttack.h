@@ -13,6 +13,8 @@ UCLASS()
 class MANNEQUINHUNTER_API UAnimNotify_MultiHitBoxAttack : public UAnimNotifyState_Attack
 {
 	GENERATED_BODY()
+public:
+	UAnimNotify_MultiHitBoxAttack();
 protected:
 	virtual void BeginAttack(class UCharacterCombatComponent* characterCombatComponent) override; 
 private:

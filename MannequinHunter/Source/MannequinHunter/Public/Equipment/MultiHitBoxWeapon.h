@@ -21,7 +21,7 @@ class MANNEQUINHUNTER_API AMultiHitBoxWeapon : public ABaseWeapon
 {
 	GENERATED_BODY()
 public:
-	void SetActiveCylinderIndex(uint8 index) { activeCylinderIndexQueue.Enqueue(index); }
+	virtual void SetActiveCylinderIndex(uint8 index) { activeCylinderIndexQueue.Enqueue(index); }
 	
 public:
 	virtual void SetCylinderActive(bool isActive) override;
@@ -32,10 +32,9 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetupCylinderAttachment(TSubclassOf<AHitBoxActor> createHitBox, USceneComponent* InParent, FName InSocketName);
-private:
+protected:
 	TQueue<uint8> activeCylinderIndexQueue;
 	TQueue<uint8> hideCylinderIndexQueue;
-protected:
 
 	FMultiHitBoxWeaponData multiHitBoxWeaponData;
 };

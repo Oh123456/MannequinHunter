@@ -39,7 +39,7 @@ characterCombatData(), characterRotationData(), characterCombatAnimationData()
 
 void UCharacterCombatComponent::AddAttackCount()
 {
-	int32 attackMontageNum = characterCombatAnimationData.currentAnimMontage->montages.Num();
+	int32 attackMontageNum = characterCombatAnimationData.currentAnimMontages->Num();
 	characterCombatData.attackCount++;
 	if (attackMontageNum <= characterCombatData.attackCount)
 		characterCombatData.attackCount = 0;
@@ -58,18 +58,18 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype)
 			this->characterCombatData.attackCount = 0;
 		});
 
-	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
 
-	if (currentAnimMontage == nullptr)
+	if (currentAnimMontages == nullptr)
 		return;
 
 	if (characterCombatData.combatAbleFlag & ECombatAble::AttackAble)
 	{
 		UAnimInstance* animInstance = characterCombatData.owner->GetMesh()->GetAnimInstance();
-		UAnimMontage* attackMontage = currentAnimMontage->montages[characterCombatData.attackCount];
+		UAnimMontage* attackMontage = (*currentAnimMontages)[characterCombatData.attackCount];
 
 
-		FAnimMontageInstance* animMontageInstance = animInstance->GetActiveInstanceForMontage(currentAnimMontage->montages[GetPreviousAttackCount()]);
+		FAnimMontageInstance* animMontageInstance = animInstance->GetActiveInstanceForMontage((*currentAnimMontages)[GetPreviousAttackCount()]);
 		if (animMontageInstance && animMontageInstance->OnMontageEnded.IsBound())
 		{
 			animMontageInstance->OnMontageEnded.Unbind();
@@ -91,12 +91,12 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, std:
 {
 	ChangeCombatType(animtype);
 
-	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
 
-	if (currentAnimMontage == nullptr)
+	if (currentAnimMontages == nullptr)
 		return;
 
-	bool is8Direction = currentAnimMontage->montages.Num() > 4;
+	bool is8Direction = currentAnimMontages->Num() > 4;
 
 	ACharacter* owner = characterCombatData.owner;
 
@@ -158,7 +158,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, std:
 		index = eightDodgeDirectionIndexMap.FindRef(eDodgeDirection);
 	}
 	FOnMontageEnded montageEnded;
-	dodgeMontage = currentAnimMontage->montages[index];
+	dodgeMontage = (*currentAnimMontages)[index];
 
 	animInstance->Montage_Play(dodgeMontage);
 	characterRotationData.lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
@@ -190,18 +190,18 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, std
 			this->characterCombatData.attackCount = 0;
 		}*/);
 
-	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
 
-	if (currentAnimMontage == nullptr)
+	if (currentAnimMontages == nullptr)
 		return;
 
 	ACharacter* owner = characterCombatData.owner;
 
 	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
-	UAnimMontage* attackMontage = currentAnimMontage->montages[characterCombatData.attackCount];
+	UAnimMontage* attackMontage = (*currentAnimMontages)[characterCombatData.attackCount];
 
 
-	FAnimMontageInstance* animMontageInstance = animInstance->GetActiveInstanceForMontage(currentAnimMontage->montages[GetPreviousAttackCount()]);
+	FAnimMontageInstance* animMontageInstance = animInstance->GetActiveInstanceForMontage((*currentAnimMontages)[GetPreviousAttackCount()]);
 	if (animMontageInstance && animMontageInstance->OnMontageEnded.IsBound())
 	{
 		animMontageInstance->OnMontageEnded.Unbind();
@@ -233,15 +233,15 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 {
 	ChangeCombatType(animtype);
 
-	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
 
-	if (currentAnimMontage == nullptr)
+	if (currentAnimMontages == nullptr)
 		return;
 
 	if (characterCombatData.combatAbleFlag & ECombatAble::DodgeAble)
 	{
 
-		bool is8Direction = currentAnimMontage->montages.Num() > 4;
+		bool is8Direction = currentAnimMontages->Num() > 4;
 
 		ACharacter* owner = characterCombatData.owner;
 		const TMap<EDodgeDirection, EDodgeDirectionIndex>& eightDodgeDirectionIndexMap = characterCombatAnimationData.eightDodgeDirectionIndexMap;
@@ -304,7 +304,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 			index = eightDodgeDirectionIndexMap.FindRef(eDodgeDirection);
 		}
 		FOnMontageEnded montageEnded;
-		dodgeMontage = currentAnimMontage->montages[index];
+		dodgeMontage = (*currentAnimMontages)[index];
 
 		animInstance->Montage_Play(dodgeMontage);
 		characterRotationData.lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
@@ -331,28 +331,30 @@ void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float
 	characterCombatData.combatAbleFlag = ECombatAble::Default;
 
 	UAnimMontage* montage = nullptr;
-	const FAnimMontageArray* currentAnimMontage = characterCombatAnimationData.currentAnimMontage;
+	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
+	if (currentAnimMontages == nullptr)
+		return;
 	ACharacter* owner = characterCombatData.owner;
 	if (yaw < 180.0f)
 	{
 		if (yaw > 135.0f)
 		{
-			montage = currentAnimMontage->montages[ETurnDirection::Right_180];
+			montage = (*currentAnimMontages)[ETurnDirection::Right_180];
 		}
 		else
 		{
-			montage = currentAnimMontage->montages[ETurnDirection::Right_90];
+			montage = (*currentAnimMontages)[ETurnDirection::Right_90];
 		}
 	}
 	else
 	{
 		if (yaw >  315.0f)
 		{
-			montage = currentAnimMontage->montages[ETurnDirection::Left_180];
+			montage = (*currentAnimMontages)[ETurnDirection::Left_180];
 		}
 		else
 		{
-			montage = currentAnimMontage->montages[ETurnDirection::Left_90];
+			montage = (*currentAnimMontages)[ETurnDirection::Left_90];
 		}
 	}
 
@@ -413,7 +415,7 @@ void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatMontageType ani
 	if (characterCombatAnimationData.currentAnimType == ECharacterCombatMontageType::None || characterCombatAnimationData.currentAnimType != animtype)
 	{
 		characterCombatAnimationData.currentAnimType = animtype;
-		characterCombatAnimationData.currentAnimMontage = combatAnimationData->GetMontageArray(animtype);
+		characterCombatAnimationData.currentAnimMontages = combatAnimationData->GetMontageArray(animtype);
 		if (callBack)
 			callBack();
 
@@ -423,7 +425,7 @@ void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatMontageType ani
 
 int32 UCharacterCombatComponent::GetPreviousAttackCount()
 {
-	int32 attackMontageNum = characterCombatAnimationData.currentAnimMontage->montages.Num();
+	int32 attackMontageNum = characterCombatAnimationData.currentAnimMontages->Num();
 	int32 _attackCount = this->characterCombatData.attackCount - 1;
 	if (_attackCount < 0)
 		_attackCount = attackMontageNum - 1;

@@ -16,11 +16,6 @@ struct FInputBufferInfo
 {
 	GENERATED_BODY()
 
-	//UPROPERTY(EditAnywhere)
-	//TArray<FName> keyNames;
-
-	//const FKey* inputBufferKey;
-
 	UPROPERTY()
 	const class UInputAction* action;
 
@@ -32,20 +27,7 @@ class OJKFRAMEWORK_API AActionPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public:
-	DECLARE_DELEGATE(FInputBufferAction)
-//protected:
-//	struct FInputBufferData
-//	{
-//		FInputBufferAction inputBufferAction;
-//		bool isAddableInputBuffer = false;
-//	};
-//inline void SetIsAddableInputBuffer(bool b) { inputBufferData.isAddableInputBuffer = b; }
-//inline bool GetIsAddableInputBuffer() const { return inputBufferData.isAddableInputBuffer; }
-//inline bool IsInputBuffer() const { return inputBufferData.inputBufferAction.IsBound(); }
-//template<typename UClass>
-//void AddInputBufferAction(UClass* uclass, void(UClass::*acion)());
-//void ExecuteInputBuffer();
+
 public:
 
 	inline void SetIsAddableInputBuffer(bool b) { inputBufferInfo.isAddableInputBuffer = b; }
@@ -63,11 +45,3 @@ private:
 
 
 };
-
-//template<typename UClass>
-//inline void AActionPlayerController::AddInputBufferAction(UClass* uclass, void(UClass::*acion)())
-//{
-//	if (IsInputBuffer())
-//		return;
-//	inputBufferData.inputBufferAction.BindUObject(uclass, acion);
-//}

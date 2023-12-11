@@ -10,7 +10,7 @@
 
 void AActionPlayerController::AddInputBuffer(const FInputActionInstance& inputActionInstance)
 {
-	if (!inputBufferInfo.isAddableInputBuffer || inputBufferInfo.action)
+	if (!inputBufferInfo.isAddableInputBuffer /*|| inputBufferInfo.action*/)
 		return;
 
 	inputBufferInfo.action = inputActionInstance.GetSourceAction();

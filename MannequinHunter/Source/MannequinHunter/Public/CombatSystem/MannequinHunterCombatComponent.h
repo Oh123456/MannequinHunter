@@ -27,6 +27,7 @@ struct FCommandDataTable : public FTableRowBase
 	ECharacterCombatMontageType useAnimSlot;
 };
 
+
 struct FCommandListData
 {
 	using CommandListTree = TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>;
@@ -78,6 +79,6 @@ private:
 	FCommandListData commandListData;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-	TMap<EWeaponType, TObjectPtr<class UCombatAnimationData>> weaponTypeAnimationData;
+	TMap<EWeaponType, TObjectPtr<class UBaseCombatAnimationData>> weaponTypeAnimationData;
 
 };

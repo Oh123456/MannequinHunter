@@ -17,7 +17,7 @@ public:
 	UAnimNotify_MultiHitBoxAttack();
 protected:
 	virtual void BeginAttack(class UCharacterCombatComponent* characterCombatComponent) override; 
-private:
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HitBox, meta = (AllowPrivateAccess = "true"))
 	TArray<uint8> hitBoxSlot;
 };

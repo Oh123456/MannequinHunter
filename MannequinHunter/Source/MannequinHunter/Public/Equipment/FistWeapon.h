@@ -11,19 +11,18 @@
  */
 
 
-UENUM(BlueprintType)
+UENUM(BlueprintType, meta = (Bitflags, UseEnumValuesAsMaskValuesInEditor = "true"))
 enum class EFistWeaponSlotFlag : uint8
 {
 	None = 0,
 	L_Fist = 1,
 	R_Fist = L_Fist << 1,
-	L_Leg = L_Fist << 3,
-	R_Leg = L_Fist << 4,
+	L_Leg = L_Fist << 2,
+	R_Leg = L_Fist << 3,
 };
 
 ENUM_CLASS_FLAGS(EFistWeaponSlotFlag)
 
-UENUM(BlueprintType)
 enum class EFistWeaponSlot : uint8
 {
 	L_Fist = 0,

@@ -175,7 +175,7 @@ public:
 	inline int32 GetAttackCount() { return characterCombatData.attackCount; }
 	void ResetAttackCount() { characterCombatData.attackCount = 0; }
 
-	
+	ECharacterCombatMontageType GetCurrentCombatMontageType() const { return characterCombatAnimationData.currentAnimType; }
 	
 
 protected:

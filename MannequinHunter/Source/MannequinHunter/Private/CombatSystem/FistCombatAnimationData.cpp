@@ -4,14 +4,14 @@
 #include "CombatSystem/FistCombatAnimationData.h"
 #include "Equipment/FistWeapon.h"
 
-EFistWeaponSlotFlag UFistCombatAnimationData::GetHitBoxSlotFlag(const ECharacterCombatMontageType type)
+const TArray<FFistAnimMontageHitBoxFlagArray>* UFistCombatAnimationData::GetHitBoxSlotFlag(const ECharacterCombatMontageType type)
 {
 	const FFistAnimMontageArray* montageArray = combatMontageMap.Find(type);
 
-	//if (montageArray == nullptr)
-		return EFistWeaponSlotFlag::None;
+	if (montageArray == nullptr)
+		return nullptr;
 
-	//return StaticCast<EFistWeaponSlotFlag>(montageArray->hitBoxSlots[0]);
+	return &(montageArray->montageFlag);
 }
 
 const TArray<UAnimMontage*>* UFistCombatAnimationData::GetMontageArray(const ECharacterCombatMontageType type) const

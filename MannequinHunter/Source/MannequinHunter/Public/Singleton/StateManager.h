@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Singleton.h"
+#include "Singleton/Singleton.h"
 #include "Character/PlayerCommonEnums.h"
 
 //struct FStateData
@@ -15,11 +15,12 @@
 /**
  * 
  */
-class MANNEQUINHUNTER_API FStateManager : public FSingleton<FStateManager>
+class MANNEQUINHUNTER_API FStateManager 
 {
-public:
+	DECLARE_SINGLETON(FStateManager)
+
 	FStateManager();
-	virtual ~FStateManager();
+	~FStateManager();
 public:
 	uint8 GetStateID(EStateOrder order);
 	template<typename T>

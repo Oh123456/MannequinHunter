@@ -101,6 +101,6 @@ void URYUHFSMComponent::ChangeFallingEnd(uint16 order, OUT FStateMachineConditio
 void URYUHFSMComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	ryuCharacter = static_cast<ARYU*>(GetOwner());
 }

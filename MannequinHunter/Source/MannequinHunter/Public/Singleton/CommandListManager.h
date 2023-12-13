@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Singleton.h"
+#include "Singleton/Singleton.h"
 #include "CombatSystem/CommandListTree.h"
 
 enum class EWeaponType : uint8;
@@ -14,12 +14,14 @@ struct FCommandDataTable;
 /**
  * 
  */
-class MANNEQUINHUNTER_API FCommandListManager :public FSingleton<FCommandListManager>
+class MANNEQUINHUNTER_API FCommandListManager 
 {
-public:
-	FCommandListManager();
-	virtual ~FCommandListManager();
+	DECLARE_SINGLETON(FCommandListManager);
 
+	FCommandListManager();
+	~FCommandListManager();
+
+public:
 	void LoadCommandListTable(const TMap<EWeaponType, TObjectPtr<class UDataTable>>& table);
 
 	const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>* GetCommandList(EWeaponType weaponType) const;

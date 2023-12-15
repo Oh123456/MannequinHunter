@@ -63,11 +63,65 @@ namespace OJKFramework
 		UPROPERTY()
 		TSubclassOf<AActor> instance;
 	};
+
+	class FObjectPoolKey
+	{
+		
+	public:
+		FObjectPoolKey(UClass* uclass)
+		{
+			uClass = uclass;
+		}
+
+		~FObjectPoolKey()
+		{
+			uClass = nullptr;
+		}
+
+		//inline bool operator== (const FObjectPoolKey& key) const
+		//{
+		//	return Equals(key);
+		//}
+
+		inline bool Equals(const FObjectPoolKey& key) const
+		{
+			UObject* uObject = Cast<UObject>(key.uClass.Get());
+			if (uObject == nullptr)
+				return false;
+			return uObject->IsA(this->Get());
+		}
+
+		inline const UClass* Get() const
+		{
+			if (uClass == nullptr)
+				return nullptr;
+
+			return uClass.Get();
+
+		}
+
+
+
+	private:
+		TWeakObjectPtr<UClass> uClass;
+	};
+	
+	uint32 GetTypeHash(const FObjectPoolKey& key);
+
+	inline bool operator == (const FObjectPoolKey& key, const FObjectPoolKey& key2)
+	{
+		return key.Equals(key2);
+	}
+
 }
+
+
+
 
 using namespace OJKFramework;
 class AActor;
 class UWorld;
+
 
 class OJKFRAMEWORK_API FObjectPoolManager 
 {
@@ -85,14 +139,14 @@ public:
 	AActor* GetActor(TSubclassOf<AActor> actorClass);
 	bool SetActor(AActor* acotrObject);
 private:
-	TSharedPtr<FObjectPool> CreateObjectPool(TSubclassOf<AActor> actorClass);
+	TSharedPtr<FObjectPool> CreateObjectPool(const TSubclassOf<AActor>& actorClass);
 private:
 
 	UPROPERTY()
 	TObjectPtr<UWorld> world;
 
 	UPROPERTY()
-	TMap<TObjectPtr<UClass>, TSharedPtr<FObjectPool>> pools;
+	TMap<FObjectPoolKey, TSharedPtr<FObjectPool>> pools;
 };
 
 

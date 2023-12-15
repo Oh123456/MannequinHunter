@@ -2,6 +2,8 @@
 
 
 #include "Singleton/ObjectPoolManager.h"
+#include "GameFramework/Actor.h"
+#include <typeinfo>
 
 FObjectPoolManager::FObjectPoolManager()
 {
@@ -15,7 +17,7 @@ FObjectPoolManager::~FObjectPoolManager()
 
 void FObjectPoolManager::Clear()
 {
-	for (const TPair<TObjectPtr< UClass>, TSharedPtr<FObjectPool>>& pair : pools)
+	for (const TPair<FObjectPoolKey, TSharedPtr<FObjectPool>>& pair : pools)
 	{
 		pair.Value->Clear();
 	}
@@ -23,7 +25,7 @@ void FObjectPoolManager::Clear()
 
 void FObjectPoolManager::ChangeWorld(UWorld* newWorld)
 {
-	for (const TPair<TObjectPtr< UClass>, TSharedPtr<FObjectPool>>& pair : pools)
+	for (const TPair<FObjectPoolKey, TSharedPtr<FObjectPool>>& pair : pools)
 	{
 		pair.Value->Clear();
 		pair.Value->SetWorld(newWorld);
@@ -32,7 +34,8 @@ void FObjectPoolManager::ChangeWorld(UWorld* newWorld)
 
 void FObjectPoolManager::SetWorld(UWorld* newWorld)
 {
-	for (const TPair<TObjectPtr< UClass>, TSharedPtr<FObjectPool>>& pair : pools)
+	world = newWorld;
+	for (const TPair<FObjectPoolKey, TSharedPtr<FObjectPool>>& pair : pools)
 	{
 		pair.Value->SetWorld(newWorld);
 	}
@@ -40,7 +43,7 @@ void FObjectPoolManager::SetWorld(UWorld* newWorld)
 
 AActor* FObjectPoolManager::GetActor(TSubclassOf<AActor> actorClass)
 {
-	TSharedPtr<FObjectPool>* findPool = pools.Find(actorClass->StaticClass());
+	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorClass->StaticClass()));
 	if (findPool == nullptr)
 	{
 		return CreateObjectPool(actorClass)->Get();
@@ -49,19 +52,26 @@ AActor* FObjectPoolManager::GetActor(TSubclassOf<AActor> actorClass)
 	return (*findPool)->Get();
 }
 
-bool FObjectPoolManager::SetActor(AActor* acotrObject)
+bool FObjectPoolManager::SetActor(AActor* actorObject)
 {
-	TSharedPtr<FObjectPool>* findPool = pools.Find(acotrObject->StaticClass());
+	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorObject->StaticClass()));
 	if (findPool == nullptr)
 		return false;
 
-	(*findPool)->Set(acotrObject);
+	(*findPool)->Set(actorObject);
 	return true;
 }
 
-TSharedPtr<FObjectPool> FObjectPoolManager::CreateObjectPool(TSubclassOf<AActor> actorClass)
+
+TSharedPtr<FObjectPool> FObjectPoolManager::CreateObjectPool(const TSubclassOf<AActor>& actorClass)
 {
 	TSharedPtr<FObjectPool> pool = MakeShared<FObjectPool>(actorClass, world);
-	pools.Add(actorClass->StaticClass(), pool);
+	pools.Add(FObjectPoolKey(actorClass->StaticClass()), pool);
 	return pool;
+}
+
+uint32 OJKFramework::GetTypeHash(const FObjectPoolKey& key)
+{
+	uint32 Hash = FCrc::MemCrc32(&key, sizeof(FObjectPoolKey));
+	return Hash;
 }

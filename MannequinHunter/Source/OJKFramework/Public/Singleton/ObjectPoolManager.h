@@ -35,20 +35,21 @@ namespace OJKFramework
 				return nullptr;
 			if (obejcts.IsEmpty())
 			{
-				return world->SpawnActor(instance);
-				UE_LOG(Framework, Log, TEXT("Create Object Pool Itme : %s "), *UKismetSystemLibrary::GetDisplayName(instance))
+				AActor* spawnActor = world->SpawnActor(instance);
+				UE_LOG(Framework, Log, TEXT("Create Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(spawnActor))
+				return spawnActor;
 			}
 
 			TObjectPtr<AActor> actor;
 
 			obejcts.Dequeue(actor);
-			UE_LOG(Framework, Log, TEXT("Get Object Pool Itme : %s "), *UKismetSystemLibrary::GetDisplayName(instance))
+			UE_LOG(Framework, Log, TEXT("Get Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(actor))
 			return actor;
 		}
 		void Set(AActor* item)
 		{
 			obejcts.Enqueue(item);
-			UE_LOG(Framework, Log, TEXT("Set Object Pool Itme : %s Item "), *UKismetSystemLibrary::GetDisplayName(item))
+			UE_LOG(Framework, Log, TEXT("Set Object Pool Item : %s Item "), *UKismetSystemLibrary::GetDisplayName(item))
 		}
 
 		void SetWorld(UWorld* newWorld) { world = newWorld; }
@@ -77,11 +78,6 @@ namespace OJKFramework
 		{
 			uClass = nullptr;
 		}
-
-		//inline bool operator== (const FObjectPoolKey& key) const
-		//{
-		//	return Equals(key);
-		//}
 
 		inline bool Equals(const FObjectPoolKey& key) const
 		{

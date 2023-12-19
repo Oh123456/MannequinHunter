@@ -13,7 +13,11 @@ UCLASS()
 class MANNEQUINHUNTER_API AMannequinHunterLevelScriptActor : public ALevelScriptActor
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void Destroyed() override;
+
 protected:
 	virtual void BeginPlay() override;
+
 };

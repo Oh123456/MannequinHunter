@@ -19,21 +19,19 @@ namespace OJKFramework
 	class FObjectPool 
 	{
 	public:
-		FObjectPool(TSubclassOf<AActor> actor) { instance = actor; };
-		FObjectPool(TSubclassOf<AActor> actor ,UWorld* newWorld)
+		FObjectPool(TSubclassOf<AActor> actor)
 		{ 
 			instance = actor;
-			world = newWorld;
 			UE_LOG(Framework, Log, TEXT("Create Object Pool : %s "), *UKismetSystemLibrary::GetDisplayName(actor));
 		}
 		~FObjectPool() { Clear(); };
 
 	public:
-		AActor* Get()
+		AActor* Get(UWorld* world)
 		{
 			if (world == nullptr)
 				return nullptr;
-			if (obejcts.IsEmpty())
+			if (objects.IsEmpty())
 			{
 				AActor* spawnActor = world->SpawnActor(instance);
 				UE_LOG(Framework, Log, TEXT("Create Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(spawnActor))
@@ -42,24 +40,20 @@ namespace OJKFramework
 
 			TObjectPtr<AActor> actor;
 
-			obejcts.Dequeue(actor);
+			objects.Dequeue(actor);
 			UE_LOG(Framework, Log, TEXT("Get Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(actor))
 			return actor;
 		}
 		void Set(AActor* item)
 		{
-			obejcts.Enqueue(item);
+			objects.Enqueue(item);
 			UE_LOG(Framework, Log, TEXT("Set Object Pool Item : %s Item "), *UKismetSystemLibrary::GetDisplayName(item))
 		}
 
-		void SetWorld(UWorld* newWorld) { world = newWorld; }
-		void Clear() { obejcts.Empty(); world = nullptr; }
+		void Clear() { objects.Empty(); }
 	private:
 		UPROPERTY()
-		TQueue<TObjectPtr<AActor>> obejcts;
-
-		UPROPERTY()
-		TObjectPtr<UWorld> world;
+		TQueue<TObjectPtr<AActor>> objects;
 
 		UPROPERTY()
 		TSubclassOf<AActor> instance;
@@ -129,9 +123,7 @@ public:
 	
 	void Clear();
 	void ChangeWorld(UWorld* newWorld);
-	// юс╫ц 
-	void SetWorld(UWorld* newWorld);
-	
+
 	template<typename TUClass>
 	TUClass* GetActor(TSubclassOf<AActor> actorClass)
 	{

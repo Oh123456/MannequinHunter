@@ -29,16 +29,6 @@ void FObjectPoolManager::ChangeWorld(UWorld* newWorld)
 	for (const TPair<FObjectPoolKey, TSharedPtr<FObjectPool>>& pair : pools)
 	{
 		pair.Value->Clear();
-		pair.Value->SetWorld(newWorld);
-	}
-}
-
-void FObjectPoolManager::SetWorld(UWorld* newWorld)
-{
-	world = newWorld;
-	for (const TPair<FObjectPoolKey, TSharedPtr<FObjectPool>>& pair : pools)
-	{
-		pair.Value->SetWorld(newWorld);
 	}
 }
 
@@ -47,10 +37,10 @@ AActor* FObjectPoolManager::GetActor(TSubclassOf<AActor> actorClass)
 	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorClass->StaticClass()));
 	if (findPool == nullptr)
 	{
-		return CreateObjectPool(actorClass)->Get();
+		return CreateObjectPool(actorClass)->Get(world);
 	}
 
-	return (*findPool)->Get();
+	return (*findPool)->Get(world);
 }
 
 bool FObjectPoolManager::SetActor(AActor* actorObject)
@@ -66,7 +56,7 @@ bool FObjectPoolManager::SetActor(AActor* actorObject)
 
 TSharedPtr<FObjectPool> FObjectPoolManager::CreateObjectPool(const TSubclassOf<AActor>& actorClass)
 {
-	TSharedPtr<FObjectPool> pool = MakeShared<FObjectPool>(actorClass, world);
+	TSharedPtr<FObjectPool> pool = MakeShared<FObjectPool>(actorClass);
 	pools.Add(FObjectPoolKey(actorClass->StaticClass()), pool);
 	return pool;
 }

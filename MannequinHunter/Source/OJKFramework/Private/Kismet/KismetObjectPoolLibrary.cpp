@@ -7,7 +7,7 @@
 void UKismetObjectPoolLibrary::SetWorld(AActor* worldActor)
 {
 	FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
-	objectPoolManager->SetWorld(worldActor->GetWorld());
+	objectPoolManager->ChangeWorld(worldActor->GetWorld());
 }
 
 AActor* UKismetObjectPoolLibrary::GetActor(TSubclassOf<AActor> actorClass)

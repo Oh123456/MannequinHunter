@@ -4,6 +4,13 @@
 #include "MannequinHunterLevelScriptActor.h"
 #include "Singleton/ObjectPoolManager.h"
 
+void AMannequinHunterLevelScriptActor::Destroyed()
+{
+	Super::Destroyed();
+
+	FObjectPoolManager::GetInstance()->Clear();
+}
+
 void AMannequinHunterLevelScriptActor::BeginPlay()
 {
 	Super::BeginPlay();

@@ -10,7 +10,7 @@
 AEquipment* UKismetCombatSystemLibrary::CreateMainWeapon(UCharacterCombatComponent* characterCombat, TSubclassOf<ABaseWeapon> staticClass)
 {
 	TSubclassOf<AEquipment> equipment = staticClass;
-	return characterCombat->CreateEquipment<FEquipmentItem>(equipment, ECombatEquipmentSlot::E_MainWeapon);
+	return characterCombat->CreateEquipment<AEquipment>(equipment, ECombatEquipmentSlot::E_MainWeapon);
 }
 
 int32 UKismetCombatSystemLibrary::GetAttackCount(UCharacterCombatComponent* characterCombat)

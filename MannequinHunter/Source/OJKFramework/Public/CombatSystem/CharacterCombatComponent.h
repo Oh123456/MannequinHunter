@@ -168,6 +168,8 @@ public:
 	inline AEquipment* GetEquipment(ECombatEquipmentSlot slot, int32 index = 0);
 
 	template<typename TEquipmentItems>
+	TEquipmentItems* CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex = 0);
+
 	AEquipment* CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex = 0);
 
 	inline void SeCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::Default); }

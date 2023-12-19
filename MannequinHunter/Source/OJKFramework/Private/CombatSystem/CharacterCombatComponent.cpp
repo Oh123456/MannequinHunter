@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Singleton/ObjectPoolManager.h"
 #include "OJKFramework.h"
 #include "TimerManager.h"
 #include "DebugLog.h"
@@ -446,4 +447,25 @@ void UCharacterCombatComponent::BeginPlay()
 
 	characterCombatData.owner = Cast<ACharacter>(GetOwner());
 	characterCombatData.ownerController = characterCombatData.owner->GetController();
+}
+
+
+
+AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex )
+{
+	TSharedPtr<IEquipmentItem>* findItem = characterCombatData.equipmentItem.Find(slot);
+
+	if (findItem == nullptr)
+	{
+		TSharedPtr<IEquipmentItem> newObject = MakeShared<FEquipmentItem>();
+
+		findItem = &characterCombatData.equipmentItem.Add(slot, newObject);
+	}
+
+	FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
+	
+	AEquipment* createObject = objectPoolManager->GetActor<AEquipment>(createEquipment);
+	(*findItem)->SetEquipment(addIndex, createObject);
+
+	return createObject;
 }

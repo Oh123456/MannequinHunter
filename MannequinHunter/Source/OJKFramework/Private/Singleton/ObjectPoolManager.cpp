@@ -25,6 +25,7 @@ void FObjectPoolManager::Clear()
 
 void FObjectPoolManager::ChangeWorld(UWorld* newWorld)
 {
+	world = newWorld;
 	for (const TPair<FObjectPoolKey, TSharedPtr<FObjectPool>>& pair : pools)
 	{
 		pair.Value->Clear();

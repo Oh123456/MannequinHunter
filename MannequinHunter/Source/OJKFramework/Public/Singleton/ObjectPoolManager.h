@@ -132,6 +132,12 @@ public:
 	// юс╫ц 
 	void SetWorld(UWorld* newWorld);
 	
+	template<typename TUClass>
+	TUClass* GetActor(TSubclassOf<AActor> actorClass)
+	{
+		return Cast<TUClass>(GetActor(actorClass));
+	}
+
 	AActor* GetActor(TSubclassOf<AActor> actorClass);
 	bool SetActor(AActor* acotrObject);
 private:

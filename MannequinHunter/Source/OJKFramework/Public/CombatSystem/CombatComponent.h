@@ -10,13 +10,13 @@
 struct FDeathInfo;
 class ABaseWeapon;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent) )
 class OJKFRAMEWORK_API UCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
 public:
-	DECLARE_EVENT_OneParam(UCombatComponent,FDeathEvent,const FDeathInfo&)
-
+	DECLARE_EVENT_OneParam(UCombatComponent, FDeathEvent,const FDeathInfo&)
+	DECLARE_EVENT_FiveParams(UCombatComponent, FTakeDamage, FStatus&, float, FDamageEvent const&, AController*, AActor*)
 public:	
 	// Sets default values for this component's properties
 	UCombatComponent();
@@ -28,6 +28,7 @@ public:
 	inline const FStatus& GetStatus() {return status;}
 
 	const FDeathEvent& OnDeath() { return deathEvent; }
+	const FTakeDamage& OnTakeDamage() { return takeDamage; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -37,6 +38,7 @@ protected:
 
 private:
 	FDeathEvent deathEvent;
+	FTakeDamage takeDamage;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	FStatus status;
@@ -44,5 +46,4 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	bool isImmortality;
 
-	
 };

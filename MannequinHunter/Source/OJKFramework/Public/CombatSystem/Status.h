@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Status.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct OJKFRAMEWORK_API FStatus 
 {
 	GENERATED_BODY()

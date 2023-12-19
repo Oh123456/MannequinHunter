@@ -48,12 +48,16 @@ void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damage
 	int32 actualDamage = CalculateTakeDamage(damageAmount);
 	status.health -= actualDamage;
 
+	takeDamage.Broadcast(status, actualDamage, damageEvent, eventInstigator, damageCauser);
+	UE_LOG(LogTemp,Log,TEXT("tlqkf glxmek glxm"))
+
 	if (!isImmortality && status.health <= 0)
 	{
 		FDeathInfo deathInfo = FDeathInfo();
 		deathEvent.Broadcast(deathInfo);
 	}
 }
+
 
 void UCombatComponent::BeginPlay()
 {

@@ -183,7 +183,7 @@ public:
 
 	ECharacterCombatMontageType GetCurrentCombatMontageType() const { return characterCombatAnimationData.currentAnimType; }
 	
-
+	void ResetLockOn();
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);
 	inline void SubtractCombatAbleFlag(ECombatAble combatAble);

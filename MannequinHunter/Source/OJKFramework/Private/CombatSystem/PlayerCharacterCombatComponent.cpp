@@ -16,11 +16,17 @@ LockOnLength(1000.f)
 
 void UPlayerCharacterCombatComponent::SetLockOnTarget()
 {
-	Super::SetLockOnTarget();
+	ACharacter* owner = characterCombatData.owner;
+	if (IsLockOn())
+	{
+		Super::SetLockOnTarget();
+		owner->GetCharacterMovement()->bOrientRotationToMovement = true;
+		return;
+	}
+
 	UCameraComponent* cameraComponent = findCameraComponentDelegate.Execute();
 
 
-	ACharacter* owner = characterCombatData.owner;
 
 	FVector ownerLocation = owner->GetActorLocation();
 

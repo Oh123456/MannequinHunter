@@ -213,7 +213,6 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, std
 	animInstance->Montage_Play(attackMontage);
 	characterRotationData.isActorRotation = true;
 
-	//TODO::
 	if (!IsLockOn())
 	{
 		FVector2D direction = characterCombatAnimationData.dodgeDirectionDelegate.Execute();
@@ -401,8 +400,7 @@ void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float
 
 void UCharacterCombatComponent::SetLockOnTarget()
 {
-	characterRotationData.targetActor = nullptr;
-	characterRotationData.isActorRotation = true;
+	ResetLockOn();
 }
 
 void UCharacterCombatComponent::LockOn()
@@ -433,6 +431,12 @@ void UCharacterCombatComponent::LockOn()
 
 		
 	}
+}
+
+void UCharacterCombatComponent::ResetLockOn()
+{
+	characterRotationData.targetActor = nullptr;
+	characterRotationData.isActorRotation = true;
 }
 
 void UCharacterCombatComponent::ChangeCombatType(ECharacterCombatMontageType animtype, std::function<void()> callBack)

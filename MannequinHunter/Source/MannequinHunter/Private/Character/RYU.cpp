@@ -2,12 +2,11 @@
 
 
 #include "Character/RYU.h"
-#include "Camera/CameraComponent.h"
+
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "HFSM/RYUHFSMComponent.h"
@@ -42,17 +41,6 @@ ARYU::ARYU() : Super()
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	cameraBoom->SetupAttachment(RootComponent);
-	cameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	cameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-
-	// Create a follow camera
-	followCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	followCamera->SetupAttachment(cameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	followCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	combatComponent = CreateDefaultSubobject<UMannequinHunterCombatComponent>(TEXT("PlayerCombatSystem"));
 

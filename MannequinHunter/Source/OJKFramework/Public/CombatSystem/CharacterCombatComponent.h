@@ -82,6 +82,7 @@ protected:
 
 	enum class EDodgeDirection :int8
 	{
+		None = 0,
 		Back = 1,
 		Front = 1 << 1,
 
@@ -102,6 +103,9 @@ protected:
 		FB = Front | Back,
 		LR = Left | Right,
 	};
+
+
+
 
 	enum ETurnDirection
 	{
@@ -172,7 +176,7 @@ public:
 
 	AEquipment* CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex = 0);
 
-	inline void SeCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::Default); }
+	inline void SetCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::Default); }
 
 	inline int32 GetAttackCount() { return characterCombatData.attackCount; }
 	void ResetAttackCount() { characterCombatData.attackCount = 0; }
@@ -194,11 +198,9 @@ protected:
 	void SetTargetActor(AActor* target) { characterRotationData.targetActor = target; }
 	const AActor* GetTargetActor() const { return characterRotationData.targetActor; }
 
-public:
-	virtual void Dodge(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
-	virtual void Attack(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
 private:
 	int32 GetPreviousAttackCount();
+	int8 DodgeDirection(const FVector2D& directionVector);
 public:
 	// Not Use HFSM !!
 	// if UserCharacter Use HFSM ,
@@ -218,6 +220,8 @@ public:
 	inline void SetIsActorRotation(bool b);
 
 public:
+	virtual void Dodge(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
+	virtual void Attack(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	virtual void BeginPlay() override;
@@ -233,5 +237,3 @@ protected:
 
 
 };
-
-

@@ -7,7 +7,7 @@
 #include "CombatSystem/CharacterCombatComponent.h"
 
 UAnimNotifyState_Attack::UAnimNotifyState_Attack() : Super(),
-baseWeapon(nullptr)
+baseWeapon(nullptr) , isRotationLock(true)
 {
 	NotifyColor = FColor::Silver;
 	//GetNotifyName
@@ -24,6 +24,9 @@ void UAnimNotifyState_Attack::NotifyBegin(USkeletalMeshComponent* meshComp, UAni
 			return;
 
 		baseWeapon = Cast<ABaseWeapon>(characterCombat->GetEquipment(ECombatEquipmentSlot::E_MainWeapon));
+
+		if (isRotationLock && characterCombat->IsLockOn())
+			characterCombat->SetIsActorRotation(false);
 
 		BeginAttack(characterCombat);
 	}

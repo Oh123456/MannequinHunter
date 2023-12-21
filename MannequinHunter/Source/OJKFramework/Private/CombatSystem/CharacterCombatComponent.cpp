@@ -7,6 +7,8 @@
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Singleton/ObjectPoolManager.h"
+#include "Player/PlayerCharacter.h"
+#include "Camera/CameraComponent.h"
 #include "OJKFramework.h"
 #include "TimerManager.h"
 #include "DebugLog.h"
@@ -209,6 +211,29 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, std
 	}
 
 	animInstance->Montage_Play(attackMontage);
+	characterRotationData.isActorRotation = true;
+
+	//TODO::
+	if (!IsLockOn())
+	{
+		FVector2D direction = characterCombatAnimationData.dodgeDirectionDelegate.Execute();
+		if (!direction.Equals(FVector2D::Zero()))
+		{
+			APlayerCharacter* player = Cast<APlayerCharacter>(owner);
+			if (player)
+			{
+				FVector2D yVector(0.0f, 1.0f);
+				double degrees = FMath::RadiansToDegrees(FMath::Atan2(direction.X, direction.Y));
+				FRotator rotator = owner->GetActorRotation();
+				rotator.Yaw = degrees + player->GetController()->GetControlRotation().Yaw;
+
+				owner->SetActorRotation(rotator);
+
+			}
+		}
+	}
+	
+	
 	FOnMontageEnded montageEnded;
 	montageEnded.BindLambda([this, callback, cancelCallback](UAnimMontage* animMontage, bool bInterrupted)
 		{
@@ -251,20 +276,20 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 		UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
 		UAnimMontage* dodgeMontage = nullptr;
 
-		int8 dodgeDirection = 0;
+		//int8 dodgeDirection = 0;
 
-		if (directionVector.Y > 0.f)
-			dodgeDirection |= static_cast<int8>(EDodgeDirection::F);		
-		else if (directionVector.Y < 0.f)
-			dodgeDirection |= static_cast<int8>(EDodgeDirection::B);
+		//if (directionVector.Y > 0.f)
+		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::F);		
+		//else if (directionVector.Y < 0.f)
+		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::B);
 
-		if (directionVector.X > 0.0f)
-			dodgeDirection |= static_cast<int8>(EDodgeDirection::R);
-		else if (directionVector.X < 0.0f)
-			dodgeDirection |= static_cast<int8>(EDodgeDirection::L);
+		//if (directionVector.X > 0.0f)
+		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::R);
+		//else if (directionVector.X < 0.0f)
+		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::L);
 
+		int8 dodgeDirection = DodgeDirection(directionVector);
 		EDodgeDirection eDodgeDirection = static_cast<EDodgeDirection>(dodgeDirection);
-
 	
 		std::function<void()> IsLockOnCallBack = nullptr;
 
@@ -468,4 +493,20 @@ AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> c
 	(*findItem)->SetEquipment(addIndex, createObject);
 
 	return createObject;
+}
+
+int8 UCharacterCombatComponent::DodgeDirection(const FVector2D& directionVector)
+{
+	int8 dodgeDirection;
+	if (directionVector.Y > 0.f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::F);
+	else if (directionVector.Y < 0.f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::B);
+
+	if (directionVector.X > 0.0f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::R);
+	else if (directionVector.X < 0.0f)
+		dodgeDirection |= static_cast<int8>(EDodgeDirection::L);
+
+	return dodgeDirection;
 }

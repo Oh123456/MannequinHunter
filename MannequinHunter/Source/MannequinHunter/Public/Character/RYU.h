@@ -27,11 +27,6 @@ class MANNEQUINHUNTER_API ARYU : public APlayerCharacter
 public:
 	ARYU();
 
-public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return followCamera; }
 
 private:
 	void SetInputAction();
@@ -60,13 +55,6 @@ protected:
 	virtual void BeginPlay();
 
 private:
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* cameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* followCamera;
 
 #ifdef UE_BUILD_DEBUG
 	TSharedPtr<class FPlayerInputLog> playerInputLog;

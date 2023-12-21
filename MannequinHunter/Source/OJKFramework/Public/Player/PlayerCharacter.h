@@ -71,6 +71,11 @@ public:
 
 	//const UInputMappingContext* GetMappingContext() { return defaultMappingContext; }
 
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return cameraBoom; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return followCamera; }
+
 public:
 	UFUNCTION(BlueprintCallable , Category = PlayerCharacter)
 	uint8 GetCurrentStateMachineID() { return HFSM->GetCurrentStateMachineID(); }
@@ -90,6 +95,14 @@ protected:
 protected:
 
 	FVector2D inputDirection;
+private:
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* cameraBoom;
+
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* followCamera;
 protected:
 
 	UPROPERTY()

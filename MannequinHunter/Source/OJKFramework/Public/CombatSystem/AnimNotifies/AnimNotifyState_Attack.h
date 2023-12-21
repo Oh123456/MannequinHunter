@@ -29,4 +29,6 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class ABaseWeapon> baseWeapon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HitBox, meta = (AllowPrivateAccess = "true"))
+	bool isRotationLock;
 };

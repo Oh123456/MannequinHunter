@@ -22,7 +22,6 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 
 	ACharacter* owner = characterCombatData.owner;
 
-	FVector cameraForwardVector = cameraComponent->GetForwardVector();
 	FVector ownerLocation = owner->GetActorLocation();
 
 	const AActor* targetActor = GetTargetActor();
@@ -31,8 +30,8 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 	
 	bool isHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
 		this,
-		ownerLocation, ownerLocation + (cameraForwardVector * LockOnLength),
-		50.0f,
+		ownerLocation, ownerLocation,
+		LockOnLength,
 		lockOnTargetObjectType, false ,
 		TArray<AActor*>(), EDrawDebugTrace::ForDuration, hitResult, true);
 

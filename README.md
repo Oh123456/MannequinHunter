@@ -41,3 +41,6 @@ class
 # HFSM 사용한 플레이어 구현
 
 - 액션 게임의 플레이어의 행동을 구현하기에는 FSM이 적합하다고 생각했으나. 상태가 많아저 복잡해질거 같아서 HFSM을 사용하였다.
+
+HFSM 구상도
+![HFSM drawio](https://github.com/Oh123456/MannequinHunter/assets/57939880/b5f943dc-8804-43a9-97c3-22c9322e67a9)

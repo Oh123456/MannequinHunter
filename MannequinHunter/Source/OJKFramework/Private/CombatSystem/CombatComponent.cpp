@@ -62,7 +62,8 @@ void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damage
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	status.health = status.maxHealth;
+	//status.SetStatus(statusDataAsset);
+	//status.health = status.maxHealth;
 }
 
 float UCombatComponent::CalculateApplyDamage()

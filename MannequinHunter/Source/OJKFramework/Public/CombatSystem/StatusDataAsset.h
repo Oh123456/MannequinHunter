@@ -3,26 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Status.generated.h"
+#include "Engine/DataAsset.h"
+#include "StatusDataAsset.generated.h"
 
-struct FStatusDataTable;
-
-USTRUCT(BlueprintType)
-struct OJKFRAMEWORK_API FStatus 
+/**
+ * 
+ */
+UCLASS()
+class OJKFRAMEWORK_API UStatusDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
-public:
-	FStatus() {}
-
-	void SetStatus(const FStatusDataTable* dataAsset);
 
 public:
 	UPROPERTY(EditDefaultsOnly)
 	int32 attack;
 	UPROPERTY(EditDefaultsOnly)
-	int32 health;
-	UPROPERTY(EditDefaultsOnly)
 	int32 defensive;
-	UPROPERTY(EditDefaultsOnly )
+	UPROPERTY(EditDefaultsOnly)
 	int32 maxHealth = 200;
 };

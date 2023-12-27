@@ -22,6 +22,7 @@ public:
 
 private:
 
+	
 	UPROPERTY(EditDefaultsOnly)
 	TMap<EWeaponType,TObjectPtr<class UDataTable>> commendDataTable;
 };

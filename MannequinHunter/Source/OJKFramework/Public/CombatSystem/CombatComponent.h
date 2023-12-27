@@ -4,11 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Status.h"
+#include "Engine/DataTable.h"
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
 struct FDeathInfo;
 class ABaseWeapon;
+//
+USTRUCT(Blueprinttype)
+struct FStatusDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 attack;
+	UPROPERTY(EditDefaultsOnly)
+	int32 defensive;
+	UPROPERTY(EditDefaultsOnly)
+	int32 maxHealth = 200;
+};
+
 
 UCLASS( ClassGroup=(Custom), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent) )
 class OJKFRAMEWORK_API UCombatComponent : public UActorComponent
@@ -40,6 +55,8 @@ private:
 	FDeathEvent deathEvent;
 	FTakeDamage takeDamage;
 protected:
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UStatusDataAsset> statusDataAsset;
 	UPROPERTY(EditDefaultsOnly)
 	FStatus status;
 private:

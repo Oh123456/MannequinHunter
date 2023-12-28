@@ -20,13 +20,21 @@ class MANNEQUINHUNTER_API FCommandListManager
 
 	FCommandListManager();
 	~FCommandListManager();
-
 public:
-	void LoadCommandListTable(const TMap<EWeaponType, TObjectPtr<class UDataTable>>& table);
+	void LoadCommandListTable(const class UDataTable* table);
 
-	const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>* GetCommandList(EWeaponType weaponType) const;
+	const TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>& GetCommandList() const { return commandList; }
 private:
-	void AddCommandListTree(const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>& tree, const FCommandDataTable* table);
+	void AddCommandListTree(const FCommandDataTable* table);
+
 private:
-	TMap<EWeaponType, TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>> commandListMap;
+	TCommandListTree<EPlayerInputType, ECharacterCombatMontageType> commandList;
+//	void LoadCommandListTable(const TMap<EWeaponType, TObjectPtr<class UDataTable>>& table);
+//
+//	const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>* GetCommandList(EWeaponType weaponType) const;
+//private:
+//	void AddCommandListTree(const TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>& tree, const FCommandDataTable* table);
+
+	//TMap<EWeaponType, TSharedPtr<TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>>> commandListMap;
+
 };

@@ -15,8 +15,9 @@ UMannequinHunterCombatComponent::~UMannequinHunterCombatComponent()
 
 void UMannequinHunterCombatComponent::ResetCommandList()
 {
-	if (commandListData.currentCommandListTree)
-		commandListData.currentCommandListNode = commandListData.currentCommandListTree->GetRoot();
+	commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
+	//if (commandListData.currentCommandListTree)
+	//	commandListData.currentCommandListNode = commandListData.currentCommandListTree->GetRoot();
 }
 
 ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
@@ -33,9 +34,9 @@ ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageTy
 
 ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType(EPlayerInputType input)
 {
-	const TSharedPtr<CommandListTree>& currentCommandListTree = commandListData.currentCommandListTree;
+	//const TSharedPtr<CommandListTree>& currentCommandListTree = commandListData.currentCommandListTree;
 	const TSharedPtr<CommandListNode>& currentCommandListNode = commandListData.currentCommandListNode;
-	if (currentCommandListTree && currentCommandListNode)
+	if (currentCommandListNode)
 	{
 		const TSharedPtr<CommandListNode>* nextCommandListNode =  currentCommandListNode->FindChild(input);
 		if (nextCommandListNode)
@@ -44,21 +45,21 @@ ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageTy
 			return *(commandListData.currentCommandListNode->GetValue()->Get());
 		}
 	}
+
 	return ECharacterCombatMontageType::None;
 }
 
-void UMannequinHunterCombatComponent::ChangeCommandList(EWeaponType type)
+void UMannequinHunterCombatComponent::SetCommandList()
 {
-	commandListData.currentCommandListTree = *FCommandListManager::GetInstance()->GetCommandList(type);
-	commandListData.currentCommandListNode = commandListData.currentCommandListTree->GetRoot();
+	commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
 }
 
 void UMannequinHunterCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	OnChangeWeaponType.AddUObject(this,&UMannequinHunterCombatComponent::ChangeCommandList);
+	SetCommandList();
+	//OnChangeWeaponType.AddUObject(this,&UMannequinHunterCombatComponent::ChangeCommandList);
 }
 
 

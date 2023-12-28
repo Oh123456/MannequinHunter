@@ -4,12 +4,13 @@
 #include "MannequinHunterGameInstance.h"
 #include "Singleton/CommandListManager.h"
 #include "Singleton/TableManager.h"
+#include "CombatSystem/MannequinHunterCombatComponent.h"
 
 void UMannequinHunterGameInstance::OnStart()
 {
 	Super::OnStart();
 
 	//юс╫ц
-	FTableManager::GetInstance();
-	FCommandListManager::GetInstance()->LoadCommandListTable(commendDataTable);
+	FTableManager* tableManager = FTableManager::GetInstance();
+	FCommandListManager::GetInstance()->LoadCommandListTable((tableManager->GetTable<FCommandDataTable>()));
 }

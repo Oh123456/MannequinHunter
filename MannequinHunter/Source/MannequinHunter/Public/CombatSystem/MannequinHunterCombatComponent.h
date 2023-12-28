@@ -37,7 +37,6 @@ struct FCommandListData
 
 	EWeaponType playerWeaponType;
 
-	TSharedPtr<CommandListTree> currentCommandListTree = nullptr;
 	TSharedPtr<CommandListNode> currentCommandListNode = nullptr;
 };
 
@@ -69,7 +68,7 @@ public:
 	ECharacterCombatMontageType GetCommandMontageType(EPlayerInputType input);
 
 private:
-	void ChangeCommandList(EWeaponType type);
+	void SetCommandList();
 public:
 	virtual void BeginPlay() override;
 

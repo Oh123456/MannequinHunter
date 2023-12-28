@@ -9,8 +9,8 @@ FTableManager::FTableManager()
 {
 	LoadTable(TEXT("/Game/BP/DataTable/StatuesDataTable.StatuesDataTable"));
 	
-	// 커맨드리스트 테이블은 따로 관리 할것
-	// 데이터 테이블 관리 수정?
+	//CommandTable
+	LoadTable(TEXT("/Game/BP/DataTable/CommandTable.CommandTable"));
 }
 
 

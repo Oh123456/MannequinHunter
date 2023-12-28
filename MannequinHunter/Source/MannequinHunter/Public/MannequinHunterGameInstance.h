@@ -20,9 +20,9 @@ class MANNEQUINHUNTER_API UMannequinHunterGameInstance : public UGameInstance
 public:
 	virtual void OnStart() override;
 
-private:
-
-	
-	UPROPERTY(EditDefaultsOnly)
-	TMap<EWeaponType,TObjectPtr<class UDataTable>> commendDataTable;
+//private:
+//
+//	
+//	UPROPERTY(EditDefaultsOnly)
+//	TMap<EWeaponType,TObjectPtr<class UDataTable>> commendDataTable;
 };

@@ -6,6 +6,7 @@
 #include "CombatSystem/PlayerCharacterCombatComponent.h"
 #include "Character/PlayerCommonEnums.h"
 #include "Engine/DataTable.h"
+#include "CombatSystem/Status.h"
 #include "CombatSystem/CombatComponent.h"
 #include "CommandListTree.h"
 #include "MannequinHunterCombatComponent.generated.h"
@@ -14,6 +15,27 @@
 /**
  * 
  */
+// TODO:: 가상소멸자 추가
+ USTRUCT(Blueprinttype)
+struct FMannequinHunterStatusData : public FStatusData
+{
+	GENERATED_BODY()
+	virtual void Copy(const FStatusDataBase& data) override
+	{
+		FStatusData::Copy(data);
+	}
+};
+
+USTRUCT(Blueprinttype)
+struct FMannequinHunterStatusDataTable : public FStatusDataTableBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	FMannequinHunterStatusData statusData;
+};
+
+
 USTRUCT(Blueprinttype)
 struct FCommandDataTable : public FTableRowBase
 {

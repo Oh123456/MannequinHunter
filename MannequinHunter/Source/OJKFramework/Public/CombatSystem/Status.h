@@ -28,8 +28,10 @@ public:
 	int32 maxStamina;
 };
 
-struct FStatusData : FStatusDataBase
+USTRUCT(Blueprinttype)
+struct OJKFRAMEWORK_API FStatusData : public FStatusDataBase
 {
+	GENERATED_BODY()
 	virtual void Copy(const FStatusDataBase& data) override;
 
 	int32 health;
@@ -37,10 +39,8 @@ struct FStatusData : FStatusDataBase
 };
 
 
-USTRUCT(BlueprintType)
-struct OJKFRAMEWORK_API FStatus 
+class OJKFRAMEWORK_API FStatus 
 {
-	GENERATED_BODY()
 public:
 
 	void SetStatus(const FStatusDataTableBase* dataTable);
@@ -50,6 +50,6 @@ public:
 protected:
 	virtual void CreateStatus();
 	virtual const FStatusDataBase* GetStatusDataFormTable(const FStatusDataTableBase* dataTable);
-private:
+protected:
 	TSharedPtr<FStatusData> status;
 };

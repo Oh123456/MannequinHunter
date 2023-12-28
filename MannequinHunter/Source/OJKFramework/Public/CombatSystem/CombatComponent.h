@@ -59,7 +59,7 @@ private:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UStatusDataAsset> statusDataAsset;
-	UPROPERTY(EditDefaultsOnly)
+	//UPROPERTY(EditDefaultsOnly)
 	FStatus status;
 private:
 	UPROPERTY(EditDefaultsOnly)

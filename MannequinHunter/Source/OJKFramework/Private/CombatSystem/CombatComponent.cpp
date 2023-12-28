@@ -45,13 +45,14 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 
 void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
+	TSharedPtr<FStatusData>& statusData = status.GetStatus();
 	int32 actualDamage = CalculateTakeDamage(damageAmount);
-	status.health -= actualDamage;
+	statusData->health -= actualDamage;
 
 	takeDamage.Broadcast(status, actualDamage, damageEvent, eventInstigator, damageCauser);
 	UE_LOG(LogTemp,Log,TEXT("tlqkf glxmek glxm"))
 
-	if (!isImmortality && status.health <= 0)
+	if (!isImmortality && statusData->health <= 0)
 	{
 		FDeathInfo deathInfo = FDeathInfo();
 		deathEvent.Broadcast(deathInfo);
@@ -68,11 +69,11 @@ void UCombatComponent::BeginPlay()
 
 float UCombatComponent::CalculateApplyDamage()
 {
-	return status.attack;
+	return status.GetStatus()->attack;
 }
 
 int32 UCombatComponent::CalculateTakeDamage(float damageAmount)
 {
-	return static_cast<int32>(damageAmount) - status.defensive;
+	return static_cast<int32>(damageAmount) - status.GetStatus()->defensive;
 }
 

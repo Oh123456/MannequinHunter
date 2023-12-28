@@ -39,7 +39,7 @@ public:
 	}
 
 	template<typename TTable>
-	const TTable* GetTable(FName key, const TCHAR contextString = TEXT(""))
+	const TTable* GetTable(FName key, const FString& contextString = TEXT(""))
 	{
 		TObjectPtr<UDataTable>* findTable = tables.FindByPredicate([](const TObjectPtr<UDataTable>& data)
 			{

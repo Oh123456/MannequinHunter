@@ -13,6 +13,8 @@ struct FStatusDataBase
 	GENERATED_BODY()
 
 public:
+	virtual ~FStatusDataBase() {};
+public:
 	virtual void Copy(const FStatusDataBase& data);
 
 public:
@@ -32,6 +34,9 @@ USTRUCT(Blueprinttype)
 struct OJKFRAMEWORK_API FStatusData : public FStatusDataBase
 {
 	GENERATED_BODY()
+
+	virtual ~FStatusData() {};
+
 	virtual void Copy(const FStatusDataBase& data) override;
 
 	int32 health;

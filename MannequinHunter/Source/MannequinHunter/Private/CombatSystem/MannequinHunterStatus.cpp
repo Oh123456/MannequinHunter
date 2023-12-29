@@ -2,7 +2,7 @@
 
 
 #include "CombatSystem/MannequinHunterStatus.h"
-#include "CombatSystem/MannequinHunterCombatComponent.h"
+#include "Table/MannequinHunterStatusTable.h"
 
 void FMannequinHunterStatus::CreateStatus()
 {

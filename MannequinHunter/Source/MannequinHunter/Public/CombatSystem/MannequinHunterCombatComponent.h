@@ -16,27 +16,6 @@
  * 
  */
 
- USTRUCT(Blueprinttype)
-struct FMannequinHunterStatusData : public FStatusData
-{
-	GENERATED_BODY()
-
-	virtual ~FMannequinHunterStatusData() {};
-
-	virtual void Copy(const FStatusDataBase& data) override
-	{
-		FStatusData::Copy(data);
-	}
-};
-
-USTRUCT(Blueprinttype)
-struct FMannequinHunterStatusDataTable : public FStatusDataTableBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	FMannequinHunterStatusData statusData;
-};
 
 
 USTRUCT(Blueprinttype)

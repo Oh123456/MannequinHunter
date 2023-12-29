@@ -4,6 +4,7 @@
 #include "CombatSystem/Status.h"
 #include "CombatSystem/CombatComponent.h"
 #include "CombatSystem/StatusDataAsset.h"
+#include "Table/StatusTable.h"
 
 
 

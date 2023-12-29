@@ -11,20 +11,7 @@
 struct FDeathInfo;
 class ABaseWeapon;
 
-USTRUCT(Blueprinttype)
-struct FStatusDataTableBase : public FTableRowBase
-{
-	GENERATED_BODY()
-};
 
-USTRUCT(Blueprinttype)
-struct FStatusDataTable : public FStatusDataTableBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	FStatusDataBase statusDataBase;
-};
 
 UCLASS( ClassGroup=(Custom), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent) )
 class OJKFRAMEWORK_API UCombatComponent : public UActorComponent
@@ -41,7 +28,7 @@ public:
 	void ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser, TSubclassOf<UDamageType> damageTypeClass);
 	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser);
 
-	inline void SetStatusData(const FStatusDataTable* table) { status.SetStatus(table); }
+	inline void SetStatusData(const struct FStatusDataTableBase* table) { status.SetStatus(table); }
 	inline const FStatus& GetStatus() {return status;}
 
 	const FDeathEvent& OnDeath() { return deathEvent; }

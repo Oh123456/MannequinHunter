@@ -7,6 +7,7 @@
 
 struct FStatusDataTableBase;
 
+
 USTRUCT(Blueprinttype)
 struct FStatusDataBase
 {
@@ -47,6 +48,7 @@ struct OJKFRAMEWORK_API FStatusData : public FStatusDataBase
 class OJKFRAMEWORK_API FStatus 
 {
 public:
+	virtual ~FStatus() {}
 
 	void SetStatus(const FStatusDataTableBase* dataTable);
 

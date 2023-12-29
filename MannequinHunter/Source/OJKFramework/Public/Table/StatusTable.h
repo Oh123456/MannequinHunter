@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "CombatSystem/Status.h"
 #include "StatusTable.generated.h"
 
 USTRUCT(Blueprinttype)

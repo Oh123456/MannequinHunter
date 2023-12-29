@@ -35,7 +35,7 @@ void FDodgeState::Enter()
 			else
 				type = StaticCast<ECharacterCombatMontageType>(EPlayerCombatEnums::NomalDodge);
 
-			characterCombatComponent->Dodge(type, nullptr);/*[this]()
+			characterCombatComponent->Dodge(type, 1.0f );/*[this]()
 				{
 					this->isDodgeEnd = true;
 				}

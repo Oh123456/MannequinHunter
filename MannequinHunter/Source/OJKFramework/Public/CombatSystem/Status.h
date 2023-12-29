@@ -52,7 +52,7 @@ public:
 
 	void SetStatus(const FStatusDataTableBase* dataTable);
 
-	TSharedPtr<FStatusData>& GetStatus() {return status;}
+	TSharedPtr<FStatusData>& GetStatusData() {return status;}
 
 protected:
 	virtual void CreateStatus();

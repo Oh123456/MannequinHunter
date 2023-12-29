@@ -90,7 +90,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype)
 		SubtractCombatAbleFlag((ECombatAble::AttackAble | ECombatAble::DodgeAble));
 	}
 }
-void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
+void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype);
 
@@ -163,7 +163,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, std:
 	FOnMontageEnded montageEnded;
 	dodgeMontage = (*currentAnimMontages)[index];
 
-	animInstance->Montage_Play(dodgeMontage);
+	animInstance->Montage_Play(dodgeMontage, playRate);
 	characterRotationData.lockOnCharacterInterpSpeed = DODGE_CHARACTER_INTERP_SPEED;
 	montageEnded.BindLambda([this, IsLockOnCallBack, callback, cancelCallback](UAnimMontage* animMontage, bool bInterrupted)
 		{
@@ -185,7 +185,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, std:
 	animInstance->Montage_SetEndDelegate(montageEnded, dodgeMontage);
 }
 
-void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, std::function<void()> callback, std::function<void()> cancelCallback)
+void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype /*[this]() ->
 		void
@@ -210,7 +210,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, std
 		animMontageInstance->OnMontageEnded.Unbind();
 	}
 
-	animInstance->Montage_Play(attackMontage);
+	animInstance->Montage_Play(attackMontage, playRate);
 	characterRotationData.isActorRotation = true;
 
 	if (!IsLockOn())

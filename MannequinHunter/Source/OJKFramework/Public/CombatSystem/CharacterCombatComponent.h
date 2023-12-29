@@ -220,8 +220,8 @@ public:
 	inline void SetIsActorRotation(bool b);
 
 public:
-	virtual void Dodge(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
-	virtual void Attack(ECharacterCombatMontageType animtype, std::function<void()> endcallback, std::function<void()> cancelCallback = nullptr);
+	virtual void Dodge(ECharacterCombatMontageType animtype,float playRate,std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
+	virtual void Attack(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	virtual void BeginPlay() override;

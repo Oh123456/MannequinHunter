@@ -2,28 +2,32 @@
 
 
 #include "Singleton/TableManager.h"
-
-#define Load(path)
+#include "Table/MannequinHunterStatusTable.h"
+#include "CombatSystem/MannequinHunterCombatComponent.h"
 
 FTableManager::FTableManager()
 {
-	LoadTable(TEXT("/Game/BP/DataTable/StatuesDataTable.StatuesDataTable"));
+	LoadTable<FMannequinHunterStatusDataTable>(TEXT("/Game/BP/DataTable/StatuesDataTable.StatuesDataTable"));
 	
-	//CommandTable
-	LoadTable(TEXT("/Game/BP/DataTable/CommandTable.CommandTable"));
+	//CommandTable/Script/Engine.DataTable'/Game/BP/DataTable/StatuesDataTable.StatuesDataTable'
+	LoadTable<FCommandDataTable>(TEXT("/Game/BP/DataTable/CommandTable.CommandTable"));
 }
 
 
 FTableManager::~FTableManager()
 {
-	tables.Empty();
+	//tables.Empty();
+	tableMap.Empty();
 }
 
 
-void FTableManager::LoadTable(const TCHAR* name)
-{
-	UDataTable* findTable = LoadObject<UDataTable>(nullptr, name);
-
-	if (findTable)
-		tables.Add(findTable);
-}
+//void FTableManager::LoadTable(const TCHAR* name)
+//{
+//	UDataTable* findTable = LoadObject<UDataTable>(nullptr, name);
+//
+//	if (findTable)
+//	{
+//		
+//	}
+//	//	tables.Add(findTable);
+//}

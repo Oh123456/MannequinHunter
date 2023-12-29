@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Table/StatusTable.h"
+#include "CombatSystem/MannequinHunterStatus.h"
 #include "MannequinHunterStatusTable.generated.h"
 
 

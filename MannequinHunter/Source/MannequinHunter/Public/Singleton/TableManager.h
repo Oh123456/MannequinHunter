@@ -11,7 +11,7 @@
  * 
  */
 
-struct FStatusDataTable;
+//struct FStatusDataTable;
 
 class MANNEQUINHUNTER_API FTableManager
 {
@@ -27,10 +27,11 @@ public:
 	template<typename TTable>
 	const UDataTable* GetTable()
 	{
-		TObjectPtr<UDataTable>* findTable = tables.FindByPredicate([](const TObjectPtr<UDataTable>& data)
-			{
-				return data->GetRowStruct()->IsChildOf(TTable::StaticStruct());
-			});
+		TObjectPtr<UDataTable>* findTable = tableMap.Find(TTable::StaticStruct());
+		//TObjectPtr<UDataTable>* findTable = tables.FindByPredicate([](const TObjectPtr<UDataTable>& data)
+		//	{
+		//		return data->GetRowStruct()->IsChildOf(TTable::StaticStruct());
+		//	});
 
 		if (findTable == nullptr)
 			return nullptr;
@@ -38,13 +39,16 @@ public:
 		return *findTable;
 	}
 
+
 	template<typename TTable>
 	const TTable* GetTable(FName key, const FString& contextString = TEXT(""))
 	{
-		TObjectPtr<UDataTable>* findTable = tables.FindByPredicate([](const TObjectPtr<UDataTable>& data)
-			{
-				return data->GetRowStruct()->IsChildOf(TTable::StaticStruct());
-			});
+		TObjectPtr<UDataTable>* findTable = tableMap.Find(TTable::StaticStruct());
+
+		//TObjectPtr<UDataTable>* findTable = tables.FindByPredicate([](const TObjectPtr<UDataTable>& data)
+		//	{
+		//		return data->GetRowStruct()->IsChildOf(TTable::StaticStruct());
+		//	});
 
 		if (findTable == nullptr)
 			return nullptr;
@@ -52,9 +56,21 @@ public:
 		return (*findTable)->FindRow<TTable>(key, contextString);
 	}
 private:
-	void LoadTable(const TCHAR* name);
+	//void LoadTable(const TCHAR* name);
+	template<typename TTable>
+	void LoadTable(const TCHAR* name)
+	{
+		UDataTable* findTable = LoadObject<UDataTable>(nullptr, name);
+		if (findTable)
+		{
+			tableMap.Add(TTable::StaticStruct(), findTable);
+		}
+	}
 
 private:
+	//UPROPERTY()
+	//TArray<TObjectPtr<UDataTable>> tables;
+
 	UPROPERTY()
-	TArray<TObjectPtr<UDataTable>> tables;
+	TMap<TObjectPtr<UStruct>, TObjectPtr<UDataTable>> tableMap;
 };

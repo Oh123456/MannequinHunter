@@ -19,7 +19,7 @@
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Utility/PlayerInputLog.h"
 #include "Singleton/TableManager.h"
-#include "CombatSystem/Status.h"
+#include "Table/MannequinHunterStatusTable.h"
 
 ARYU::ARYU() : Super()
 {
@@ -206,8 +206,7 @@ void ARYU::BeginPlay()
 		}
 	}
 
-
-	const FStatusDataTable* rowTableData = FTableManager::GetInstance()->GetTable<FStatusDataTable>(TEXT("Test"));
+	const FMannequinHunterStatusDataTable* rowTableData = FTableManager::GetInstance()->GetTable<FMannequinHunterStatusDataTable>(TEXT("Test"));
 	mannequinHunterCombatComponent->SetStatusData(rowTableData);
 
 #ifdef UE_BUILD_DEBUG

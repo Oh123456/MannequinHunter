@@ -8,6 +8,8 @@
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Character/PlayerCommonEnums.h"
 #include "Singleton/StateManager.h"
+#include "CombatSystem/Status.h"
+#include "Utility/MannequinHunterUtility.h"
 
 FAttackState::FAttackState() : FState(StaticCast<uint8>( EPlayerStateEnum::Attack), EStateInitOption::DontUpdataAndConvertOrder)
 {
@@ -44,7 +46,11 @@ void FAttackState::Enter()
 		
 		if (combatComponent)
 		{
-			combatComponent->Attack(attackMontageType, [this]()
+			float playRate = FMannequinHunterUtility::GetPlayRate(combatComponent->GetStatusData().GetStatusData()->attackSpeed);
+			
+			UE_LOG(LogTemp, Log, TEXT("attackSpeed : %d  playRate : %f"), combatComponent->GetStatusData().GetStatusData()->attackSpeed,playRate);
+
+			combatComponent->Attack(attackMontageType, playRate,[this]()
 			{
 				this->CheckState();
 			});

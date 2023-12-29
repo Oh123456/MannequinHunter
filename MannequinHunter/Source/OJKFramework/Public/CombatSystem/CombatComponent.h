@@ -29,7 +29,7 @@ public:
 	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser);
 
 	inline void SetStatusData(const struct FStatusDataTableBase* table) { status.SetStatus(table); }
-	inline const FStatus& GetStatus() {return status;}
+	inline FStatus& GetStatusData() {return status;}
 
 	const FDeathEvent& OnDeath() { return deathEvent; }
 	const FTakeDamage& OnTakeDamage() { return takeDamage; }

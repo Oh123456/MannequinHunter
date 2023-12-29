@@ -45,7 +45,7 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 
 void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
-	TSharedPtr<FStatusData>& statusData = status.GetStatus();
+	TSharedPtr<FStatusData>& statusData = status.GetStatusData();
 	int32 actualDamage = CalculateTakeDamage(damageAmount);
 	statusData->health -= actualDamage;
 
@@ -69,11 +69,11 @@ void UCombatComponent::BeginPlay()
 
 float UCombatComponent::CalculateApplyDamage()
 {
-	return status.GetStatus()->attack;
+	return status.GetStatusData()->attack;
 }
 
 int32 UCombatComponent::CalculateTakeDamage(float damageAmount)
 {
-	return static_cast<int32>(damageAmount) - status.GetStatus()->defensive;
+	return static_cast<int32>(damageAmount) - status.GetStatusData()->defensive;
 }
 

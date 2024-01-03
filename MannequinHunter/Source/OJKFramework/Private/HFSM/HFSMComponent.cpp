@@ -61,7 +61,10 @@ void UHFSMComponent::CheckStateMachineCondition()
 	uint8 stateID = currentStateMachine->Condition(stateMachineOrder);
 
 	if (currentStateMachine->GetStateMachineID() != stateID)
-		ChangeStateMachine(stateID);
+	{
+		if (currentStateMachine->EnterCondition())
+			ChangeStateMachine(stateID);
+	}
 
 	// √ ±‚»≠
 	stateMachineOrder = 0;

@@ -55,6 +55,14 @@ void FStateMachine::Exit()
 	}
 }
 
+bool FStateMachine::EnterCondition()
+{
+	bool isSuccess = true;
+	if (OnStateMachineEnterCondition.IsBound())
+		OnStateMachineEnterCondition.Broadcast(OUT isSuccess);	
+	return isSuccess;
+}
+
 uint8 FStateMachine::Condition(uint16 stateMachineOrder)
 {	
 	FStateMachineConditionResult result;

@@ -35,6 +35,7 @@ class OJKFRAMEWORK_API FStateMachine : public TSharedFromThis<FStateMachine>
 public:
 	//FUNC_DECLARE_MULTICAST_DELEGATE(FStateMachineCondition, uint8, uint16)
 	DECLARE_MULTICAST_DELEGATE_TwoParams(FStateMachineCondition, uint16 ,OUT FStateMachineConditionResult&)
+	DECLARE_MULTICAST_DELEGATE_OneParam(FStateMachineEnterCondition, OUT bool)
 public:
 	FStateMachine(UHFSMComponent* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
 	~FStateMachine();
@@ -42,6 +43,7 @@ public:
 	void Enter();
 	void Update();
 	void Exit();
+	bool EnterCondition();
 	uint8 Condition(uint16 stateMachineOrder);
 	uint8 UpdateCondition(uint16 stateMachineOrder);
 
@@ -68,6 +70,9 @@ public:
 	template<typename UClass>
 	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&));
 
+	template<typename UClass>
+	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(bool));
+
 	inline void AddState(uint8 stateid, TSharedPtr<FState>& newState) { states.Add(stateid, newState); }
 	template<typename TStateEnum>
 	inline void AddState(TStateEnum stateid, TSharedPtr<FState>& newState) { states.Add(StaticCast<uint8>(stateid), newState); }
@@ -79,7 +84,7 @@ private:
 	
 	FStateMachineCondition OnUpdateStateMachineCondition;
 	FStateMachineCondition OnStateMachineCondition;
-
+	FStateMachineEnterCondition OnStateMachineEnterCondition;
 	//uint16 stateOrder;
 private:
 	UPROPERTY()
@@ -100,6 +105,12 @@ template<typename UClass>
 inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&))
 {
 	OnStateMachineCondition.AddUObject(uclass, condition);
+}
+
+template<typename UClass>
+inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(bool))
+{
+	OnStateMachineEnterCondition.AddUObject(uclass, condition);
 }
 
 

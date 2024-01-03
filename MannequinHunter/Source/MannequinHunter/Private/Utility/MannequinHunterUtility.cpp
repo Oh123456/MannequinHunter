@@ -10,7 +10,8 @@ float FMannequinHunterUtility::GetPlayRate(int32 characterAttackSpeed)
 {
 	//https://www.desmos.com/calculator?lang=ko 그래프 사이트
 	// 100 이상
-	// y = 1.225^x + (1 - 1.225)
+	// a = 1.225
+	// y = a^x + (1 - a)
 	// 100 미만
 	// sin(x*0.5PI)
 	float speed = characterAttackSpeed * 0.01f;

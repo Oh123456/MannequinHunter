@@ -38,7 +38,7 @@ public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FStateMachineEnterCondition, OUT bool)
 public:
 	FStateMachine(UHFSMComponent* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
-	~FStateMachine();
+	virtual ~FStateMachine();
 
 	void Enter();
 	void Update();
@@ -71,21 +71,23 @@ public:
 	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&));
 
 	template<typename UClass>
-	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(bool));
+	inline void AddStateEnterCondition(UClass* uclass, void(UClass::* condition)(bool));
 
 	inline void AddState(uint8 stateid, TSharedPtr<FState>& newState) { states.Add(stateid, newState); }
 	template<typename TStateEnum>
 	inline void AddState(TStateEnum stateid, TSharedPtr<FState>& newState) { states.Add(StaticCast<uint8>(stateid), newState); }
-private:
+protected:
+	virtual void CreateStates() {};
+protected:
 	uint8 stateMachineID;
 	uint8 defaultStateID;
+
 	TMap<uint8, TSharedPtr<FState>> states;
 	TSharedPtr<FState> currentState;
-	
+
 	FStateMachineCondition OnUpdateStateMachineCondition;
 	FStateMachineCondition OnStateMachineCondition;
 	FStateMachineEnterCondition OnStateMachineEnterCondition;
-	//uint16 stateOrder;
 private:
 	UPROPERTY()
 	TObjectPtr<ACharacter> ownerCharacter;
@@ -108,7 +110,7 @@ inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* cond
 }
 
 template<typename UClass>
-inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(bool))
+inline void FStateMachine::AddStateEnterCondition(UClass* uclass, void(UClass::* condition)(bool))
 {
 	OnStateMachineEnterCondition.AddUObject(uclass, condition);
 }

@@ -37,13 +37,14 @@ public:
 	template<typename T>
 	void SetStateOrder(T order) { SetStateOrder(StaticCast<uint16>(order)); }
 protected:
-	TSharedPtr<FStateMachine>* AddStateMachine(uint8 id, uint8 defaultSateID = 0);
+	//template<typename TStateMachine>
+	//TSharedPtr<FStateMachine>* AddStateMachine();
 
-	template<typename T>
-	TSharedPtr<FStateMachine>* AddStateMachine(T id, uint8 defaultSateID = 0);
+	//template<typename T>
+	//TSharedPtr<FStateMachine>* AddStateMachine(T id, uint8 defaultSateID = 0);
 
-	template<typename T, typename T1>
-	TSharedPtr<FStateMachine>* AddStateMachine(T id, T1 defaultSateID = 0);
+	template<typename TStateMachine, typename T>
+	TSharedPtr<FStateMachine>* AddStateMachine(T id);
 
 	TSharedPtr<FStateMachine>* FindStateMachine(uint8 id);
 
@@ -86,12 +87,12 @@ protected:
 };
 
 
-template<typename T>
-TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T id, uint8 defaultSateID)
-{
-  	return AddStateMachine(static_cast<uint8>(id), defaultSateID);
-}
-
+//template<typename T>
+//TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T id, uint8 defaultSateID)
+//{
+//  	return AddStateMachine(static_cast<uint8>(id), defaultSateID);
+//}
+//
 
 template<typename T>
 TSharedPtr<FStateMachine>* UHFSMComponent::FindStateMachine(T id)
@@ -99,8 +100,23 @@ TSharedPtr<FStateMachine>* UHFSMComponent::FindStateMachine(T id)
 	return FindStateMachine(static_cast<uint8>(id));
 }
 
-template<typename T, typename T1>
-TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T id, T1 defaultSateID)
+//template< typename TStateMachine>
+//TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine()
+//{
+//	return AddStateMachine<TStateMachine>();
+//}
+
+template<typename TStateMachine, typename T>
+TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T tId)
 {
-	return AddStateMachine(static_cast<uint8>(id), static_cast<uint8>(defaultSateID));
+	uint8 id = StaticCast<uint8>(tId);
+
+	TSharedPtr<FStateMachine>* find = stateMachines.Find(id);
+	if (find == nullptr)
+	{
+		TSharedPtr<FStateMachine> stateMachine = MakeShared<TStateMachine>(this);
+		find = &stateMachines.Add(id, stateMachine);
+	}
+
+	return find;
 }

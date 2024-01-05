@@ -47,6 +47,9 @@ struct FPlayerInputData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> inputBufferInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> lockOnAction;
 };
 
 

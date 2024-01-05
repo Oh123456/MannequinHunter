@@ -6,40 +6,30 @@
 #include "Character/RYU.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Character/PlayerCommonEnums.h"
-#include "HFSM/States/IdleState.h"
-#include "HFSM/States/DodgeState.h"
-#include "HFSM/States/JumpState.h"
-#include "HFSM/States/MoveState.h"
-#include "HFSM/States/AttackState.h"
-#include "HFSM/States/InputWaitState.h"
+#include "HFSM/StatesMachines/DefaultStateMachine.h"
+#include "HFSM/StatesMachines/CombatStateMachine.h"
+#include "HFSM/StatesMachines/FallingStateMachine.h"
+#include "HFSM/StatesMachines/HitStateMachine.h"
 #include "DebugLog.h"
 
 void URYUHFSMComponent::SetStateMachine()
 {
-	TSharedPtr<FStateMachine>* stateMachine = AddStateMachine(EPlayerStateMachine::Defulat, EPlayerStateEnum::Idle);
-	(*stateMachine)->CreateState<FIdleState>(EPlayerStateEnum::Idle);
-	(*stateMachine)->CreateState<FMoveState>(EPlayerStateEnum::Move);
-	(*stateMachine)->CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
+	TSharedPtr<FStateMachine>* stateMachine = AddStateMachine<FDefaultStateMachine>(EPlayerStateMachine::Default);
 
-	stateMachine = AddStateMachine(EPlayerStateMachine::Combat,EPlayerStateEnum::Idle);
-	(*stateMachine)->CreateState<FIdleState>(EPlayerStateEnum::Idle);
-	(*stateMachine)->CreateState<FInputWaitState>(EPlayerStateEnum::InputWait);
-	(*stateMachine)->CreateState<FMoveState>(EPlayerStateEnum::Move);
-	(*stateMachine)->CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
-	(*stateMachine)->CreateState<FAttackState>(EPlayerStateEnum::Attack);
+	stateMachine = AddStateMachine<FCombatStateMachine>(EPlayerStateMachine::Combat);
 
-	stateMachine = AddStateMachine(EPlayerStateMachine::Falling, EPlayerStateEnum::Jump);
-	(*stateMachine)->CreateState<FJumpState>(EPlayerStateEnum::Jump);
+	stateMachine = AddStateMachine<FFallingStateMachine>(EPlayerStateMachine::Falling);
+
+	stateMachine = AddStateMachine<FHitStateMachine>(EPlayerStateMachine::Hit);
 }
 
 void URYUHFSMComponent::SetConditions()
 {
-	TSharedPtr<FStateMachine>* stateMachine = FindStateMachine(EPlayerStateMachine::Defulat);
-	(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::ChangeCombat);
+
+	TSharedPtr<FStateMachine>* stateMachine = FindStateMachine(EPlayerStateMachine::Default);
 	(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::ChangeFalling);
 
 	stateMachine = FindStateMachine(EPlayerStateMachine::Combat);
-	(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::ChangeCombat);
 	(*stateMachine)->AddStateCondition(this, &URYUHFSMComponent::ChangeFalling);
 
 
@@ -57,7 +47,7 @@ void URYUHFSMComponent::ChangeCombat(uint16 order, OUT FStateMachineConditionRes
 	if (order == StaticCast<uint16>(EStateOrder::ToggleCombat))
 	{
 		if (IsCombat())
-			result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Defulat));
+			result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Default));
 		else
 			result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Combat));
 	}
@@ -76,7 +66,7 @@ void URYUHFSMComponent::ChangeFalling(uint16 order, OUT FStateMachineConditionRe
 	{
 		EPlayerStateMachine eStateMachine = StaticCast<EPlayerStateMachine>(result.stateID);
 		if (eStateMachine == EPlayerStateMachine::Combat ||
-			eStateMachine == EPlayerStateMachine::Defulat)
+			eStateMachine == EPlayerStateMachine::Default)
 		{
 			result.SetStateID(StaticCast<uint16>(EPlayerStateMachine::Falling));
 		}
@@ -94,7 +84,7 @@ void URYUHFSMComponent::ChangeFallingEnd(uint16 order, OUT FStateMachineConditio
 		if (IsCombat())
 			result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Combat));
 		else
-			result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Defulat));
+			result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Default));
 	}
 }
 

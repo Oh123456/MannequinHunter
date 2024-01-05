@@ -96,19 +96,6 @@ void UHFSMComponent::BeginPlay()
 	ChangeStateMachine(defaultStateID);
 }
 
-TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(uint8 id, uint8 defaultSateID)
-{
-
-	TSharedPtr<FStateMachine>* find = stateMachines.Find(id);
-	if (find == nullptr)
-	{
-		TSharedPtr<FStateMachine> stateMachine = MakeShared<FStateMachine>(FStateMachine(this, id, defaultSateID));
-		find = &stateMachines.Add(id, stateMachine);
-	}
-
-	return find;
-}
-
 TSharedPtr<FStateMachine>* UHFSMComponent::FindStateMachine(uint8 id)
 {
 	return stateMachines.Find(id);

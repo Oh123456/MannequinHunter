@@ -40,7 +40,7 @@ private:
 	void RAttack(const struct FInputActionInstance& inputActionInstance);
 
 	void Attack(EPlayerInputType type);
-
+	void LockOn();
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(EWeaponType type);

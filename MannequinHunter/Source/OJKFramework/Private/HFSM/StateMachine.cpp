@@ -12,6 +12,8 @@ FStateMachine::FStateMachine(UHFSMComponent* owner, uint8 stateMachineID, uint8 
 	, defaultStateID(defaultStateID) , ownerCharacter(ownerCharacter)
 {
 	ownerCharacter = Cast<ACharacter>(owner->GetOwner());
+
+	CreateStates();
 }
 
 FStateMachine::~FStateMachine()

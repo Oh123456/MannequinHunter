@@ -4,7 +4,6 @@
 #include "HFSM/States/DodgeState.h"
 #include "Character/PlayerCommonEnums.h"
 #include "Player/PlayerCharacter.h"
-#include "Character/PlayerCommonEnums.h"
 #include "CombatSystem/CharacterCombatComponent.h"
 #include "HFSM/StateMachine.h"
 #include "DebugLog.h"

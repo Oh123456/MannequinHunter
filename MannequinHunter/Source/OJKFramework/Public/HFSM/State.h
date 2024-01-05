@@ -22,7 +22,7 @@ protected:
 
 
 		OnlyUpdate = UseUpdate,
-		DontUpdatea = 0,
+		DontUpdate = 0,
 
 		UpdataAndIgonereOrder = UseUpdate | IgonereOrder,
 		UpdataAndConvertOrder = UseUpdate | ConvertOrder,

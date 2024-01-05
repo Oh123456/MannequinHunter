@@ -82,6 +82,13 @@ void ARYU::SetInputAction()
 	{
 		inputData.Attack2Action = findRAttackAction.Object;
 	}
+
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findLockOnAction, TEXT("/Game/BP/Input/IA_LockOn.IA_LockOn"))
+
+	if (findLockOnAction.Succeeded())
+	{
+		inputData.lockOnAction = findLockOnAction.Object;
+	}
 }
 
 void ARYU::ToggleCombat()
@@ -137,10 +144,16 @@ void ARYU::Attack(EPlayerInputType type)
 
 
 		EStateOrder stateOrder = EStateOrder::Attack;
-		if (HFSM->GetCurrentStateMachineID() == StaticCast<uint8>(EPlayerStateMachine::Defulat))
+		if (HFSM->GetCurrentStateMachineID() == StaticCast<uint8>(EPlayerStateMachine::Default))
 			stateOrder |= EStateOrder::ToggleCombat;
 		HFSM->SetStateOrder(stateOrder);
 	}
+}
+
+void ARYU::LockOn()
+{
+	if (combatComponent)
+		combatComponent->SetLockOnTarget();
 }
 
 void ARYU::TestWeaponTypeChange(EWeaponType type)
@@ -183,6 +196,7 @@ void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 		
 		enhancedInputComponent->BindAction(inputData.Attack2Action, ETriggerEvent::Triggered, this, &ARYU::RAttack);
 
+		enhancedInputComponent->BindAction(inputData.lockOnAction, ETriggerEvent::Triggered, this, &ARYU::LockOn);
 
 	}
 }

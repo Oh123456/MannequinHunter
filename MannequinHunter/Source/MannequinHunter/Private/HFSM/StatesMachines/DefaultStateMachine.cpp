@@ -11,7 +11,6 @@
 FDefaultStateMachine::FDefaultStateMachine(UHFSMComponent* ownerCharacter) :
 	FStateMachine(ownerCharacter, StaticCast<uint8>(EPlayerStateMachine::Default), StaticCast<uint8>(EPlayerStateEnum::Idle))
 {
-	OnStateMachineCondition.AddRaw(this, &FDefaultStateMachine::ChangeCombat);
 }
 
 FDefaultStateMachine::~FDefaultStateMachine()
@@ -36,4 +35,9 @@ void FDefaultStateMachine::CreateStates()
 	CreateState<FIdleState>(EPlayerStateEnum::Idle);
 	CreateState<FMoveState>(EPlayerStateEnum::Move);
 	CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
+}
+
+void FDefaultStateMachine::SetCondition()
+{
+	OnStateMachineCondition.AddRaw(this, &FDefaultStateMachine::ChangeCombat);
 }

@@ -13,7 +13,7 @@
 FCombatStateMachine::FCombatStateMachine(UHFSMComponent* ownerCharacter) :
 	FStateMachine(ownerCharacter, StaticCast<uint8>(EPlayerStateMachine::Combat), StaticCast<uint8>(EPlayerStateEnum::Idle))
 {
-	OnStateMachineCondition.AddRaw(this, &FCombatStateMachine::ChangeCombat);
+	
 }
 
 FCombatStateMachine::~FCombatStateMachine()
@@ -41,4 +41,9 @@ void FCombatStateMachine::CreateStates()
 	CreateState<FMoveState>(EPlayerStateEnum::Move);
 	CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
 	CreateState<FAttackState>(EPlayerStateEnum::Attack);
+}
+
+void FCombatStateMachine::SetCondition()
+{
+	OnStateMachineCondition.AddRaw(this, &FCombatStateMachine::ChangeCombat);
 }

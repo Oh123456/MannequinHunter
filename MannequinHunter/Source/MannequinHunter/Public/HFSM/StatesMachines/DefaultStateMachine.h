@@ -18,4 +18,5 @@ private:
 	void ChangeCombat(uint16 order, OUT FStateMachineConditionResult& result);
 protected:
 	virtual void CreateStates() override;
+	virtual void SetCondition() override;
 };

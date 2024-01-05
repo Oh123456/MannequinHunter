@@ -14,6 +14,8 @@
 
 void URYUHFSMComponent::SetStateMachine()
 {
+	defaultStateID = StaticCast<uint8>(EPlayerStateMachine::Default);
+
 	TSharedPtr<FStateMachine>* stateMachine = AddStateMachine<FDefaultStateMachine>(EPlayerStateMachine::Default);
 
 	stateMachine = AddStateMachine<FCombatStateMachine>(EPlayerStateMachine::Combat);

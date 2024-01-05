@@ -24,7 +24,7 @@ void FCombatStateMachine::ChangeCombat(uint16 order, OUT FStateMachineConditionR
 {
 	if (result.isChange)
 		return;
-	result.SetDefaultStateID(defaultStateID);
+	result.SetDefaultStateID(stateMachineID);
 
 	if (order == StaticCast<uint16>(EStateOrder::ToggleCombat))
 	{

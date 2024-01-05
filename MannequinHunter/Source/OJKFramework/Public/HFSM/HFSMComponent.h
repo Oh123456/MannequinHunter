@@ -116,6 +116,7 @@ TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T tId)
 	{
 		TSharedPtr<FStateMachine> stateMachine = MakeShared<TStateMachine>(this);
 		find = &stateMachines.Add(id, stateMachine);
+		(*find)->Init();
 	}
 
 	return find;

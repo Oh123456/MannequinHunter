@@ -40,6 +40,8 @@ public:
 	FStateMachine(UHFSMComponent* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
 	virtual ~FStateMachine();
 
+	void Init() { CreateStates(); }
+
 	void Enter();
 	void Update();
 	void Exit();
@@ -77,7 +79,7 @@ public:
 	template<typename TStateEnum>
 	inline void AddState(TStateEnum stateid, TSharedPtr<FState>& newState) { states.Add(StaticCast<uint8>(stateid), newState); }
 protected:
-	virtual void CreateStates() {};
+	virtual void CreateStates() {}
 protected:
 	uint8 stateMachineID;
 	uint8 defaultStateID;

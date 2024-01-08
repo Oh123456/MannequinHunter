@@ -64,6 +64,17 @@ enum class ECharacterCombatMontageType : uint8
 	Dodge4,
 	Dodge5,
 
+	Hit1 = 110,
+	Hit2,
+	Hit3,
+	Hit4,
+	Hit5,
+	Hit6,
+	Hit7,
+	Hit8,
+	Hit9,
+	Hit10,
+
 	Turn1 = 250,
 	Turn2,
 };

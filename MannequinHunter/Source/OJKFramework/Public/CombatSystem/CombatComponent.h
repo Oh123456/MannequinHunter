@@ -44,10 +44,10 @@ private:
 	FDeathEvent deathEvent;
 	FTakeDamage takeDamage;
 protected:
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<class UStatusDataAsset> statusDataAsset;
-	//UPROPERTY(EditDefaultsOnly)
 	FStatus status;
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AActor> damageCauserActor;
 private:
 	UPROPERTY(EditDefaultsOnly)
 	bool isImmortality;

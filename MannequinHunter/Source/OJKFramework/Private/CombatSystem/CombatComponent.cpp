@@ -6,6 +6,8 @@
 #include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
 #include "CombatSystem/DeathInfo.h"
+#include "OJKFramework.h"
+#include "DebugLog.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent() : 
@@ -25,7 +27,7 @@ UCombatComponent::~UCombatComponent()
 
 }
 
-void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser, TSubclassOf<UDamageType> damageTypeClass)
+void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser,TSubclassOf<UDamageType> damageTypeClass)
 {
 	if (damageComponent == nullptr)
 		return;
@@ -45,12 +47,17 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 
 void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
+	damageCauserActor = damageCauser;
 	TSharedPtr<FStatusData>& statusData = status.GetStatusData();
+	if (statusData == nullptr)
+	{
+		UE_LOG_WARNING(Framework, TEXT("%s StatusData is None"), *UKismetSystemLibrary::GetDisplayName(GetOwner()));
+		return;
+	}
 	int32 actualDamage = CalculateTakeDamage(damageAmount);
 	statusData->health -= actualDamage;
-
+	
 	takeDamage.Broadcast(status, actualDamage, damageEvent, eventInstigator, damageCauser);
-	UE_LOG(LogTemp,Log,TEXT("tlqkf glxmek glxm"))
 
 	if (!isImmortality && statusData->health <= 0)
 	{
@@ -74,6 +81,10 @@ float UCombatComponent::CalculateApplyDamage()
 
 int32 UCombatComponent::CalculateTakeDamage(float damageAmount)
 {
-	return static_cast<int32>(damageAmount) - status.GetStatusData()->defensive;
+	TSharedPtr<FStatusData>& statusData = status.GetStatusData();
+	if (statusData)
+		return static_cast<int32>(damageAmount) - statusData->defensive;
+
+	return static_cast<int32>(damageAmount);
 }
 

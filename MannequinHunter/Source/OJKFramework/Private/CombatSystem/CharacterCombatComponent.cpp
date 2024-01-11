@@ -18,23 +18,25 @@ const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
 UCharacterCombatComponent::UCharacterCombatComponent() : Super(),
 characterCombatData(), characterRotationData(), characterCombatAnimationData()
 {
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDodgeDirectionIndex::Front);
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDodgeDirectionIndex::Front_Left);
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDodgeDirectionIndex::Front_Right);
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDodgeDirectionIndex::Left);
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDodgeDirectionIndex::Right);
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDodgeDirectionIndex::Back);
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDodgeDirectionIndex::Back_Left);
-	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDodgeDirectionIndex::Back_Right);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDirectionIndex::Front);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDirectionIndex::Front_Left);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDirectionIndex::Front_Right);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDirectionIndex::Left);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDirectionIndex::Right);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDirectionIndex::Back);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDirectionIndex::Back_Left);
+	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDirectionIndex::Back_Right);
 
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDodgeDirectionIndex::Front);
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDodgeDirectionIndex::Front);
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDodgeDirectionIndex::Front);
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDodgeDirectionIndex::Left);
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDodgeDirectionIndex::Right);
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDodgeDirectionIndex::Back);
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDodgeDirectionIndex::Back);
-	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDodgeDirectionIndex::Back);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDirectionIndex::Front);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDirectionIndex::Front);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::FR, EDirectionIndex::Front);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::L, EDirectionIndex::Left);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::R, EDirectionIndex::Right);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::B, EDirectionIndex::Back);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::BL, EDirectionIndex::Back);
+	characterCombatAnimationData.fourDodgeDirectionIndexMap.Add(EDodgeDirection::BR, EDirectionIndex::Back);
+
+
 
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -90,6 +92,66 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype)
 		SubtractCombatAbleFlag((ECombatAble::AttackAble | ECombatAble::DodgeAble));
 	}
 }
+
+uint8 UCharacterCombatComponent::OnHitDirection_Implementation()
+{
+	if (damageCauserActor == nullptr)
+		return 0;
+
+	AActor* damageActor = damageCauserActor->GetOwner();
+
+	if (damageActor == nullptr)
+		damageActor = damageCauserActor;
+
+	AActor* owner = GetOwner();
+
+	FVector2d ownerForwardVector2D(owner->GetActorForwardVector());
+
+	FVector2d xVector(1.0f, 0.f);
+
+	float degrees = FMath::RadiansToDegrees(FMath::Acos(xVector.Dot(ownerForwardVector2D)));
+
+
+	FVector2d forwardVector2D(damageActor->GetActorForwardVector());
+	FVector2d rotatedVector = forwardVector2D.GetRotated(degrees);
+	
+	float rotatedVectorAngle = FMath::RadiansToDegrees(FMath::Atan2(rotatedVector.Y, rotatedVector.X));
+
+	uint8 direction = (StaticCast<uint8>((rotatedVectorAngle / 45.0f)) % 8);
+
+	return direction;
+}
+
+uint8 UCharacterCombatComponent::ConvertDirectionToHitDirection(uint8 direction)
+{
+	EDirection eDirection = StaticCast<EDirection>(direction);
+	switch (eDirection)
+	{
+	case UCharacterCombatComponent::EDirection::Front_Right:
+	case UCharacterCombatComponent::EDirection::Front_Left:
+	case UCharacterCombatComponent::EDirection::Front:
+		return StaticCast<uint8>(EHitDirection::Back);
+
+	case UCharacterCombatComponent::EDirection::Right:
+		return StaticCast<uint8>(EHitDirection::Left);
+
+	case UCharacterCombatComponent::EDirection::Left:
+		return StaticCast<uint8>(EHitDirection::Right);
+
+	case UCharacterCombatComponent::EDirection::Back:
+		return StaticCast<uint8>(EHitDirection::Front);
+
+	case UCharacterCombatComponent::EDirection::Back_Left:
+		return StaticCast<uint8>(EHitDirection::Front_Right);
+
+	case UCharacterCombatComponent::EDirection::Back_Right:
+		return StaticCast<uint8>(EHitDirection::Front_Left);
+
+	default:
+		return StaticCast<uint8>(EHitDirection::Back);
+	}
+}
+
 void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype);
@@ -121,7 +183,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, floa
 
 	EDodgeDirection eDodgeDirection = static_cast<EDodgeDirection>(dodgeDirection);
 
-	const TMap<EDodgeDirection, EDodgeDirectionIndex>& eightDodgeDirectionIndexMap = characterCombatAnimationData.eightDodgeDirectionIndexMap;
+	const TMap<EDodgeDirection, EDirectionIndex>& eightDodgeDirectionIndexMap = characterCombatAnimationData.eightDodgeDirectionIndexMap;
 	std::function<void()> IsLockOnCallBack = nullptr;
 
 	if (IsLockOn())
@@ -269,23 +331,11 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 		bool is8Direction = currentAnimMontages->Num() > 4;
 
 		ACharacter* owner = characterCombatData.owner;
-		const TMap<EDodgeDirection, EDodgeDirectionIndex>& eightDodgeDirectionIndexMap = characterCombatAnimationData.eightDodgeDirectionIndexMap;
+		const TMap<EDodgeDirection, EDirectionIndex>& eightDodgeDirectionIndexMap = characterCombatAnimationData.eightDodgeDirectionIndexMap;
 
 		FVector2D directionVector = UKismetMathLibrary::Normal2D(characterCombatAnimationData.dodgeDirectionDelegate.Execute());
 		UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
 		UAnimMontage* dodgeMontage = nullptr;
-
-		//int8 dodgeDirection = 0;
-
-		//if (directionVector.Y > 0.f)
-		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::F);		
-		//else if (directionVector.Y < 0.f)
-		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::B);
-
-		//if (directionVector.X > 0.0f)
-		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::R);
-		//else if (directionVector.X < 0.0f)
-		//	dodgeDirection |= static_cast<int8>(EDodgeDirection::L);
 
 		int8 dodgeDirection = DodgeDirection(directionVector);
 		EDodgeDirection eDodgeDirection = static_cast<EDodgeDirection>(dodgeDirection);
@@ -347,6 +397,32 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 
 
 	}
+}
+
+
+
+void UCharacterCombatComponent::Hit(ECharacterCombatMontageType animtype)
+{
+	ChangeCombatType(animtype);
+
+	characterCombatData.combatAbleFlag = ECombatAble::Default;
+
+	UAnimMontage* montage = nullptr;
+	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
+	if (currentAnimMontages == nullptr)
+		return;
+	ACharacter* owner = characterCombatData.owner;
+
+	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
+
+	uint8 direction = ConvertDirectionToHitDirection(OnHitDirection());
+
+	if (currentAnimMontages->Num() <= direction)
+		direction = 0;
+
+	montage = (*currentAnimMontages)[direction];
+
+	animInstance->Montage_Play(montage);
 }
 
 void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float yaw)
@@ -468,6 +544,12 @@ void UCharacterCombatComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	LockOn();
+}
+
+void UCharacterCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
+{
+	Super::TakeDamage(damageAmount, damageEvent, eventInstigator, damageCauser);
+	Hit(ECharacterCombatMontageType::Hit1);
 }
 
 void UCharacterCombatComponent::BeginPlay()

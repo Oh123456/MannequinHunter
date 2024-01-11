@@ -66,7 +66,20 @@ protected:
 		Default = AttackAble | DodgeAble | HitAble,
 	};
 
-	enum EDodgeDirectionIndex : int8
+	//юс╫ц
+	enum class EDirection : uint8
+	{
+		Front = 0,
+		Front_Right,
+		Right,
+		Back_Right,
+		Back,
+		Back_Left,
+		Left,
+		Front_Left,
+	};
+
+	enum EDirectionIndex : uint8
 	{
 		Back = 0,
 		Front,
@@ -104,8 +117,16 @@ protected:
 		LR = Left | Right,
 	};
 
-
-
+	enum class EHitDirection : int32
+	{
+		Back = 0,
+		Front,
+		Left,
+		Right,
+		Front_Left,
+		Front_Right,
+		Front_Back,
+	};
 
 	enum ETurnDirection
 	{
@@ -141,9 +162,8 @@ protected:
 		const TArray<UAnimMontage*>* currentAnimMontages = nullptr;
 		ECharacterCombatMontageType currentAnimType;
 
-		TMap<EDodgeDirection, EDodgeDirectionIndex> eightDodgeDirectionIndexMap = {};
-		TMap<EDodgeDirection, EDodgeDirectionIndex> fourDodgeDirectionIndexMap = {};
-
+		TMap<EDodgeDirection, EDirectionIndex> eightDodgeDirectionIndexMap = {};
+		TMap<EDodgeDirection, EDirectionIndex> fourDodgeDirectionIndexMap = {};
 		FDodgeDirection dodgeDirectionDelegate = {};
 	};
 
@@ -198,6 +218,7 @@ protected:
 	void SetTargetActor(AActor* target) { characterRotationData.targetActor = target; }
 	const AActor* GetTargetActor() const { return characterRotationData.targetActor; }
 
+
 private:
 	int32 GetPreviousAttackCount();
 	int8 DodgeDirection(const FVector2D& directionVector);
@@ -214,14 +235,23 @@ public:
 	void Dodge(ECharacterCombatMontageType animtype);
 
 	UFUNCTION(BlueprintCallable)
+	void Hit(ECharacterCombatMontageType animtype);
+
+	UFUNCTION(BlueprintCallable)
 	virtual void SetLockOnTarget();
 
 	UFUNCTION(BlueprintCallable)
 	inline void SetIsActorRotation(bool b);
-
+protected:
+	UFUNCTION(BlueprintNativeEvent, Category = "Hit Event")
+	uint8 OnHitDirection();
+	virtual uint8 OnHitDirection_Implementation();
+	UFUNCTION(BlueprintPure)
+	uint8 ConvertDirectionToHitDirection(uint8 direction);
 public:
 	virtual void Dodge(ECharacterCombatMontageType animtype,float playRate,std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
 	virtual void Attack(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
+	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser) override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	virtual void BeginPlay() override;

@@ -8,6 +8,7 @@
 #include "BaseActionCharacter.h"
 #include "CombatSystem/CharacterCombatComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/Actor.h"
 
 using FAttackObject = FWeaponHitData::FAttackObject;
@@ -28,11 +29,35 @@ void ABaseWeapon::SetCylinderActive(bool isActive)
 	if (cylinderComponent == nullptr)
 		return;
 	if (isActive)
+	{
 		cylinderComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		weaponHitData.hitDirectionStartLocation = cylinderComponent->GetComponentLocation();
+	}
 	else
+	{
 		cylinderComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		weaponHitData.hitDirectionStartLocation = FVector::ZeroVector;
+	}
 }
 
+
+FVector2D ABaseWeapon::GetAttackDirection() const
+{
+	if (bUseCylinder)
+		return  FVector2D(cylinderComponent->GetComponentLocation() - weaponHitData.hitDirectionStartLocation).GetSafeNormal();
+	else
+		//TODO:: Trace것도 추가 할것
+		return FVector2D::Zero();
+}
+
+FVector ABaseWeapon::GetHitPoint() const
+{
+	if (bUseCylinder)
+		return  cylinderComponent->GetComponentLocation();
+	else
+		//TODO:: Trace것도 추가 할것
+		return FVector::Zero();
+}
 
 bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 {

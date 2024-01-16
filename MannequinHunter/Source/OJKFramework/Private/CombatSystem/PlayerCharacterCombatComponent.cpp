@@ -32,27 +32,38 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 
 	const AActor* targetActor = GetTargetActor();
 
-	FHitResult hitResult;
-	
-	bool isHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+
+	TArray<FHitResult> hitResults;
+
+	bool isHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
 		this,
 		ownerLocation, ownerLocation,
 		LockOnLength,
 		lockOnTargetObjectType, false ,
-		TArray<AActor*>(), EDrawDebugTrace::ForDuration, hitResult, true);
+		TArray<AActor*>(), EDrawDebugTrace::ForDuration, hitResults, true);
 
 	AActor* hitActor = nullptr;
-	bool bOrientRotationToMovement = true;
+	bool bOrientRotationToMovement = false;
 	if (isHit)
 	{
+		float maxLength = 0.0f;
+		float length = 0.0f;
+		int32 size = hitResults.Num();
+		FHitResult& hitResult = hitResults[0];
 		hitActor = hitResult.GetActor();
-		if (hitActor->GetComponentByClass<UCombatComponent>())
+		maxLength = (hitActor->GetActorLocation() - ownerLocation).SizeSquared();
+		for (int32 i = 1 ; i < size; i++)
 		{
-			if (targetActor == nullptr)
-				bOrientRotationToMovement = false;
-			else
-				hitActor = nullptr;
-			
+			hitResult = hitResults[i];
+			if (hitActor->GetComponentByClass<UCombatComponent>())
+			{
+				length = (hitActor->GetActorLocation() - ownerLocation).SizeSquared();
+				if (maxLength < length)
+				{
+					maxLength = length;
+					hitActor = hitResult.GetActor();
+				}
+			}
 		}
 	}
 

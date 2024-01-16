@@ -70,6 +70,7 @@ struct FWeaponHitData
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
 	TEnumAsByte<ETraceTypeQuery> attackAbleTraceType = ETraceTypeQuery::TraceTypeQuery1;
 
+	FVector hitDirectionStartLocation;
 
 	FVector startLocation;
 	FVector endLocation;
@@ -97,7 +98,6 @@ public:
 	inline void HitCheckEnd() { if (hitCheckEndDelegate.IsBound()) hitCheckEndDelegate.Execute(); }
 
 	
-	
 private:
 	bool CheckHitAble(class UCombatComponent* damagedObject);
 	void ApplyDamage(class UCombatComponent* damagedObject, const FHitResult& hitResult);
@@ -114,6 +114,8 @@ protected:
 	virtual void HitCheckTrace();
 public:
 	virtual void SetCylinderActive(bool isActive);
+	virtual FVector2D GetAttackDirection() const;
+	virtual FVector GetHitPoint() const;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -135,15 +137,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Mesh);
 	TObjectPtr<class UMeshComponent> weaponMeshComponent;
 
-private:
-
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
+	FWeaponHitData weaponHitData;
 	// hit check use Cylinder? 
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (AllowPrivateAccess = "true"));
 	bool bUseCylinder = true;
-
-	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (AllowPrivateAccess = "true"));
-	FWeaponHitData weaponHitData;
-
+private:
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (EditCondition = "bUseCylinder == false", EditConditionHides, AllowPrivateAccess = "true"))
 	FWeaponTraceHitParameter weaponTraceHitParameter;
 

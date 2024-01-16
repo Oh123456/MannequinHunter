@@ -20,8 +20,20 @@ void AMultiHitBoxWeapon::SetCylinderActive(bool isActive)
 		return;
 	uint8 index = 0;
 
+	TQueue<uint8>& activeCylinderIndexQueue = multiHitBoxWeaponData.activeCylinderIndexQueue;
+	TQueue<uint8>& hideCylinderIndexQueue = multiHitBoxWeaponData.hideCylinderIndexQueue;
+
 	if (isActive)
 	{
+		activeCylinderIndexQueue.Dequeue(index);
+
+		AHitBoxActor* hitBox = multiHitBoxWeaponData.hitBoxs[index];
+		weaponHitData.hitDirectionStartLocation = hitBox->GetActorLocation();
+		multiHitData.hitDirectionHitBoxActor = hitBox;
+
+		hitBox->SetCylinderActive(isActive);
+		hideCylinderIndexQueue.Dequeue(index);
+
 		while (activeCylinderIndexQueue.Dequeue(index))
 		{
 			multiHitBoxWeaponData.hitBoxs[index]->SetCylinderActive(isActive);
@@ -30,6 +42,7 @@ void AMultiHitBoxWeapon::SetCylinderActive(bool isActive)
 	}
 	else
 	{
+		
 		if (activeCylinderIndexQueue.IsEmpty())
 		{
 			for(AHitBoxActor* hitBox : multiHitBoxWeaponData.hitBoxs)
@@ -42,7 +55,26 @@ void AMultiHitBoxWeapon::SetCylinderActive(bool isActive)
 				multiHitBoxWeaponData.hitBoxs[index]->SetCylinderActive(isActive);
 			}
 		}
+
+		weaponHitData.hitDirectionStartLocation = FVector::ZeroVector;
+		multiHitData.hitDirectionHitBoxActor = nullptr;
 	}
+}
+
+FVector2D AMultiHitBoxWeapon::GetAttackDirection() const
+{
+	if (bUseCylinder)
+		return FVector2D(multiHitData.hitDirectionHitBoxActor->GetActorLocation() - weaponHitData.hitDirectionStartLocation).GetSafeNormal();
+	else
+		return FVector2D::ZeroVector;
+}
+
+FVector AMultiHitBoxWeapon::GetHitPoint() const
+{
+	if (bUseCylinder)
+		return multiHitData.hitDirectionHitBoxActor->GetActorLocation();
+	else
+		return FVector::ZeroVector;
 }
 
 void AMultiHitBoxWeapon::SetCylinder()

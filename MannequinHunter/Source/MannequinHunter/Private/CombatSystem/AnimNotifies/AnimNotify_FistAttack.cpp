@@ -22,10 +22,10 @@ void UAnimNotify_FistAttack::BeginAttack(UCharacterCombatComponent* characterCom
 			{
 				if (flagArray.flags.IsEmpty())
 				{
-					UE_LOG_WARNING(LogTemp,TEXT("Anim Index : %d, HitBoxSlot Empty!!!" ), mannequinHunterCombatComponent->GetCombatAnimationData());
+					//UE_LOG_WARNING(LogTemp,TEXT("Anim Index : %d, HitBoxSlot Empty!!!" ), mannequinHunterCombatComponent->GetCombatAnimationData());
 					continue;
 				}
-				UE_LOG_WARNING(LogTemp,TEXT("FistWeapon hitBox Flag : %d" ), (flagArray.flags[animNotifyIndex].flag));
+				//UE_LOG_WARNING(LogTemp,TEXT("FistWeapon hitBox Flag : %d" ), (flagArray.flags[animNotifyIndex].flag));
 				fistWeapon->SetActiveCylinderIndex((flagArray.flags[animNotifyIndex].flag));
 			}
 		}

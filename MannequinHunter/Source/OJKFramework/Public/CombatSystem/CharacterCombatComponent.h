@@ -70,13 +70,13 @@ protected:
 	enum class EDirection : uint8
 	{
 		Front = 0,
-		Front_Right,
-		Right,
-		Back_Right,
-		Back,
-		Back_Left,
-		Left,
 		Front_Left,
+		Left,
+		Back_Left,
+		Back,
+		Back_Right,
+		Right,
+		Front_Right,
 	};
 
 	enum EDirectionIndex : uint8

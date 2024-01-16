@@ -9,9 +9,11 @@
 #include "Singleton/ObjectPoolManager.h"
 #include "Player/PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Equipment/BaseWeapon.h"
 #include "OJKFramework.h"
 #include "TimerManager.h"
 #include "DebugLog.h"
+#include "DrawDebugHelpers.h"
 
 const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
 
@@ -98,28 +100,119 @@ uint8 UCharacterCombatComponent::OnHitDirection_Implementation()
 	if (damageCauserActor == nullptr)
 		return 0;
 
-	AActor* damageActor = damageCauserActor->GetOwner();
-
-	if (damageActor == nullptr)
-		damageActor = damageCauserActor;
-
 	AActor* owner = GetOwner();
+	FVector forwardVector = owner->GetActorForwardVector();
+	FVector2D ownerForwardVector2D(owner->GetActorForwardVector());
 
-	FVector2d ownerForwardVector2D(owner->GetActorForwardVector());
+	ABaseWeapon* baseWeapon = Cast<ABaseWeapon>(damageCauserActor);
+	FVector2D attackForwardVector;
 
-	FVector2d xVector(1.0f, 0.f);
+	if (baseWeapon == nullptr)
+	{
+		AActor* damageCauserOwner = damageCauserActor->GetOwner();
+		if (damageCauserOwner == nullptr)
+			damageCauserOwner = damageCauserActor;
+		attackForwardVector = FVector2D(damageCauserOwner->GetActorForwardVector());
+	}
+	else
+	{
+		attackForwardVector = FVector2D(baseWeapon->GetOwner()->GetActorForwardVector());
+	}
 
-	float degrees = FMath::RadiansToDegrees(FMath::Acos(xVector.Dot(ownerForwardVector2D)));
+	uint8 returnValue = 0;
+	double dot = ownerForwardVector2D.Dot(attackForwardVector);
+	// 같은 방향을 보고있음
+	// 좌우 방향 고려
+	const float  backHitCorrectionAngle = 10.0f;
+	float backHitCorrection = FMath::Cos(FMath::DegreesToRadians(90.0f - backHitCorrectionAngle));
+	if (dot >= backHitCorrection)
+		return StaticCast<uint8>(EDirection::Back);
 
-
-	FVector2d forwardVector2D(damageActor->GetActorForwardVector());
-	FVector2d rotatedVector = forwardVector2D.GetRotated(degrees);
+	float angle = 0.0f;
 	
-	float rotatedVectorAngle = FMath::RadiansToDegrees(FMath::Atan2(rotatedVector.Y, rotatedVector.X));
 
-	uint8 direction = (StaticCast<uint8>((rotatedVectorAngle / 45.0f)) % 8);
+	double cross;
 
-	return direction;
+	if (baseWeapon)
+	{
+		FVector hitPoint = baseWeapon->GetHitPoint();
+
+		FVector2D hitDirection(hitPoint - owner->GetActorLocation());
+
+		UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), hitPoint, 30.0f, FLinearColor::Black, 10, 20);
+		angle = (FMath::RadiansToDegrees(ownerForwardVector2D.Dot(hitDirection.GetSafeNormal())));
+		cross = FVector2D::CrossProduct(ownerForwardVector2D, hitDirection.GetSafeNormal());
+	}
+	else
+	{
+		angle = (FMath::RadiansToDegrees(FMath::Acos((float)dot)));
+		angle = 180.0f - angle;
+		cross = FVector2D::CrossProduct(ownerForwardVector2D, attackForwardVector);
+	}
+	
+
+	const float correctionValue = 27.5f;
+
+	float correctionAngle = angle - correctionValue;
+
+
+	bool isRight = cross < 0.f;
+	if (correctionAngle < 0.0f)
+		returnValue = StaticCast<uint8>(EDirection::Front);
+	else if (correctionAngle < 45.0f)
+		returnValue = isRight ? StaticCast<uint8>(EDirection::Front_Right) : StaticCast<uint8>(EDirection::Front_Left);
+	else
+		returnValue = isRight ? StaticCast<uint8>(EDirection::Right) : StaticCast<uint8>(EDirection::Left);
+
+	return returnValue;
+
+	//if (damageCauserActor == nullptr)
+	//	return 0;
+
+
+	//ABaseWeapon* baseWeapon = Cast<ABaseWeapon>(damageCauserActor);
+	//FVector2D attackDirection;
+	//if (baseWeapon == nullptr)
+	//{
+	//	AActor* damageCauserOwner = damageCauserActor->GetOwner();
+	//	if (damageCauserOwner == nullptr)
+	//		damageCauserOwner = damageCauserActor;
+	//	attackDirection = FVector2D(damageCauserOwner->GetActorForwardVector());
+	//}
+	//else
+	//{
+	//	attackDirection = baseWeapon->GetAttackDirection();
+	//}
+
+	//AActor* owner = GetOwner();
+	//FVector2D ownerForwardVector2D(owner->GetActorForwardVector());
+
+	//
+
+	//FVector2D xVector(1.0f, 0.f);
+
+	////float degrees = FMath::RadiansToDegrees(FMath::Acos(xVector.Dot(ownerForwardVector2D)));
+	//float degrees = FMath::RadiansToDegrees(FMath::Atan2(ownerForwardVector2D.X, ownerForwardVector2D.Y));
+
+	//FVector2D rotatedVector = attackDirection.GetRotated(-90.0f + degrees);
+	//
+	//float rotatedVectorAngle = FMath::RadiansToDegrees(FMath::Atan2(rotatedVector.Y, rotatedVector.X));
+
+	//uint8 direction = (StaticCast<uint8>((rotatedVectorAngle  / 45.0f)) % 8);
+
+	//// 전방 벡터
+	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() + (FVector(1.0f,0.0f,0.0f) * 200), 30.0f, FLinearColor::Black, 10, 20);
+	//// 전방 벡터
+	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() + (owner->GetActorForwardVector() * 150), 30.0f, FLinearColor::Red, 10, 20);
+	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() + (FVector(ownerForwardVector2D.GetRotated(-90 + degrees),0.0f) * 100.0f ), 30.0f, FLinearColor::Yellow, 10, 20);
+	//// 타격 방향
+	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() +( FVector(attackDirection,0.0f) * 180) , 30.0f, FLinearColor::Green, 10, 20);
+	//// 보정방향
+	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() +( FVector(rotatedVector,0.0f) * 190) , 30.0f, FLinearColor::Blue, 10, 20);
+	//
+	////UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() +( FVector(rotatedVector,0.0f) * 100.0f) , 30.0f, FLinearColor::Blue, 10, 20);
+
+	//return direction;
 }
 
 uint8 UCharacterCombatComponent::ConvertDirectionToHitDirection(uint8 direction)
@@ -127,25 +220,42 @@ uint8 UCharacterCombatComponent::ConvertDirectionToHitDirection(uint8 direction)
 	EDirection eDirection = StaticCast<EDirection>(direction);
 	switch (eDirection)
 	{
-	case UCharacterCombatComponent::EDirection::Front_Right:
-	case UCharacterCombatComponent::EDirection::Front_Left:
-	case UCharacterCombatComponent::EDirection::Front:
+	case UCharacterCombatComponent::EDirection::Back:
 		return StaticCast<uint8>(EHitDirection::Back);
 
-	case UCharacterCombatComponent::EDirection::Right:
-		return StaticCast<uint8>(EHitDirection::Left);
+	case UCharacterCombatComponent::EDirection::Front:
+		return StaticCast<uint8>(EHitDirection::Front);
+
+	case UCharacterCombatComponent::EDirection::Front_Right:
+		return StaticCast<uint8>(EHitDirection::Front_Left);
+
+	case UCharacterCombatComponent::EDirection::Front_Left:
+		return StaticCast<uint8>(EHitDirection::Front_Right);
 
 	case UCharacterCombatComponent::EDirection::Left:
 		return StaticCast<uint8>(EHitDirection::Right);
 
-	case UCharacterCombatComponent::EDirection::Back:
-		return StaticCast<uint8>(EHitDirection::Front);
+	case UCharacterCombatComponent::EDirection::Right:
+		return StaticCast<uint8>(EHitDirection::Left);
+	//case UCharacterCombatComponent::EDirection::Front_Right:
+	//case UCharacterCombatComponent::EDirection::Front_Left:
+	//case UCharacterCombatComponent::EDirection::Front:
+	//	return StaticCast<uint8>(EHitDirection::Back);
 
-	case UCharacterCombatComponent::EDirection::Back_Left:
-		return StaticCast<uint8>(EHitDirection::Front_Right);
+	//case UCharacterCombatComponent::EDirection::Right:
+	//	return StaticCast<uint8>(EHitDirection::Left);
 
-	case UCharacterCombatComponent::EDirection::Back_Right:
-		return StaticCast<uint8>(EHitDirection::Front_Left);
+	//case UCharacterCombatComponent::EDirection::Left:
+	//	return StaticCast<uint8>(EHitDirection::Right);
+
+	//case UCharacterCombatComponent::EDirection::Back:
+	//	return StaticCast<uint8>(EHitDirection::Front);
+
+	//case UCharacterCombatComponent::EDirection::Back_Left:
+	//	return StaticCast<uint8>(EHitDirection::Front_Right);
+
+	//case UCharacterCombatComponent::EDirection::Back_Right:
+	//	return StaticCast<uint8>(EHitDirection::Front_Left);
 
 	default:
 		return StaticCast<uint8>(EHitDirection::Back);
@@ -416,6 +526,8 @@ void UCharacterCombatComponent::Hit(ECharacterCombatMontageType animtype)
 	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
 
 	uint8 direction = ConvertDirectionToHitDirection(OnHitDirection());
+
+	UE_LOG_WARNING(LogTemp, TEXT("Hit Animation : %d"), direction);
 
 	if (currentAnimMontages->Num() <= direction)
 		direction = 0;

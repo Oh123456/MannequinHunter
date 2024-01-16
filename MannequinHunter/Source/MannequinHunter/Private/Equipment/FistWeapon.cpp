@@ -14,14 +14,6 @@ AFistWeapon::AFistWeapon()
 void AFistWeapon::SetActiveCylinderIndex(uint8 index)
 {
 	EFistWeaponSlotFlag eIndex = StaticCast<EFistWeaponSlotFlag>(index);
-	//if ((eIndex & EFistWeaponSlotFlag::L_Fist) != EFistWeaponSlotFlag::None)
-	//	activeCylinderIndexQueue.Enqueue(StaticCast<uint8>(EFistWeaponSlot::L_Fist));
-	//if ((eIndex & EFistWeaponSlotFlag::R_Fist) != EFistWeaponSlotFlag::None)
-	//	activeCylinderIndexQueue.Enqueue(StaticCast<uint8>(EFistWeaponSlot::R_Fist));
-	//if ((eIndex & EFistWeaponSlotFlag::L_Leg) != EFistWeaponSlotFlag::None)
-	//	activeCylinderIndexQueue.Enqueue(StaticCast<uint8>(EFistWeaponSlot::L_Leg));
-	//if ((eIndex & EFistWeaponSlotFlag::R_Leg) != EFistWeaponSlotFlag::None)
-	//	activeCylinderIndexQueue.Enqueue(StaticCast<uint8>(EFistWeaponSlot::R_Leg));
 	AddActiveCylinderIndexQueue(eIndex, EFistWeaponSlotFlag::L_Fist, EFistWeaponSlot::L_Fist);
 	AddActiveCylinderIndexQueue(eIndex, EFistWeaponSlotFlag::R_Fist, EFistWeaponSlot::R_Fist);
 	AddActiveCylinderIndexQueue(eIndex, EFistWeaponSlotFlag::L_Leg, EFistWeaponSlot::L_Leg);
@@ -44,5 +36,5 @@ void AFistWeapon::SetWeaponOwner(AActor* weaponOwner)
 void AFistWeapon::AddActiveCylinderIndexQueue(EFistWeaponSlotFlag index, EFistWeaponSlotFlag flag, EFistWeaponSlot slot)
 {
 	if ((index & flag) != EFistWeaponSlotFlag::None)
-		activeCylinderIndexQueue.Enqueue(StaticCast<uint8>(slot));
+		multiHitBoxWeaponData.activeCylinderIndexQueue.Enqueue(StaticCast<uint8>(slot));
 }

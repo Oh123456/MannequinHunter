@@ -4,6 +4,7 @@
 #include "HFSM/HFSMComponent.h"
 #include "HFSM/StateMachine.h"
 #include "GameFramework/Character.h"
+#include "DebugLog.h"
 
 // Sets default values for this component's properties
 UHFSMComponent::UHFSMComponent()
@@ -22,6 +23,8 @@ UHFSMComponent::~UHFSMComponent()
 
 uint8 UHFSMComponent::GetCurrentStateMachineID()
 {
+	if (currentStateMachine == nullptr)
+		return 0;
 	return currentStateMachine->GetStateMachineID(); 
 }
 
@@ -35,6 +38,15 @@ void UHFSMComponent::ChangeState(uint8 changeStateID)
 	TSharedPtr<FStateMachine>* findSateMachine = stateMachines.Find(changeStateID);
 	if (findSateMachine)
 	{
+		(*findSateMachine)->ChangeState(changeStateID);
+	}
+}
+
+void UHFSMComponent::ChangeStateMachine(uint8 changeStateID)
+{
+	TSharedPtr<FStateMachine>* findSateMachine = stateMachines.Find(changeStateID);
+	if (findSateMachine)
+	{
 		if (currentStateMachine)
 			currentStateMachine->Exit();
 
@@ -43,6 +55,36 @@ void UHFSMComponent::ChangeState(uint8 changeStateID)
 	}
 }
 
+void UHFSMComponent::CheckStateMachineCondition()
+{
+	
+	uint8 stateID = currentStateMachine->Condition(stateMachineOrder);
+
+	if (currentStateMachine->GetStateMachineID() != stateID)
+	{
+		if (currentStateMachine->EnterCondition())
+			ChangeStateMachine(stateID);
+	}
+
+	// 초기화
+	stateMachineOrder = 0;
+}
+
+void UHFSMComponent::SetStateOrder(uint16 order)
+{
+	stateMachineOrder = GetStateMachineOrder(order);
+	if (stateMachineOrder != 0)
+		CheckStateMachineCondition();
+	// 현재 스테이트 머신에 스테이트 오더 전달
+	currentStateMachine->SetStateOrder(GetStateOrder(order));
+}
+
+void UHFSMComponent::ChangeStateMachine()
+{
+	uint8 stateID = currentStateMachine->UpdateCondition(0);
+	if (currentStateMachine->GetStateMachineID() != stateID)
+		ChangeStateMachine(stateID);
+}
 
 // Called when the game starts
 void UHFSMComponent::BeginPlay()
@@ -51,20 +93,7 @@ void UHFSMComponent::BeginPlay()
 	SetStateMachine();
 	SetConditions();
 
-	ChangeState(defaultStateID);
-}
-
-TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(uint8 id, uint8 defaultSateID)
-{
-
-	TSharedPtr<FStateMachine>* find = stateMachines.Find(id);
-	if (find == nullptr)
-	{
-		TSharedPtr<FStateMachine> stateMachine = MakeShared<FStateMachine>(FStateMachine(Cast<ACharacter>(GetOwner()), id, defaultSateID));
-		find = &stateMachines.Add(id, stateMachine);
-	}
-
-	return find;
+	ChangeStateMachine(defaultStateID);
 }
 
 TSharedPtr<FStateMachine>* UHFSMComponent::FindStateMachine(uint8 id)
@@ -79,12 +108,19 @@ void UHFSMComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	if (currentStateMachine)
 	{
-		uint8 stateID = currentStateMachine->Condition();
-		if (currentStateMachine->GetStateMachineID() != stateID)
-			ChangeState(stateID);
+		ChangeStateMachine();
 		currentStateMachine->Update();
 	}
 }
+uint16 UHFSMComponent::GetStateOrder(uint16 order)
+{
+	//uint16 value = stateOrder & HFSM_STATE_ORDER;
+	//stateOrder = stateOrder & (HFSM_STATE_ORDER << 8);
 
+	return order & HFSM_STATE_ORDER;
+} 
 
-
+uint16 UHFSMComponent::GetStateMachineOrder(uint16 order)
+{
+	return order & (HFSM_STATE_ORDER << 8);
+}

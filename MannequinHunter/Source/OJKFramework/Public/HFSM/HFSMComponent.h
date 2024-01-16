@@ -8,7 +8,9 @@
 
 class FStateMachine;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+#define HFSM_STATE_ORDER UINT8_MAX
+
+UCLASS(ClassGroup=(HFSM), meta=(BlueprintSpawnableComponent) )
 class OJKFRAMEWORK_API UHFSMComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -20,19 +22,42 @@ public:
 
 	uint8 GetCurrentStateMachineID();
 	uint8 GetCurrentStateID();
-protected:
-	TSharedPtr<FStateMachine>* AddStateMachine(uint8 id, uint8 defaultSateID = 0);
+
+	//Forced Conversion State
+	void ChangeState(uint8 changeStateID);
+
+	//Forced Conversion StateMachine
+	void ChangeStateMachine(uint8 changeStateID);
+
+	// Current StateMachine Condition
+	void CheckStateMachineCondition();
+
+	void SetStateOrder(uint16 order);
 
 	template<typename T>
-	TSharedPtr<FStateMachine>* AddStateMachine(T id, uint8 defaultSateID = 0);
+	void SetStateOrder(T order) { SetStateOrder(StaticCast<uint16>(order)); }
+protected:
+	//template<typename TStateMachine>
+	//TSharedPtr<FStateMachine>* AddStateMachine();
+
+	//template<typename T>
+	//TSharedPtr<FStateMachine>* AddStateMachine(T id, uint8 defaultSateID = 0);
+
+	template<typename TStateMachine, typename T>
+	TSharedPtr<FStateMachine>* AddStateMachine(T id);
 
 	TSharedPtr<FStateMachine>* FindStateMachine(uint8 id);
 
 	template<typename T>
 	TSharedPtr<FStateMachine>* FindStateMachine(T id);
 
-private:
-	void ChangeState(uint8 changeStateID);
+	template<typename T>
+	T GetStateOrder(uint16 order) { return StaticCast<T>(GetStateOrder(uint16 order)); }
+
+	template<typename T>
+	T GetStateMachineOrder(uint16 order) { return StaticCast<T>(GetStateOrder(uint16 order)); }
+private:	
+	void ChangeStateMachine();
 
 protected:
 	// Called when the game starts
@@ -42,32 +67,57 @@ protected:
 	virtual void SetConditions() {};
 
 
+	virtual uint16 GetStateOrder(uint16 order);
+	virtual uint16 GetStateMachineOrder(uint16 order);
+	
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-protected:
-	UPROPERTY(EditAnywhere)
-	uint8 defaultStateID = 1;
-
 private:
 
+	uint16 stateMachineOrder;
 	TMap<uint8, TSharedPtr<FStateMachine>> stateMachines;
 	TSharedPtr<FStateMachine> currentStateMachine;
 
+protected:
+	UPROPERTY(EditAnywhere)
+	uint8 defaultStateID = 1;
 	
 };
 
 
-template<typename T>
-TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T id, uint8 defaultSateID)
-{
-  	return AddStateMachine(static_cast<uint8>(id), defaultSateID);
-}
-
+//template<typename T>
+//TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T id, uint8 defaultSateID)
+//{
+//  	return AddStateMachine(static_cast<uint8>(id), defaultSateID);
+//}
+//
 
 template<typename T>
 TSharedPtr<FStateMachine>* UHFSMComponent::FindStateMachine(T id)
 {
 	return FindStateMachine(static_cast<uint8>(id));
+}
+
+//template< typename TStateMachine>
+//TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine()
+//{
+//	return AddStateMachine<TStateMachine>();
+//}
+
+template<typename TStateMachine, typename T>
+TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T tId)
+{
+	uint8 id = StaticCast<uint8>(tId);
+
+	TSharedPtr<FStateMachine>* find = stateMachines.Find(id);
+	if (find == nullptr)
+	{
+		TSharedPtr<FStateMachine> stateMachine = MakeShared<TStateMachine>(this);
+		find = &stateMachines.Add(id, stateMachine);
+		(*find)->Init();
+	}
+
+	return find;
 }

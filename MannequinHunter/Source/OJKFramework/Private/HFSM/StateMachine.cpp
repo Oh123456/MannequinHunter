@@ -5,12 +5,13 @@
 #include "HFSM/HFSMComponent.h"
 #include "GameFramework/Character.h"
 #include "HFSM/State.h"
+#include "DebugLog.h"
 
-FStateMachine::FStateMachine(ACharacter* ownerCharacter, uint8 stateMachineID, uint8 defaultStateID) :
+FStateMachine::FStateMachine(UHFSMComponent* owner, uint8 stateMachineID, uint8 defaultStateID) :
 	states(), stateMachineID(stateMachineID), currentState(nullptr)
 	, defaultStateID(defaultStateID) , ownerCharacter(ownerCharacter)
 {
-
+	ownerCharacter = Cast<ACharacter>(owner->GetOwner());
 }
 
 FStateMachine::~FStateMachine()
@@ -33,21 +34,15 @@ void FStateMachine::Update()
 {
 	if (currentState)
 	{
-		int32 stateID = currentState->Condition(ownerCharacter);
+		int32 stateID = currentState->UpdateCondition();
 		
 		if (stateID != currentState->GetStateID())
 		{
-			TSharedPtr<FState>* findState = states.Find(defaultStateID);
-			if (findState)
-			{
-				currentState->Exit();
-				currentState = *findState;
-				if (currentState)
-					currentState->Enter();
-			}
+			ChangeState(stateID);
 		}
 
-		currentState->Update();
+		if (currentState->IsUpdate())
+			currentState->Update();
 	}
 }
 
@@ -60,12 +55,51 @@ void FStateMachine::Exit()
 	}
 }
 
-uint8 FStateMachine::Condition()
+bool FStateMachine::EnterCondition()
 {
-	uint8 stateID = -1;
-	OnStateMachineCondition.Broadcast(OUT stateID);
+	bool isSuccess = true;
+	if (OnStateMachineEnterCondition.IsBound())
+		OnStateMachineEnterCondition.Broadcast(OUT isSuccess);	
+	return isSuccess;
+}
 
-	return stateID;
+uint8 FStateMachine::Condition(uint16 stateMachineOrder)
+{	
+	FStateMachineConditionResult result;
+	OnStateMachineCondition.Broadcast(stateMachineOrder, OUT result);
+	return result.stateID;
+}
+
+uint8 FStateMachine::UpdateCondition(uint16 stateMachineOrder)
+{
+	FStateMachineConditionResult result;
+	OnUpdateStateMachineCondition.Broadcast(stateMachineOrder, OUT result);
+	return result.stateID;
+}
+
+void FStateMachine::ChangeState(uint8 stateID)
+{
+	TSharedPtr<FState>* findState = states.Find(stateID);
+	if (findState && (*findState)->EnterCondition())
+	{
+		currentState->Exit();
+		currentState = *findState;
+		if (currentState)
+			currentState->Enter();
+
+	}
+}
+
+void FStateMachine::SetStateOrder(uint16 order)
+{
+	 //this->stateOrder = order; 
+	 if (currentState)
+	 {
+		 uint8 stateID = currentState->Condition(order);
+		 
+		 if (stateID != currentState->GetStateID())
+			 ChangeState(stateID);
+	 }
 }
 
 uint8 FStateMachine::GetCurrentState()

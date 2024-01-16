@@ -21,18 +21,23 @@ void UActionCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (ownerCharacter == nullptr)
 		return;
 
-	SetBlendSpaceValue();
+	UCharacterMovementComponent* characterMovement = ownerCharacter->GetCharacterMovement();
 
+	if (characterMovement)
+	{
+
+		SetBlendSpaceValue(characterMovement);
+
+		isFalling = characterMovement->IsFalling();
+	}
 }
 
 
-void UActionCharacterAnimInstance::SetBlendSpaceValue()
+void UActionCharacterAnimInstance::SetBlendSpaceValue(const UCharacterMovementComponent*  characterMovement)
 {
-	UCharacterMovementComponent* characterMovemnet = ownerCharacter->GetCharacterMovement();
-
-	const FVector& velocity = characterMovemnet->Velocity;
+	velocity = characterMovement->Velocity;
 	speed =  FMath::Sqrt((velocity.X * velocity.X) + (velocity.Y * velocity.Y));
 
 	const FVector& inverseVector = UKismetMathLibrary::InverseTransformDirection(ownerCharacter->GetActorTransform(), velocity);
-	anlge = UKismetMathLibrary::MakeRotFromX(inverseVector).Yaw;
+	angle = UKismetMathLibrary::MakeRotFromX(inverseVector).Yaw;
 }

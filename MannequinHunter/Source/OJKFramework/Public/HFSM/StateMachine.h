@@ -3,48 +3,127 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "State.h"
 
 /**
  * 
  */
-class FState;
+
+struct FStateMachineConditionResult
+{
+	uint8 stateID = 0;
+	bool isChange = false;
+
+	void SetStateID(uint8 id)
+	{
+		stateID = id;
+		isChange = true;
+	}
+
+	void SetDefaultStateID(uint8 id)
+	{
+		stateID = id;
+		isChange = false;
+	}
+};
+
+//class FState;
 class UHFSMComponent;
 
-class OJKFRAMEWORK_API FStateMachine
+class OJKFRAMEWORK_API FStateMachine : public TSharedFromThis<FStateMachine>
 {
 public:
-	DECLARE_MULTICAST_DELEGATE_OneParam(FStateMachineCondition, OUT uint8&)
+	//FUNC_DECLARE_MULTICAST_DELEGATE(FStateMachineCondition, uint8, uint16)
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FStateMachineCondition, uint16 ,OUT FStateMachineConditionResult&)
+	DECLARE_MULTICAST_DELEGATE_OneParam(FStateMachineEnterCondition, OUT bool)
 public:
-	FStateMachine(ACharacter* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
-	~FStateMachine();
+	FStateMachine(UHFSMComponent* ownerCharacter, uint8 stateMachineID , uint8 defaultStateID = 1);
+	virtual ~FStateMachine();
+
+	void Init() { CreateStates(); SetCondition(); }
 
 	void Enter();
 	void Update();
 	void Exit();
-	uint8 Condition();
+	bool EnterCondition();
+	uint8 Condition(uint16 stateMachineOrder);
+	uint8 UpdateCondition(uint16 stateMachineOrder);
 
+	template<typename TState, typename TStateEnum>
+	void CreateState(TStateEnum id);
+
+	void ChangeState(uint8 stateID);
+
+	void SetStateOrder(uint16 order);
+	//uint16 GetStateOrder() { uint16 value = stateOrder; stateOrder = 0; return value; }
+	 
+	template<typename T>
+	T GetStateOrder() { return StaticCast<T>(GetStateOrder()); }
+
+	UHFSMComponent* GetOwnerHFSM() { return ownerHFSM; }
+	ACharacter* GetOwnerCharacter() { return ownerCharacter; }
 
 	inline uint8 GetStateMachineID() const { return stateMachineID; }
 	uint8 GetCurrentState();
 
 	template<typename UClass>
-	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint8&));
+	inline void AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&));
 
-private:
+	template<typename UClass>
+	inline void AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&));
+
+	template<typename UClass>
+	inline void AddStateEnterCondition(UClass* uclass, void(UClass::* condition)(bool));
+
+	inline void AddState(uint8 stateid, TSharedPtr<FState>& newState) { states.Add(stateid, newState); }
+	template<typename TStateEnum>
+	inline void AddState(TStateEnum stateid, TSharedPtr<FState>& newState) { states.Add(StaticCast<uint8>(stateid), newState); }
+protected:
+	virtual void CreateStates() {}
+	virtual void SetCondition() {}
+protected:
 	uint8 stateMachineID;
 	uint8 defaultStateID;
+
 	TMap<uint8, TSharedPtr<FState>> states;
 	TSharedPtr<FState> currentState;
 
+	FStateMachineCondition OnUpdateStateMachineCondition;
+	FStateMachineCondition OnStateMachineCondition;
+	FStateMachineEnterCondition OnStateMachineEnterCondition;
+private:
 	UPROPERTY()
 	TObjectPtr<ACharacter> ownerCharacter;
+	UPROPERTY()
+	TObjectPtr<UHFSMComponent> ownerHFSM;
 
-	FStateMachineCondition OnStateMachineCondition;
 };
 
 
 template<typename UClass>
-void FStateMachine::AddStateCondition(UClass* uclass,void(UClass::* condition)(uint8&))
+void FStateMachine::AddUpdateStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&))
+{
+	OnUpdateStateMachineCondition.AddUObject(uclass, condition);
+}
+
+template<typename UClass>
+inline void FStateMachine::AddStateCondition(UClass* uclass, void(UClass::* condition)(uint16, FStateMachineConditionResult&))
 {
 	OnStateMachineCondition.AddUObject(uclass, condition);
+}
+
+template<typename UClass>
+inline void FStateMachine::AddStateEnterCondition(UClass* uclass, void(UClass::* condition)(bool))
+{
+	OnStateMachineEnterCondition.AddUObject(uclass, condition);
+}
+
+
+template<typename TState, typename TStateEnum>
+void FStateMachine::CreateState(TStateEnum id)
+{
+	TSharedPtr<FState> createState = MakeShared<TState>();
+
+	createState->SetOwner(AsShared());
+	AddState(id, createState);
 }

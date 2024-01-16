@@ -11,6 +11,7 @@ class AEquipment;
 class ABaseWeapon;
 class UCharacterCombatComponent;
 class ABaseActionCharacter;
+class APlayerCharacter;
 
 
 /**
@@ -23,4 +24,10 @@ class OJKFRAMEWORK_API UKismetCombatSystemLibrary : public UBlueprintFunctionLib
 	
 	UFUNCTION(BlueprintCallable)
 	static AEquipment* CreateMainWeapon(UCharacterCombatComponent* characterCombat,TSubclassOf<ABaseWeapon> staticClass);
+
+	UFUNCTION(BlueprintPure)
+	static int32 GetAttackCount(UCharacterCombatComponent* characterCombat);
+
+	UFUNCTION(BlueprintPure)
+	static int32 GetAttackCountFromPlayer(APlayerCharacter* player);
 };

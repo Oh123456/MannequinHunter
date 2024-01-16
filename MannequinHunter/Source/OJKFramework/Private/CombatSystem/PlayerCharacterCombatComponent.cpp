@@ -16,38 +16,59 @@ LockOnLength(1000.f)
 
 void UPlayerCharacterCombatComponent::SetLockOnTarget()
 {
-	Super::SetLockOnTarget();
+	ACharacter* owner = characterCombatData.owner;
+	if (IsLockOn())
+	{
+		Super::SetLockOnTarget();
+		owner->GetCharacterMovement()->bOrientRotationToMovement = true;
+		return;
+	}
+
 	UCameraComponent* cameraComponent = findCameraComponentDelegate.Execute();
 
 
-	FVector cameraForwardVector = cameraComponent->GetForwardVector();
+
 	FVector ownerLocation = owner->GetActorLocation();
 
-	FHitResult hitResult;
-	
-	bool isHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+	const AActor* targetActor = GetTargetActor();
+
+
+	TArray<FHitResult> hitResults;
+
+	bool isHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
 		this,
-		ownerLocation, ownerLocation + (cameraForwardVector * LockOnLength),
-		50.0f,
+		ownerLocation, ownerLocation,
+		LockOnLength,
 		lockOnTargetObjectType, false ,
-		TArray<AActor*>(), EDrawDebugTrace::ForDuration, hitResult, true);
+		TArray<AActor*>(), EDrawDebugTrace::ForDuration, hitResults, true);
 
 	AActor* hitActor = nullptr;
-	bool bOrientRotationToMovement = true;
+	bool bOrientRotationToMovement = false;
 	if (isHit)
 	{
+		float maxLength = 0.0f;
+		float length = 0.0f;
+		int32 size = hitResults.Num();
+		FHitResult& hitResult = hitResults[0];
 		hitActor = hitResult.GetActor();
-		if (hitActor->GetComponentByClass<UCombatComponent>())
+		maxLength = (hitActor->GetActorLocation() - ownerLocation).SizeSquared();
+		for (int32 i = 1 ; i < size; i++)
 		{
-			if (targetActor == nullptr)
-				bOrientRotationToMovement = false;
-			else
-				hitActor = nullptr;
-			
+			hitResult = hitResults[i];
+			if (hitActor->GetComponentByClass<UCombatComponent>())
+			{
+				length = (hitActor->GetActorLocation() - ownerLocation).SizeSquared();
+				if (maxLength < length)
+				{
+					maxLength = length;
+					hitActor = hitResult.GetActor();
+				}
+			}
 		}
 	}
 
- 	targetActor = hitActor;
+ 	//targetActor = hitActor;
+	SetTargetActor(hitActor);
 	owner->GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovement;
 	//owner->bUseControllerRotationYaw = !bOrientRotationToMovement;
 }
@@ -58,10 +79,10 @@ void UPlayerCharacterCombatComponent::BeginPlay()
 	findCameraComponentDelegate.BindLambda([this]() -> 
 		UCameraComponent* 
 		{
-			return owner->GetComponentByClass<UCameraComponent>(); 
+			return characterCombatData.owner->GetComponentByClass<UCameraComponent>();
 		});
 
-	lockOnTargetIgnoreActor.Add(owner);
+	lockOnTargetIgnoreActor.Add(characterCombatData.owner);
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> objectType;
 	lockOnTargetObjectType.Add(static_cast<EObjectTypeQuery>(ECollisionChannel::ECC_Pawn));

@@ -22,7 +22,13 @@ private:
 	virtual void NotifyTick(USkeletalMeshComponent* meshComp, UAnimSequenceBase* animation, float frameDeltaTime, const FAnimNotifyEventReference& eventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* meshComp, UAnimSequenceBase* animation, const FAnimNotifyEventReference& eventReference) override;
 
-private:
+protected:
+	virtual void BeginAttack(class UCharacterCombatComponent* characterCombatComponent);
+protected:
+
+	UPROPERTY()
 	TObjectPtr<class ABaseWeapon> baseWeapon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HitBox, meta = (AllowPrivateAccess = "true"))
+	bool isRotationLock;
 };

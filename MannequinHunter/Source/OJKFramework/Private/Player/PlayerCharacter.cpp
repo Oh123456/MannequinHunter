@@ -7,11 +7,61 @@
 #include "Animation/AnimInstance.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
 #include "Components/InputComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Controller/ActionPlayerController.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "DebugLog.h"
+#include "Defines.h"
+#include "OJKFramework.h"
+
 
 APlayerCharacter::APlayerCharacter() : Super(),
-inputDirection(0.0f,0.0f) , HFSM(nullptr)
+inputDirection(0.0f,0.0f) , HFSM(nullptr) 
 {
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputMappingContext, inputMappingContext, TEXT("/Game/ThirdPerson/Input/IMC_Default.IMC_Default"));
+
+	if (inputMappingContext.Succeeded())
+	{
+		defaultMappingContext = inputMappingContext.Object;
+	}
+
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findJumpAction, TEXT("/Game/ThirdPerson/Input/Actions/IA_Jump.IA_Jump"));
+
+	if (findJumpAction.Succeeded())
+	{
+		inputData.jumpAction = findJumpAction.Object;
+	}
+
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findMoveAction, TEXT("/Game/ThirdPerson/Input/Actions/IA_Move.IA_Move"))
+
+	if (findMoveAction.Succeeded())
+	{
+		inputData.moveAction = findMoveAction.Object;
+	}
+
+	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findLookAction, TEXT("/Game/ThirdPerson/Input/Actions/IA_Look.IA_Look"))
+
+	if (findLookAction.Succeeded())
+	{
+		inputData.lookAction = findLookAction.Object;
+	}
+
+
+	// Create a camera boom (pulls in towards the player if there is a collision)
+	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	cameraBoom->SetupAttachment(RootComponent);
+	cameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
+	cameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+
+	// Create a follow camera
+	followCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	followCamera->SetupAttachment(cameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	followCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
 }
 
 
@@ -39,10 +89,20 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void APlayerCharacter::MoveCompleted(const FInputActionValue& Value)
+{
+	inputDirection = FVector2D::ZeroVector;
+}
+
+void APlayerCharacter::AddInputBuffer(const FInputActionInstance& inputActionInstance)
+{
+	actionPlayerController->AddInputBuffer(inputActionInstance);
+}
+
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	if (combatComponent->IsLockOn())
+	if (combatComponent && combatComponent->IsLockOn())
 		return;
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -59,7 +119,15 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	actionPlayerController = Cast<AActionPlayerController>(GetController());
 
+	if (combatComponent == nullptr)
+	{
+#ifdef UE_BUILD_DEBUG
+		UE_LOG_WARNING(Framework, TEXT("%s has no CombatComponent!! Please check"), *UKismetSystemLibrary::GetDisplayName(this))
+#endif
+		return;
+	}
 	combatComponent->DodgeDirectionDelegate().BindLambda([this]()
 		{
 			if (!GetCharacterMovement()->bOrientRotationToMovement || 

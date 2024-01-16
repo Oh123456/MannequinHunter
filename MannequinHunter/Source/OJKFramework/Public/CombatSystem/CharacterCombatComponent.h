@@ -56,59 +56,125 @@ private:
 protected:
 	enum ECombatAble : int32
 	{
-		E_None = 0,
-		E_AttackAble = 1,
-		E_DodgeAble = E_AttackAble << 1,
-		E_HitAble = E_AttackAble << 2,
+		None = 0,
+		AttackAble = 1,
+		DodgeAble = AttackAble << 1,
+		HitAble = AttackAble << 2,
 
 
 		//기본 상태?
-		E_Default = E_AttackAble | E_DodgeAble | E_HitAble,
+		Default = AttackAble | DodgeAble | HitAble,
 	};
 
-	enum EDodgeDirectionIndex : int8
+	//임시
+	enum class EDirection : uint8
 	{
-		E_Back = 0,
-		E_Front,
-		E_Left,
-		E_Right,
-		E_Front_Left,
-		E_Front_Right,
-		E_Back_Left,
-		E_Back_Right,
+		Front = 0,
+		Front_Left,
+		Left,
+		Back_Left,
+		Back,
+		Back_Right,
+		Right,
+		Front_Right,
+	};
+
+	enum EDirectionIndex : uint8
+	{
+		Back = 0,
+		Front,
+		Left,
+		Right,
+		Front_Left,
+		Front_Right,
+		Back_Left,
+		Back_Right,
 
 		Max,
 	};
 
 	enum class EDodgeDirection :int8
 	{
-		E_Back = 1,
-		E_Front = 1 << 1,
+		None = 0,
+		Back = 1,
+		Front = 1 << 1,
 
-		E_Left = 1 << 2,
-		E_Right = 1 << 3,
+		Left = 1 << 2,
+		Right = 1 << 3,
 
-		E_F = E_Front,
-		E_FL = E_Front | E_Left,
-		E_FR = E_Front | E_Right,
+		F = Front,
+		FL = Front | Left,
+		FR = Front | Right,
 
-		E_L = E_Left,
-		E_R = E_Right,
+		L = Left,
+		R = Right,
 
-		E_B = E_Back,
-		E_BL = E_Back | E_Left,
-		E_BR = E_Back | E_Right,
+		B = Back,
+		BL = Back | Left,
+		BR = Back | Right,
 
-		E_FB = E_Front | E_Back,
-		E_LR = E_Left | E_Right,
+		FB = Front | Back,
+		LR = Left | Right,
+	};
+
+	enum class EHitDirection : int32
+	{
+		Back = 0,
+		Front,
+		Left,
+		Right,
+		Front_Left,
+		Front_Right,
+		Front_Back,
 	};
 
 	enum ETurnDirection
 	{
-		E_Left_90 = 0,
-		E_Left_180,
-		E_Right_90,
-		E_Right_180,
+		Left_90 = 0,
+		Left_180,
+		Right_90,
+		Right_180,
+	};
+
+	struct FCharacterCombatData
+	{
+	
+		int32 attackCount = 0;
+
+		ECombatAble combatAbleFlag = ECombatAble::Default;
+
+	
+		TMap<ECombatEquipmentSlot, TSharedPtr<IEquipmentItem>> equipmentItem = {};
+
+		UPROPERTY()
+		TObjectPtr<ACharacter> owner = nullptr;
+		UPROPERTY()
+		TObjectPtr<AController> ownerController = nullptr;
+
+
+	};
+
+	
+	struct FCharacterCombatAnimationData
+	{
+		//const struct FAnimMontageArray* currentAnimMontage = nullptr;
+		UPROPERTY()
+		const TArray<UAnimMontage*>* currentAnimMontages = nullptr;
+		ECharacterCombatMontageType currentAnimType;
+
+		TMap<EDodgeDirection, EDirectionIndex> eightDodgeDirectionIndexMap = {};
+		TMap<EDodgeDirection, EDirectionIndex> fourDodgeDirectionIndexMap = {};
+		FDodgeDirection dodgeDirectionDelegate = {};
+	};
+
+	struct FCharacterCombatRotationData
+	{
+		float lockOnInterpSpeed = 7.0f;
+		float lockOnCharacterInterpSpeed = 9.0f;
+		bool isActorRotation = true;
+
+		UPROPERTY()
+		TObjectPtr<AActor> targetActor = nullptr;
 	};
 
 public:
@@ -116,72 +182,88 @@ public:
 
 	void AddAttackCount();
 
-	inline bool IsLockOn() { return targetActor != nullptr; }
-	inline FDodgeDirection& DodgeDirectionDelegate() { return dodgeDirectionDelegate; }
+	void SetCombatAnimationData(class UBaseCombatAnimationData* animationData) { combatAnimationData = animationData; }
+
+	const class UBaseCombatAnimationData* const GetCombatAnimationData() const { return combatAnimationData; }
+
+	inline bool IsLockOn() { return characterRotationData.targetActor != nullptr; }
+	inline FDodgeDirection& DodgeDirectionDelegate() { return characterCombatAnimationData.dodgeDirectionDelegate; }
 
 	inline AEquipment* GetEquipment(ECombatEquipmentSlot slot, int32 index = 0);
 
 	template<typename TEquipmentItems>
+	TEquipmentItems* CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex = 0);
+
 	AEquipment* CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex = 0);
 
-	inline void SeCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::E_Default); }
+	inline void SetCombatAbleDefault() { AddCombatAbleFlag(ECombatAble::Default); }
+
+	inline int32 GetAttackCount() { return characterCombatData.attackCount; }
+	void ResetAttackCount() { characterCombatData.attackCount = 0; }
+
+	ECharacterCombatMontageType GetCurrentCombatMontageType() const { return characterCombatAnimationData.currentAnimType; }
+	
+	void ResetLockOn();
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);
 	inline void SubtractCombatAbleFlag(ECombatAble combatAble);
 	inline void AddCombatAbleFlag(int32 combatAble);
 	inline void SubtractCombatAbleFlag(int32 combatAble);
 	void LockOn();
-	void ChangeCombatType(ECharacterCombatontageType animtype, std::function<void()> callBack = nullptr);
+	void ChangeCombatType(ECharacterCombatMontageType animtype, std::function<void()> callBack = nullptr);
 	//사용안함
-	void Turn(ECharacterCombatontageType animtype, float yaw);
+	void Turn(ECharacterCombatMontageType animtype, float yaw);
+
+
+	void SetTargetActor(AActor* target) { characterRotationData.targetActor = target; }
+	const AActor* GetTargetActor() const { return characterRotationData.targetActor; }
+
+
 private:
 	int32 GetPreviousAttackCount();
+	int8 DodgeDirection(const FVector2D& directionVector);
 public:
+	// Not Use HFSM !!
+	// if UserCharacter Use HFSM ,
+	// Use other functions of the same name
 	UFUNCTION(BlueprintCallable)
-	void Attack(ECharacterCombatontageType animtype);
+	void Attack(ECharacterCombatMontageType animtype);
+	// Not Use HFSM !!
+	// if UserCharacter Use HFSM ,
+	// Use other functions of the same name
 	UFUNCTION(BlueprintCallable)
-	void Dodge(ECharacterCombatontageType animtype);
+	void Dodge(ECharacterCombatMontageType animtype);
+
+	UFUNCTION(BlueprintCallable)
+	void Hit(ECharacterCombatMontageType animtype);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SetLockOnTarget();
 
 	UFUNCTION(BlueprintCallable)
 	inline void SetIsActorRotation(bool b);
-
+protected:
+	UFUNCTION(BlueprintNativeEvent, Category = "Hit Event")
+	uint8 OnHitDirection();
+	virtual uint8 OnHitDirection_Implementation();
+	UFUNCTION(BlueprintPure)
+	uint8 ConvertDirectionToHitDirection(uint8 direction);
 public:
+	virtual void Dodge(ECharacterCombatMontageType animtype,float playRate,std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
+	virtual void Attack(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
+	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser) override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	virtual void BeginPlay() override;
 protected:
-	const struct FAnimMontageArray* currentAnimMontage;
-	ECharacterCombatontageType currentAnimType;
-	int32 attackCount;
-
-	ECombatAble combatAbleFlag;
-
-	TMap<EDodgeDirection, EDodgeDirectionIndex> eightDodgeDirectionIndexMap;
-	TMap<EDodgeDirection, EDodgeDirectionIndex> fourDodgeDirectionIndexMap;
-
-	FDodgeDirection dodgeDirectionDelegate;
-
-
-	TMap<ECombatEquipmentSlot, TSharedPtr<IEquipmentItem>> equipmentItem;
+	FCharacterCombatData characterCombatData;
+	FCharacterCombatAnimationData characterCombatAnimationData;
 private:
-	float lockOnInterpSpeed;
-	float lockOnCharacterInterpSpeed;
-	bool isActorRotation;
-
+	FCharacterCombatRotationData characterRotationData;
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UCombatAnimationData> combatAnimationData;
+	TObjectPtr<class UBaseCombatAnimationData> combatAnimationData;
 
-	UPROPERTY()
-	TObjectPtr<ACharacter> owner;
-	UPROPERTY()
-	TObjectPtr<AController> ownerController;
-	UPROPERTY()
-	TObjectPtr<AActor> targetActor;
+
 
 };
-
-

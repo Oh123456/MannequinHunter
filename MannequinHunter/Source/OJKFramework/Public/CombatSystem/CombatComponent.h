@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Status.h"
+#include "Engine/DataTable.h"
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
@@ -11,13 +12,14 @@ struct FDeathInfo;
 class ABaseWeapon;
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+
+UCLASS( ClassGroup=(Custom), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent) )
 class OJKFRAMEWORK_API UCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
 public:
-	DECLARE_EVENT_OneParam(UCombatComponent,FDeathEvent,const FDeathInfo&)
-
+	DECLARE_EVENT_OneParam(UCombatComponent, FDeathEvent,const FDeathInfo&)
+	DECLARE_EVENT_FiveParams(UCombatComponent, FTakeDamage, FStatus&, float, FDamageEvent const&, AController*, AActor*)
 public:	
 	// Sets default values for this component's properties
 	UCombatComponent();
@@ -26,9 +28,11 @@ public:
 	void ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser, TSubclassOf<UDamageType> damageTypeClass);
 	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser);
 
-	inline const FStatus& GetStatus() {return status;}
+	inline void SetStatusData(const struct FStatusDataTableBase* table) { status.SetStatus(table); }
+	inline FStatus& GetStatusData() {return status;}
 
 	const FDeathEvent& OnDeath() { return deathEvent; }
+	const FTakeDamage& OnTakeDamage() { return takeDamage; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,14 +42,14 @@ protected:
 
 private:
 	FDeathEvent deathEvent;
+	FTakeDamage takeDamage;
 protected:
-	UPROPERTY(EditDefaultsOnly)
 	FStatus status;
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AActor> damageCauserActor;
 private:
-	UPROPERTY()
-	TArray<ABaseWeapon*> weapones;
 	UPROPERTY(EditDefaultsOnly)
 	bool isImmortality;
 
-	
 };

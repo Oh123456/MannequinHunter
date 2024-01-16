@@ -38,12 +38,11 @@ struct FWeaponTraceHitParameter
 	TArray<AActor*> ignoreActor;
 };
 
-UCLASS()
-class OJKFRAMEWORK_API ABaseWeapon : public AEquipment
+USTRUCT()
+struct FWeaponHitData
 {
 	GENERATED_BODY()
-private:
-	
+
 	struct FAttackObject
 	{
 		FAttackObject(UCombatComponent* attackObject, int32 hitCount = 0)
@@ -56,6 +55,40 @@ private:
 		UCombatComponent* attackObject = nullptr;
 		int32 hitCount = 0;
 	};
+
+
+
+	// Number Of Attack Object
+	// -1 Means there is no limit 
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem)
+	int8 numberOfAttackObject = -1;
+	// Number Of Attack Per Object
+	// -1 Means there is no limit 
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem)
+	int8 numberOfAttackPerObject = 1;
+
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
+	TEnumAsByte<ETraceTypeQuery> attackAbleTraceType = ETraceTypeQuery::TraceTypeQuery1;
+
+	FVector hitDirectionStartLocation;
+
+	FVector startLocation;
+	FVector endLocation;
+
+	TArray<TSharedPtr<FAttackObject>> attackObjects = {};
+};
+
+struct FBaseWeaponData
+{
+
+	UPROPERTY()
+	TObjectPtr<class ABaseActionCharacter> ownerCharacter;
+};
+
+UCLASS()
+class OJKFRAMEWORK_API ABaseWeapon : public AEquipment
+{
+	GENERATED_BODY()
 public:	
 	// Sets default values for this actor's properties
 	ABaseWeapon();
@@ -64,37 +97,39 @@ public:
 	inline void HitCheck() { if (hitCheckDelegate.IsBound()) hitCheckDelegate.Execute(); }
 	inline void HitCheckEnd() { if (hitCheckEndDelegate.IsBound()) hitCheckEndDelegate.Execute(); }
 
-	void SetCylinderActive(bool isActive);
 	
 private:
 	bool CheckHitAble(class UCombatComponent* damagedObject);
 	void ApplyDamage(class UCombatComponent* damagedObject, const FHitResult& hitResult);
 public:
 	UFUNCTION()
-	inline void ClearHitObjects() { attackObjects.Reset(0); }
+	inline void ClearHitObjects() { weaponHitData.attackObjects.Reset(0); }
 	UFUNCTION(BlueprintCallable)
-	void SetWeaponOwner(class AActor* weaponOwner);
-private:
+	virtual void SetWeaponOwner(class AActor* weaponOwner);
+protected:
 	UFUNCTION()
-	void HitCheckCylinder(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
+	virtual void HitCheckCylinder(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
 	UFUNCTION()
-	void HitCheckTrace();
-
+	virtual void HitCheckTrace();
+public:
+	virtual void SetCylinderActive(bool isActive);
+	virtual FVector2D GetAttackDirection() const;
+	virtual FVector GetHitPoint() const;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void SetCylinder();
+	virtual void SetTraceHit();
+	virtual bool CheckCylinderComponent();
 
 protected:
 	EHitCheckBeginDelegate hitCheckBeginDelegate;
 	EHitCheckDelegate hitCheckDelegate;
 	EHitCheckEndDelegate  hitCheckEndDelegate;
-
 private:
-	FVector startLocation;
-	FVector endLocation;
-
-	TArray<TSharedPtr<FAttackObject>> attackObjects;
+	FBaseWeaponData weaponData;
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Cylinder)
@@ -102,27 +137,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Mesh);
 	TObjectPtr<class UMeshComponent> weaponMeshComponent;
 
-private:
-	UPROPERTY()
-	TObjectPtr<class ABaseActionCharacter> ownerCharacter;
-
-
-	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (AllowPrivateAccess = "true"));
-	TEnumAsByte<ETraceTypeQuery> attackAbleTraceType;
-
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
+	FWeaponHitData weaponHitData;
 	// hit check use Cylinder? 
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (AllowPrivateAccess = "true"));
-	bool bUseCylinder;
-
+	bool bUseCylinder = true;
+private:
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (EditCondition = "bUseCylinder == false", EditConditionHides, AllowPrivateAccess = "true"))
 	FWeaponTraceHitParameter weaponTraceHitParameter;
 
-	// Number Of Attack Object
-	// -1 Means there is no limit 
-	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (AllowPrivateAccess = "true"))
-	int8 numberOfAttackObject;
-	// Number Of Attack Per Object
-	// -1 Means there is no limit 
-	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (AllowPrivateAccess = "true"))
-	int8 numberOfAttackPerObject;
+
 };

@@ -17,22 +17,29 @@ class OJKFRAMEWORK_API UActionCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 
-protected:
-	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
-	FORCEINLINE float GetAngle() { return anlge; }
-
-	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
-	FORCEINLINE float GetSpeed() { return speed; }
+//protected:
+//	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
+//	FORCEINLINE float GetAngle() { return angle; }
+//
+//	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
+//	FORCEINLINE float GetSpeed() { return speed; }
 
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 private:
-	void SetBlendSpaceValue();
+	void SetBlendSpaceValue(const class UCharacterMovementComponent* const characterMovement);
 protected:
 	TObjectPtr<ABaseActionCharacter> ownerCharacter;
 
 private:
-	float anlge;
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float angle;
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float speed;
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	bool isFalling;
+
+	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	FVector velocity;
 };

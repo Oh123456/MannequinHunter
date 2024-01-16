@@ -18,7 +18,7 @@ class OJKFRAMEWORK_API UPlayerCharacterAnimInstance : public UActionCharacterAni
 
 public:
 	UFUNCTION(BlueprintPure, Category = PlayerCharacterAnimInstance, meta = (BlueprintThreadSafe))
-	inline uint8 GetCurrnetState() 
+	inline uint8 GetCurrentState() 
 	{
 		APlayerCharacter* playerCharacter = static_cast<APlayerCharacter*>(ownerCharacter);
 		if (playerCharacter == nullptr)
@@ -36,5 +36,7 @@ public:
 public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	
+private:
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool isInputMoveKey;
 };

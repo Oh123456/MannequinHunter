@@ -15,5 +15,5 @@ void UAnimNotify_DodgeActionEnd::Notify(USkeletalMeshComponent* meshComp, UAnimS
 
 	if (characterCombatComponent->IsLockOn())
 		characterCombatComponent->SetIsActorRotation(true);
-	characterCombatComponent->SeCombatAbleDefault();
+	characterCombatComponent->SetCombatAbleDefault();
 }

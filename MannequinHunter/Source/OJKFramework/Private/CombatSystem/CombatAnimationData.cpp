@@ -13,20 +13,12 @@ UCombatAnimationData::~UCombatAnimationData()
 	combatMontageMap.Reset();
 }
 
-const FAnimMontageArray* UCombatAnimationData::GetMontageArray(const ECharacterCombatontageType type) const
+const TArray<UAnimMontage*>* UCombatAnimationData::GetMontageArray(const ECharacterCombatMontageType type) const
 {
-	return combatMontageMap.Find(type);
-}
+	const FAnimMontageArray* montageArray = combatMontageMap.Find(type);
 
-const UAnimMontage* UCombatAnimationData::GetMontage(const ECharacterCombatontageType type, const int32 index) const
-{
-	FAnimMontageArray* montageArray = const_cast<FAnimMontageArray*>(GetMontageArray(type));
-	UAnimMontage* montage = nullptr;
-	if (montageArray)
-	{
-		if (montageArray->montages.Num() > index)
-			montage = montageArray->montages[index];
-	}
+	if (montageArray == nullptr)
+		return nullptr;
 
-	return montage;
+	return &montageArray->montages;
 }

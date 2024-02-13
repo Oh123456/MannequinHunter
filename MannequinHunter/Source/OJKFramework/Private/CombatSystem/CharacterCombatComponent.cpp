@@ -166,53 +166,6 @@ uint8 UCharacterCombatComponent::OnHitDirection_Implementation()
 
 	return returnValue;
 
-	//if (damageCauserActor == nullptr)
-	//	return 0;
-
-
-	//ABaseWeapon* baseWeapon = Cast<ABaseWeapon>(damageCauserActor);
-	//FVector2D attackDirection;
-	//if (baseWeapon == nullptr)
-	//{
-	//	AActor* damageCauserOwner = damageCauserActor->GetOwner();
-	//	if (damageCauserOwner == nullptr)
-	//		damageCauserOwner = damageCauserActor;
-	//	attackDirection = FVector2D(damageCauserOwner->GetActorForwardVector());
-	//}
-	//else
-	//{
-	//	attackDirection = baseWeapon->GetAttackDirection();
-	//}
-
-	//AActor* owner = GetOwner();
-	//FVector2D ownerForwardVector2D(owner->GetActorForwardVector());
-
-	//
-
-	//FVector2D xVector(1.0f, 0.f);
-
-	////float degrees = FMath::RadiansToDegrees(FMath::Acos(xVector.Dot(ownerForwardVector2D)));
-	//float degrees = FMath::RadiansToDegrees(FMath::Atan2(ownerForwardVector2D.X, ownerForwardVector2D.Y));
-
-	//FVector2D rotatedVector = attackDirection.GetRotated(-90.0f + degrees);
-	//
-	//float rotatedVectorAngle = FMath::RadiansToDegrees(FMath::Atan2(rotatedVector.Y, rotatedVector.X));
-
-	//uint8 direction = (StaticCast<uint8>((rotatedVectorAngle  / 45.0f)) % 8);
-
-	//// 전방 벡터
-	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() + (FVector(1.0f,0.0f,0.0f) * 200), 30.0f, FLinearColor::Black, 10, 20);
-	//// 전방 벡터
-	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() + (owner->GetActorForwardVector() * 150), 30.0f, FLinearColor::Red, 10, 20);
-	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() + (FVector(ownerForwardVector2D.GetRotated(-90 + degrees),0.0f) * 100.0f ), 30.0f, FLinearColor::Yellow, 10, 20);
-	//// 타격 방향
-	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() +( FVector(attackDirection,0.0f) * 180) , 30.0f, FLinearColor::Green, 10, 20);
-	//// 보정방향
-	//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() +( FVector(rotatedVector,0.0f) * 190) , 30.0f, FLinearColor::Blue, 10, 20);
-	//
-	////UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), owner->GetActorLocation() +( FVector(rotatedVector,0.0f) * 100.0f) , 30.0f, FLinearColor::Blue, 10, 20);
-
-	//return direction;
 }
 
 uint8 UCharacterCombatComponent::ConvertDirectionToHitDirection(uint8 direction)
@@ -237,25 +190,7 @@ uint8 UCharacterCombatComponent::ConvertDirectionToHitDirection(uint8 direction)
 
 	case UCharacterCombatComponent::EDirection::Right:
 		return StaticCast<uint8>(EHitDirection::Left);
-	//case UCharacterCombatComponent::EDirection::Front_Right:
-	//case UCharacterCombatComponent::EDirection::Front_Left:
-	//case UCharacterCombatComponent::EDirection::Front:
-	//	return StaticCast<uint8>(EHitDirection::Back);
 
-	//case UCharacterCombatComponent::EDirection::Right:
-	//	return StaticCast<uint8>(EHitDirection::Left);
-
-	//case UCharacterCombatComponent::EDirection::Left:
-	//	return StaticCast<uint8>(EHitDirection::Right);
-
-	//case UCharacterCombatComponent::EDirection::Back:
-	//	return StaticCast<uint8>(EHitDirection::Front);
-
-	//case UCharacterCombatComponent::EDirection::Back_Left:
-	//	return StaticCast<uint8>(EHitDirection::Front_Right);
-
-	//case UCharacterCombatComponent::EDirection::Back_Right:
-	//	return StaticCast<uint8>(EHitDirection::Front_Left);
 
 	default:
 		return StaticCast<uint8>(EHitDirection::Back);
@@ -359,11 +294,7 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, floa
 
 void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback)
 {
-	ChangeCombatType(animtype /*[this]() ->
-		void
-		{
-			this->characterCombatData.attackCount = 0;
-		}*/);
+	ChangeCombatType(animtype);
 
 	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
 
@@ -419,8 +350,6 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, flo
 				if (cancelCallback)
 					cancelCallback();
 			}
-			//if (!bInterrupted)
-			//	this->AddCombatAbleFlag(ECombatAble::Default);
 		});
 	animInstance->Montage_SetEndDelegate(montageEnded, attackMontage);
 	AddAttackCount();
@@ -508,8 +437,6 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 
 	}
 }
-
-
 
 void UCharacterCombatComponent::Hit(ECharacterCombatMontageType animtype)
 {
@@ -605,15 +532,16 @@ void UCharacterCombatComponent::LockOn()
 
 		FRotator lookAtRotator = UKismetMathLibrary::FindLookAtRotation(ownerLocation, targetActor->GetActorLocation());
 		FRotator newCamRotator = UKismetMathLibrary::RInterpTo(ownerRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), characterRotationData.lockOnInterpSpeed);
-		newCamRotator.Roll = ownerRotator.Roll;
-		
-		
+		//newCamRotator.Roll = ownerRotator.Roll;
+
 		ownerController->SetControlRotation(newCamRotator);
 		if (characterRotationData.isActorRotation)
 		{
 			FRotator ownerActorRotator = owner->GetActorRotation();
 			FRotator newActorRotator = UKismetMathLibrary::RInterpTo(ownerActorRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), characterRotationData.lockOnCharacterInterpSpeed);
-			newActorRotator.Roll = ownerRotator.Roll;
+			newActorRotator.Roll = ownerActorRotator.Roll;
+			newActorRotator.Pitch = ownerActorRotator.Pitch;
+
 			owner->SetActorRotation(newActorRotator);
 		}
 

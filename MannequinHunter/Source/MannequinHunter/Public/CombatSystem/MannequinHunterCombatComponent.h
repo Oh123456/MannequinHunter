@@ -67,8 +67,8 @@ public:
 
 
 	void ResetCommandList();
-	ECharacterCombatMontageType GetCommandMontageType();
-	ECharacterCombatMontageType GetCommandMontageType(EPlayerInputType input);
+	const ECharacterCombatMontageType GetCommandMontageType();
+	const ECharacterCombatMontageType GetCommandMontageType(EPlayerInputType input);
 
 private:
 	void SetCommandList();

@@ -57,12 +57,12 @@ public:
 	/// </summary>
 	/// <param name="order"> newState </param>
 	/// <returns> if the state changes NewStateID, But Not Change CurrentStateID  </returns>
-	virtual uint8 Condition(uint16 order);
+	virtual uint8 Condition(uint16 order) { return stateID; }
 	/// <summary>
 	/// Check Tick 
 	/// </summary>
 	/// <returns></returns>
-	virtual uint8 UpdateCondition();
+	virtual uint8 UpdateCondition() { return stateID; }
 
 protected:
 	TSharedPtr<FStateMachine> ownerStateMachine;

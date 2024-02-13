@@ -20,7 +20,7 @@ void UMannequinHunterCombatComponent::ResetCommandList()
 	//	commandListData.currentCommandListNode = commandListData.currentCommandListTree->GetRoot();
 }
 
-ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
+const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
 {
 #ifdef UE_BUILD_DEBUG
 	ARYU* ryu = Cast<ARYU>(GetOwner());
@@ -32,9 +32,9 @@ ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageTy
 	return GetCommandMontageType(commandListData.playerInputType);
 }
 
-ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType(EPlayerInputType input)
+const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType(EPlayerInputType input)
 {
-	//const TSharedPtr<CommandListTree>& currentCommandListTree = commandListData.currentCommandListTree;
+	
 	const TSharedPtr<CommandListNode>& currentCommandListNode = commandListData.currentCommandListNode;
 	if (currentCommandListNode)
 	{
@@ -42,7 +42,7 @@ ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageTy
 		if (nextCommandListNode)
 		{
 			commandListData.currentCommandListNode = *nextCommandListNode;
-			return *(commandListData.currentCommandListNode->GetValue()->Get());
+			return *(*commandListData.currentCommandListNode->GetValue());
 		}
 	}
 

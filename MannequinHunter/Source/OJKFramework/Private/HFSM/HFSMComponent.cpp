@@ -112,6 +112,7 @@ void UHFSMComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		currentStateMachine->Update();
 	}
 }
+
 uint16 UHFSMComponent::GetStateOrder(uint16 order)
 {
 	//uint16 value = stateOrder & HFSM_STATE_ORDER;

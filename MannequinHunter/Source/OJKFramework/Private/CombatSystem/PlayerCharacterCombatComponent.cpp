@@ -20,7 +20,7 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 	if (IsLockOn())
 	{
 		Super::SetLockOnTarget();
-		owner->GetCharacterMovement()->bOrientRotationToMovement = true;
+		//owner->GetCharacterMovement()->bOrientRotationToMovement = true;
 		return;
 	}
 
@@ -46,21 +46,21 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 	bool bOrientRotationToMovement = false;
 	if (isHit)
 	{
-		float maxLength = 0.0f;
+		float minLength = 0.0f;
 		float length = 0.0f;
 		int32 size = hitResults.Num();
 		FHitResult& hitResult = hitResults[0];
 		hitActor = hitResult.GetActor();
-		maxLength = (hitActor->GetActorLocation() - ownerLocation).SizeSquared();
+		minLength = FVector::DistSquared(hitActor->GetActorLocation(), ownerLocation);
 		for (int32 i = 1 ; i < size; i++)
 		{
 			hitResult = hitResults[i];
 			if (hitActor->GetComponentByClass<UCombatComponent>())
 			{
-				length = (hitActor->GetActorLocation() - ownerLocation).SizeSquared();
-				if (maxLength < length)
+				length = FVector::DistSquared(hitActor->GetActorLocation(), ownerLocation);
+				if (minLength > length)
 				{
-					maxLength = length;
+					minLength = length;
 					hitActor = hitResult.GetActor();
 				}
 			}
@@ -69,7 +69,7 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 
  	//targetActor = hitActor;
 	SetTargetActor(hitActor);
-	owner->GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovement;
+	//owner->GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovement;
 	//owner->bUseControllerRotationYaw = !bOrientRotationToMovement;
 }
 

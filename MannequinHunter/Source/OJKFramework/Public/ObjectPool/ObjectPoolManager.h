@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Singleton.h"
+#include "Singleton/Singleton.h"
 #include "Containers/Queue.h"
 #include "OJKFramework.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -13,6 +13,8 @@
  * 
  */
 
+// 일단 적용되는지 수정바람
+
 namespace OJKFramework
 {
 
@@ -20,7 +22,7 @@ namespace OJKFramework
 	{
 	public:
 		FObjectPool(TSubclassOf<AActor> actor)
-		{ 
+		{					
 			instance = actor;
 			UE_LOG(Framework, Log, TEXT("Create Object Pool : %s "), *UKismetSystemLibrary::GetDisplayName(actor));
 		}
@@ -40,10 +42,11 @@ namespace OJKFramework
 
 			TObjectPtr<AActor> actor;
 
-			objects.Dequeue(actor);
+			objects.Dequeue(actor);			
 			UE_LOG(Framework, Log, TEXT("Get Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(actor))
 			return actor;
 		}
+
 		void Set(AActor* item)
 		{
 			objects.Enqueue(item);

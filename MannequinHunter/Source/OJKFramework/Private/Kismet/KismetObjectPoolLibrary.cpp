@@ -2,7 +2,7 @@
 
 
 #include "Kismet/KismetObjectPoolLibrary.h"
-#include "Singleton/ObjectPoolManager.h"
+#include "ObjectPool/ObjectPoolManager.h"
 
 void UKismetObjectPoolLibrary::SetWorld(AActor* worldActor)
 {
@@ -13,11 +13,14 @@ void UKismetObjectPoolLibrary::SetWorld(AActor* worldActor)
 AActor* UKismetObjectPoolLibrary::GetActor(TSubclassOf<AActor> actorClass)
 {
 	FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
-	return objectPoolManager->GetActor(actorClass);
+	AActor* actorObject = objectPoolManager->GetActor(actorClass);
+	actorObject->SetActorHiddenInGame(false);
+	return actorObject;
 }
 
 bool UKismetObjectPoolLibrary::SetActor(AActor* actorObject)
 {
 	FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
+	actorObject->SetActorHiddenInGame(true);
 	return objectPoolManager->SetActor(actorObject);
 }

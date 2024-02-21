@@ -10,4 +10,3 @@ ABaseActionCharacter::ABaseActionCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 }
-

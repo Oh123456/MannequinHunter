@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Singleton/ObjectPoolManager.h"
+#include "ObjectPool/ObjectPoolManager.h"
 #include "Player/PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Equipment/BaseWeapon.h"

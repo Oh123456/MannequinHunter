@@ -6,6 +6,10 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Utility/MannequinHunterTags.h"
 
+
+const FName AMannequinAIController::CHASE_ENUM_KEY = TEXT("ChaseEnum");
+const FName AMannequinAIController::TARGET_ACTOR_KEY = TEXT("TargetActor");
+
 void AMannequinAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -27,15 +31,13 @@ void AMannequinAIController::TargetPerceptionUpdated(AActor* actor, FAIStimulus 
 		
 		if (stimulus.WasSuccessfullySensed())
 		{
-			Blackboard->SetValueAsBool("IsTarget", true);
-			Blackboard->SetValueAsBool("IsLostTarget", false);
-			Blackboard->SetValueAsObject("TargetActor", actor);
+			Blackboard->SetValueAsEnum(CHASE_ENUM_KEY, static_cast<uint8>(EMannequinBlackBoardChase::LineofSight));
+			Blackboard->SetValueAsObject(TARGET_ACTOR_KEY, actor);
 		}
 		else
 		{
-			Blackboard->SetValueAsBool("IsTarget", false);
-			Blackboard->SetValueAsBool("IsLostTarget", true);
-			Blackboard->SetValueAsObject("TargetActor", nullptr);
+			Blackboard->SetValueAsEnum(CHASE_ENUM_KEY, static_cast<uint8>(EMannequinBlackBoardChase::Lost));
+			Blackboard->SetValueAsObject(TARGET_ACTOR_KEY, nullptr);
 		}
 	}
 }

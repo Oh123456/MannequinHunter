@@ -19,6 +19,7 @@ public:
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = AI)
 	TObjectPtr<UAIPerceptionComponent> aiPerception;

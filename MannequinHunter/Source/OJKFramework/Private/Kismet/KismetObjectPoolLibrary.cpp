@@ -14,13 +14,24 @@ AActor* UKismetObjectPoolLibrary::GetActor(TSubclassOf<AActor> actorClass)
 {
 	FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
 	AActor* actorObject = objectPoolManager->GetActor(actorClass);
-	actorObject->SetActorHiddenInGame(false);
+	SetActiveActor(actorObject, true);
 	return actorObject;
 }
 
 bool UKismetObjectPoolLibrary::SetActor(AActor* actorObject)
 {
 	FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
-	actorObject->SetActorHiddenInGame(true);
+	SetActiveActor(actorObject, false);
 	return objectPoolManager->SetActor(actorObject);
+}
+
+void UKismetObjectPoolLibrary::SetActiveActor(AActor* actorObject, bool isEnable)
+{
+	// 액터를 감춤 
+	actorObject->SetActorHiddenInGame(!isEnable);
+	// 충돌 계산 비활성화
+	actorObject->SetActorEnableCollision(isEnable);
+	// 틱(업데이트 함수) 중지 
+	actorObject->SetActorTickEnabled(isEnable);
+
 }

@@ -10,11 +10,23 @@
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EMannequinBlackBoardChase : uint8
+{
+	None = 0,
+	LineofSight,
+	Lost,
+};
+
 UCLASS()
 class MANNEQUINHUNTER_API AMannequinAIController : public ABaseAIController
 {
 	GENERATED_BODY()
-	
+private:
+	const static FName CHASE_ENUM_KEY;
+	const static FName TARGET_ACTOR_KEY;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;

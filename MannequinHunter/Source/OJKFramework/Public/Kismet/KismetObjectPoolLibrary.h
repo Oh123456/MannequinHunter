@@ -22,4 +22,7 @@ class OJKFRAMEWORK_API UKismetObjectPoolLibrary : public UBlueprintFunctionLibra
 
 	UFUNCTION(BlueprintCallable, DisplayName = "Set ObjectPool Actor")
 	static bool SetActor(AActor* actorObject);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "Set Active Actor")
+	static void SetActiveActor(AActor* actorObject, bool isEnable);
 };

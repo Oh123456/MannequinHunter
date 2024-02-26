@@ -248,6 +248,7 @@ protected:
 	virtual uint8 OnHitDirection_Implementation();
 	UFUNCTION(BlueprintPure)
 	uint8 ConvertDirectionToHitDirection(uint8 direction);
+
 public:
 	virtual void Dodge(ECharacterCombatMontageType animtype,float playRate,std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
 	virtual void Attack(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
@@ -255,6 +256,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnHitEnd();
 protected:
 	FCharacterCombatData characterCombatData;
 	FCharacterCombatAnimationData characterCombatAnimationData;

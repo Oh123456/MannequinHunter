@@ -197,6 +197,11 @@ uint8 UCharacterCombatComponent::ConvertDirectionToHitDirection(uint8 direction)
 	}
 }
 
+void UCharacterCombatComponent::OnHitEnd()
+{
+	
+}
+
 void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype);
@@ -454,12 +459,25 @@ void UCharacterCombatComponent::Hit(ECharacterCombatMontageType animtype)
 
 	uint8 direction = ConvertDirectionToHitDirection(OnHitDirection());
 
-	UE_LOG_WARNING(LogTemp, TEXT("Hit Animation : %d"), direction);
-
 	if (currentAnimMontages->Num() <= direction)
 		direction = 0;
 
 	montage = (*currentAnimMontages)[direction];
+
+	//FOnMontageEnded montageEnded;
+	//montageEnded.BindLambda([this](UAnimMontage* animMontage, bool bInterrupted)
+	//	{
+	//		OnHitEnd();
+	//	});
+	//animInstance->Montage_SetEndDelegate(montageEnded, montage);
+
+	FOnMontageBlendingOutStarted montageBlendingOutStarted;
+	montageBlendingOutStarted.BindLambda([this](UAnimMontage* animMontage, bool bInterrupted)
+		{
+			OnHitEnd();
+		});
+
+	animInstance->Montage_SetBlendingOutDelegate(montageBlendingOutStarted, montage);
 
 	animInstance->Montage_Play(montage);
 }
@@ -584,6 +602,7 @@ void UCharacterCombatComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	LockOn();
+	
 }
 
 void UCharacterCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)

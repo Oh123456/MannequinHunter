@@ -17,7 +17,11 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 
 	RunBehaviorTree(behaviorTree);
 
-	UAIPattern* AIPattern = Cast<UAIPattern>(GetBlackboardComponent()->GetValueAsClass(AIPatternKey));
 	if (AIPattern)
-		AIPattern->LoadTableData();
+	{
+		AIPattern.GetDefaultObject()->LoadTableData();
+		UBlackboardComponent* bbc = GetBlackboardComponent();
+
+		bbc->SetValueAsClass(AIPatternKey, AIPattern);
+	}
 }

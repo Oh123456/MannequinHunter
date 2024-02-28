@@ -9,12 +9,28 @@
 #include "AIPattern.generated.h"
 
 USTRUCT(Blueprinttype)
+struct FAIPatternCondition
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	float distance;
+
+};
+
+USTRUCT(Blueprinttype)
 struct MANNEQUINHUNTER_API FAIPatternData
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UAnimMontage> montage;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 weight;
+
+	UPROPERTY(EditDefaultsOnly)
+	FAIPatternCondition condition;
 };
 
 USTRUCT(Blueprinttype)

@@ -23,6 +23,9 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, Category = AI)
 	TObjectPtr<UAIPerceptionComponent> aiPerception;
+
+	UPROPERTY(EditDefaultsOnly, Category = BlackBoard)
+	FName AIPatternKey = TEXT("AIPattern");
 private:
 	UPROPERTY(EditAnywhere, Category = BehaviorTree, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> behaviorTree;

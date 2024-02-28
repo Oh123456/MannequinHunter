@@ -28,10 +28,6 @@ public:
 	const UDataTable* GetTable()
 	{
 		TObjectPtr<UDataTable>* findTable = tableMap.Find(TTable::StaticStruct());
-		//TObjectPtr<UDataTable>* findTable = tables.FindByPredicate([](const TObjectPtr<UDataTable>& data)
-		//	{
-		//		return data->GetRowStruct()->IsChildOf(TTable::StaticStruct());
-		//	});
 
 		if (findTable == nullptr)
 			return nullptr;
@@ -44,11 +40,6 @@ public:
 	const TTable* GetTable(FName key, const FString& contextString = TEXT(""))
 	{
 		TObjectPtr<UDataTable>* findTable = tableMap.Find(TTable::StaticStruct());
-
-		//TObjectPtr<UDataTable>* findTable = tables.FindByPredicate([](const TObjectPtr<UDataTable>& data)
-		//	{
-		//		return data->GetRowStruct()->IsChildOf(TTable::StaticStruct());
-		//	});
 
 		if (findTable == nullptr)
 			return nullptr;

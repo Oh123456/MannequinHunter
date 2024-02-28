@@ -4,6 +4,7 @@
 #include "Singleton/TableManager.h"
 #include "Table/MannequinHunterStatusTable.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
+#include "AI/AIPattern.h"
 
 FTableManager::FTableManager()
 {
@@ -11,6 +12,7 @@ FTableManager::FTableManager()
 	
 	//CommandTable/Script/Engine.DataTable'/Game/BP/DataTable/StatuesDataTable.StatuesDataTable'
 	LoadTable<FCommandDataTable>(TEXT("/Game/BP/DataTable/CommandTable.CommandTable"));
+	LoadTable<FAIPatternTable>(TEXT("/Game/BP/DataTable/AIPattenDataTable.AIPattenDataTable"));
 }
 
 

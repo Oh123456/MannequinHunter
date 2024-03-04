@@ -23,4 +23,4 @@ inline bool operator == (const ClassName& key, const ClassName& key2) \
 } \
 
 
-#define ALLOW_PRIVATE_ACCESS AllowPrivateAccess = "true";
+#define ALLOW_PRIVATE_ACCESS AllowPrivateAccess = "true"

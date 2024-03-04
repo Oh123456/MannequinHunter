@@ -24,6 +24,9 @@ struct MANNEQUINHUNTER_API FAIPatternData
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
+	FName patternName;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UAnimMontage> montage;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -34,12 +37,21 @@ struct MANNEQUINHUNTER_API FAIPatternData
 };
 
 USTRUCT(Blueprinttype)
+struct MANNEQUINHUNTER_API FAIPatternDataArray
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<FAIPatternData> datas;
+};
+
+USTRUCT(Blueprinttype)
 struct MANNEQUINHUNTER_API FAIPatternTable : public FTableRowBase
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	TMap<FString, FAIPatternData> patternData;
+	TMap<float, FAIPatternDataArray> patternData;
 
 };
 
@@ -52,13 +64,15 @@ class MANNEQUINHUNTER_API UAIPattern : public UObject
 public:
 	~UAIPattern();
 
-	void LoadTableData();
+	void LoadTableData(UWorld* world);
 
-	const FAIPatternData* GetAIPatternData(FString patternKey) const;
-
+	int32 GetDefaultWeight() const { return defaultWeight; }
+	const FAIPatternDataArray* GetAIPatternData(float distance) const;
 private:
 	const FAIPatternTable* tableData;
+	int32 defaultWeight = 300;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Table, meta = (ALLOW_PRIVATE_ACCESS))
 	FName tableName;
+
 };

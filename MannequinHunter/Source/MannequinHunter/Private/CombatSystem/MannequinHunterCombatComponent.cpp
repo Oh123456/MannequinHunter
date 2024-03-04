@@ -2,7 +2,7 @@
 
 
 #include "CombatSystem/MannequinHunterCombatComponent.h"
-#include "Singleton/CommandListManager.h"
+#include "Subsystem/CommandListSubsystem.h"
 #ifdef UE_BUILD_DEBUG
 #include "Character/RYU.h"
 #include "Utility/PlayerInputLog.h"
@@ -15,9 +15,9 @@ UMannequinHunterCombatComponent::~UMannequinHunterCombatComponent()
 
 void UMannequinHunterCombatComponent::ResetCommandList()
 {
-	commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
-	//if (commandListData.currentCommandListTree)
-	//	commandListData.currentCommandListNode = commandListData.currentCommandListTree->GetRoot();
+	commandListData.currentCommandListNode = GetWorld()->GetGameInstance()->GetSubsystem<UCommandListSubsystem>()->GetCommandList().GetRoot();
+
+	//commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
 }
 
 const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
@@ -51,7 +51,8 @@ const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMon
 
 void UMannequinHunterCombatComponent::SetCommandList()
 {
-	commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
+	commandListData.currentCommandListNode = GetWorld()->GetGameInstance()->GetSubsystem<UCommandListSubsystem>()->GetCommandList().GetRoot();
+	//commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
 }
 
 void UMannequinHunterCombatComponent::BeginPlay()

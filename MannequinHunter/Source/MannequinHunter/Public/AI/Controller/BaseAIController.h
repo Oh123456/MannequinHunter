@@ -17,6 +17,8 @@ class MANNEQUINHUNTER_API ABaseAIController : public AAIController
 public:
 	ABaseAIController();
 
+	const class UAIPattern* GetAIPattern() const { return AIPattern.GetDefaultObject(); }
+
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 

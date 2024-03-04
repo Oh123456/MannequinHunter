@@ -3,26 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Subsystems/GameInstanceSubsystem.h"
 #include "Engine/DataTable.h"
 #include "Defines.h"
-#include "Singleton/Singleton.h"
+#include "TableSubsystem.generated.h"
 
 /**
  * 
  */
-
-//struct FStatusDataTable;
-
-class MANNEQUINHUNTER_API FTableManager
+UCLASS()
+class MANNEQUINHUNTER_API UTableSubsystem : public UGameInstanceSubsystem
 {
-	DECLARE_SINGLETON(FTableManager)
+	GENERATED_BODY()
+	
 
-
-private:
-	FTableManager();
-	~FTableManager();
 public:
-
 
 	template<typename TTable>
 	const UDataTable* GetTable()
@@ -46,8 +41,7 @@ public:
 
 		return (*findTable)->FindRow<TTable>(key, contextString);
 	}
-private:
-	//void LoadTable(const TCHAR* name);
+
 	template<typename TTable>
 	void LoadTable(const TCHAR* name)
 	{
@@ -58,10 +52,11 @@ private:
 		}
 	}
 
-private:
-	//UPROPERTY()
-	//TArray<TObjectPtr<UDataTable>> tables;
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
 
+private:
 	UPROPERTY()
 	TMap<TObjectPtr<UStruct>, TObjectPtr<UDataTable>> tableMap;
 };

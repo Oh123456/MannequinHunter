@@ -15,13 +15,13 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	RunBehaviorTree(behaviorTree);
 
 	if (AIPattern)
 	{
-		AIPattern.GetDefaultObject()->LoadTableData();
-		UBlackboardComponent* bbc = GetBlackboardComponent();
+		AIPattern.GetDefaultObject()->LoadTableData(GetWorld());
+		//UBlackboardComponent* bbc = GetBlackboardComponent();
 
-		bbc->SetValueAsClass(AIPatternKey, AIPattern);
+		//bbc->SetValueAsClass(AIPatternKey, AIPattern);
 	}
+	RunBehaviorTree(behaviorTree);
 }

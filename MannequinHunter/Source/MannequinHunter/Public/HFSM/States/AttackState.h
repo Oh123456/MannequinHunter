@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HFSM/State.h"
+#include "BaseMannequinHunterState.h"
 
 enum class ECharacterCombatMontageType :uint8;
 
 /**
  * 
  */
-class MANNEQUINHUNTER_API FAttackState : public FState
+class MANNEQUINHUNTER_API FAttackState : public FBaseMannequinHunterState
 {
 public:
 	FAttackState();
-	~FAttackState();
+	virtual ~FAttackState();
 
 protected:
 	void CheckState();

@@ -102,6 +102,17 @@ void FStateMachine::SetStateOrder(uint16 order)
 	 }
 }
 
+UWorld* FStateMachine::GetWorld() const
+{
+	 return ownerCharacter == nullptr ? nullptr : ownerCharacter->GetWorld(); 
+}
+
+UGameInstance* FStateMachine::GetGameInstance() const
+{
+	UWorld* world = GetWorld();
+	return world == nullptr ? nullptr : world->GetGameInstance();
+}
+
 uint8 FStateMachine::GetCurrentState()
 {
 	if (currentState == nullptr)

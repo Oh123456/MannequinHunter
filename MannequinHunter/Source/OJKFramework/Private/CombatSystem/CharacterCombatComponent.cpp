@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "ObjectPool/ObjectPoolManager.h"
+#include "ObjectPool/ObjectPoolSubsystem.h"
 #include "Player/PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Equipment/BaseWeapon.h"
@@ -632,7 +632,9 @@ AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> c
 		findItem = &characterCombatData.equipmentItem.Add(slot, newObject);
 	}
 
-	FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
+	UObjectPoolSubsystem* objectPoolManager =  GetWorld()->GetGameInstance()->GetSubsystem<UObjectPoolSubsystem>();
+
+	//FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
 	
 	AEquipment* createObject = objectPoolManager->GetActor<AEquipment>(createEquipment);
 	(*findItem)->SetEquipment(addIndex, createObject);

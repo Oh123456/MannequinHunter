@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HFSM/State.h"
+#include "BaseMannequinHunterState.h"
 
 /**
  * 
  */
-class MANNEQUINHUNTER_API FHitState : public FState
+class MANNEQUINHUNTER_API FHitState : public FBaseMannequinHunterState
 {
 public:
 	FHitState();

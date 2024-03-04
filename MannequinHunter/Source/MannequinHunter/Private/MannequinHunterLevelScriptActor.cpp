@@ -2,18 +2,21 @@
 
 
 #include "MannequinHunterLevelScriptActor.h"
-#include "ObjectPool/ObjectPoolManager.h"
+#include "ObjectPool/ObjectPoolSubsystem.h"
 
 void AMannequinHunterLevelScriptActor::Destroyed()
 {
 	Super::Destroyed();
 
-	FObjectPoolManager::GetInstance()->Clear();
+	GetGameInstance()->GetSubsystem<UObjectPoolSubsystem>()->Clear();
+
+	//FObjectPoolManager::GetInstance()->Clear();
 }
 
 void AMannequinHunterLevelScriptActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FObjectPoolManager::GetInstance()->ChangeWorld(GetWorld());
+	GetGameInstance()->GetSubsystem<UObjectPoolSubsystem>()->ChangeWorld();
+	//FObjectPoolManager::GetInstance()->ChangeWorld(GetWorld());
 }

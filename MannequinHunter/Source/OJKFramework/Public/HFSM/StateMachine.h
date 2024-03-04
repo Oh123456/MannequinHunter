@@ -63,6 +63,9 @@ public:
 	UHFSMComponent* GetOwnerHFSM() { return ownerHFSM; }
 	ACharacter* GetOwnerCharacter() { return ownerCharacter; }
 
+	class UWorld* GetWorld() const;
+	class UGameInstance* GetGameInstance() const;
+
 	inline uint8 GetStateMachineID() const { return stateMachineID; }
 	uint8 GetCurrentState();
 

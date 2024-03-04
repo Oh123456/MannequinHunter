@@ -5,7 +5,7 @@
 #include "Character/PlayerCommonEnums.h"
 
 FHitState::FHitState() : 
-	FState(StaticCast<uint8>(EPlayerStateEnum::Hit), EStateInitOption::DontUpdate)
+	FBaseMannequinHunterState(StaticCast<uint8>(EPlayerStateEnum::Hit), EStateInitOption::DontUpdate)
 {
 }
 

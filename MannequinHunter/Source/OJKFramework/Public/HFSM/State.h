@@ -43,7 +43,6 @@ public:
 	template <typename T>
 	inline T GetStateID() { return static_cast<T>(stateID); }
 
-	void SetOwner(const TSharedPtr<FStateMachine>& owner) { ownerStateMachine = owner; };
 public:
 	virtual void Enter() {}
 	virtual void Update() {}
@@ -64,6 +63,7 @@ public:
 	/// <returns></returns>
 	virtual uint8 UpdateCondition() { return stateID; }
 
+	virtual void SetOwner(const TSharedPtr<FStateMachine>& owner) { ownerStateMachine = owner; };
 protected:
 	TSharedPtr<FStateMachine> ownerStateMachine;
 	TUniquePtr<TArray<uint16>> ignoreOrder;

@@ -3,29 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Singleton/Singleton.h"
+#include "Subsystems/GameInstanceSubsystem.h"
 #include "Character/PlayerCommonEnums.h"
-
-//struct FStateData
-//{
-//	EPlayerStateEnum stateID = EPlayerStateEnum::None;
-//	EPlayerStateMachine stateMachineID = EPlayerStateMachine::None;
-//};
+#include "StateSubsystem.generated.h"
 
 /**
  * 
  */
-class MANNEQUINHUNTER_API FStateManager 
+UCLASS()
+class MANNEQUINHUNTER_API UStateSubsystem : public UGameInstanceSubsystem
 {
-	DECLARE_SINGLETON(FStateManager)
-
-	FStateManager();
-	~FStateManager();
+	GENERATED_BODY()
+	
 public:
 	uint8 GetStateID(EStateOrder order);
 	template<typename T>
 	uint8 GetStateID(T tOrder) { return GetStateID(StaticCast<EStateOrder>(tOrder)); }
+
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	virtual void Deinitialize() override;
 private:
 	TMap<EStateOrder, uint8> stateDataMap;
-
 };

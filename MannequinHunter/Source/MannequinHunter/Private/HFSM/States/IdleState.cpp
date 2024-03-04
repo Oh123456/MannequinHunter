@@ -7,14 +7,14 @@
 #include "Player/PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
-#include "Singleton/StateManager.h"
+#include "Subsystem/StateSubsystem.h"
 #ifdef UE_BUILD_DEBUG
 #include "Character/RYU.h"
 #include "Utility/PlayerInputLog.h"
 #endif
 
 FIdleState::FIdleState() : 
-	FState(StaticCast<uint8>(EPlayerStateEnum::Idle), EStateInitOption::UpdataAndConvertOrder)
+	FBaseMannequinHunterState(StaticCast<uint8>(EPlayerStateEnum::Idle), EStateInitOption::UpdataAndConvertOrder)
 {
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Dodge));
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Attack));
@@ -48,7 +48,7 @@ uint8 FIdleState::Condition(uint16 order)
 	uint8 newStateID = FState::Condition(order);
 	
 	if (convertOrder->Contains(order))
-		newStateID = FStateManager::GetInstance()->GetStateID(order);
+		newStateID = OrderToStateID(order);
 
 	return newStateID;
 }

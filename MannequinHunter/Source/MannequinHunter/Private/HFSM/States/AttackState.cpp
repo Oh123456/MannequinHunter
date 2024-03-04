@@ -7,11 +7,11 @@
 #include "Player/PlayerCharacter.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Character/PlayerCommonEnums.h"
-#include "Singleton/StateManager.h"
+#include "Subsystem/StateSubsystem.h"
 #include "CombatSystem/Status.h"
 #include "Utility/MannequinHunterUtility.h"
 
-FAttackState::FAttackState() : FState(StaticCast<uint8>( EPlayerStateEnum::Attack), EStateInitOption::DontUpdataAndConvertOrder)
+FAttackState::FAttackState() : FBaseMannequinHunterState(StaticCast<uint8>( EPlayerStateEnum::Attack), EStateInitOption::DontUpdataAndConvertOrder)
 {
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Idle));
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::InputWait));
@@ -64,7 +64,8 @@ uint8 FAttackState::Condition(uint16 order)
 	
 	if (convertOrder->Contains(order))
 	{
-		newState = FStateManager::GetInstance()->GetStateID(order); 
+		newState = OrderToStateID(order);
+		//newState = FStateManager::GetInstance()->GetStateID(order); 
 	}
 	return newState;
 }

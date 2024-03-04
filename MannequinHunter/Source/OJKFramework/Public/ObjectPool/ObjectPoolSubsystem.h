@@ -3,26 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Singleton/Singleton.h"
 #include "Containers/Queue.h"
-#include "OJKFramework.h"
+#include "Subsystems/GameInstanceSubsystem.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "OJKFramework.h"
+#include "ObjectPoolSubsystem.generated.h"
 
 /**
  * 
  */
-
-// 일단 적용되는지 수정바람
-
 namespace OJKFramework
 {
 
-	class FObjectPool 
+	class FObjectPool
 	{
 	public:
 		FObjectPool(TSubclassOf<AActor> actor)
-		{					
+		{
 			instance = actor;
 			UE_LOG(Framework, Log, TEXT("Create Object Pool : %s "), *UKismetSystemLibrary::GetDisplayName(actor));
 		}
@@ -37,14 +34,14 @@ namespace OJKFramework
 			{
 				AActor* spawnActor = world->SpawnActor(instance);
 				UE_LOG(Framework, Log, TEXT("Create Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(spawnActor))
-				return spawnActor;
+					return spawnActor;
 			}
 
 			TObjectPtr<AActor> actor;
 
-			objects.Dequeue(actor);			
+			objects.Dequeue(actor);
 			UE_LOG(Framework, Log, TEXT("Get Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(actor))
-			return actor;
+				return actor;
 		}
 
 		void Set(AActor* item)
@@ -64,7 +61,7 @@ namespace OJKFramework
 
 	class FObjectPoolKey
 	{
-		
+
 	public:
 		FObjectPoolKey(UClass* uclass)
 		{
@@ -98,7 +95,7 @@ namespace OJKFramework
 	private:
 		TWeakObjectPtr<UClass> uClass;
 	};
-	
+
 	uint32 GetTypeHash(const FObjectPoolKey& key);
 
 	inline bool operator == (const FObjectPoolKey& key, const FObjectPoolKey& key2)
@@ -108,24 +105,19 @@ namespace OJKFramework
 
 }
 
-
-
-
 using namespace OJKFramework;
 class AActor;
 class UWorld;
 
-
-class OJKFRAMEWORK_API FObjectPoolManager 
+UCLASS()
+class OJKFRAMEWORK_API UObjectPoolSubsystem : public UGameInstanceSubsystem
 {
-	DECLARE_SINGLETON(FObjectPoolManager);
-
-	FObjectPoolManager();
-	~FObjectPoolManager();
-public:
+	GENERATED_BODY()
 	
+public:
+
 	void Clear();
-	void ChangeWorld(UWorld* newWorld);
+	void ChangeWorld();
 
 	template<typename TUClass>
 	TUClass* GetActor(TSubclassOf<AActor> actorClass)
@@ -134,16 +126,10 @@ public:
 	}
 
 	AActor* GetActor(TSubclassOf<AActor> actorClass);
-	bool SetActor(AActor* acotrObject);
+	bool SetActor(AActor* actorObject);
 private:
 	TSharedPtr<FObjectPool> CreateObjectPool(const TSubclassOf<AActor>& actorClass);
 private:
-
-	UPROPERTY()
-	TObjectPtr<UWorld> world;
-
-	UPROPERTY()
 	TMap<FObjectPoolKey, TSharedPtr<FObjectPool>> pools;
+
 };
-
-

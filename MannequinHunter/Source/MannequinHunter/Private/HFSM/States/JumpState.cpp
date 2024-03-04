@@ -6,9 +6,9 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "HFSM/StateMachine.h"
-#include "Singleton/StateManager.h"
+#include "Subsystem/StateSubsystem.h"
 
-FJumpState::FJumpState() : FState(StaticCast<uint8>(EPlayerStateEnum::Jump) , DontUpdataAndConvertOrder)
+FJumpState::FJumpState() : FBaseMannequinHunterState(StaticCast<uint8>(EPlayerStateEnum::Jump) , DontUpdataAndConvertOrder)
 {
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Attack));
 }
@@ -24,7 +24,8 @@ uint8 FJumpState::Condition(uint16 order)
 
 	if (convertOrder->Contains(order))
 	{
-		newState = FStateManager::GetInstance()->GetStateID(order);
+		//newState = FStateManager::GetInstance()->GetStateID(order);
+		newState = OrderToStateID(order);
 	}
 
 	//EStateOrder stateOrder = StaticCast<EStateOrder>(order);

@@ -9,7 +9,7 @@
 #include "DebugLog.h"
 
 FDodgeState::FDodgeState() : 
-	FState(StaticCast<uint8>(EPlayerStateEnum::Dodge), EStateInitOption::UpdataAndConvertOrder)
+	FBaseMannequinHunterState(StaticCast<uint8>(EPlayerStateEnum::Dodge), EStateInitOption::UpdataAndConvertOrder)
 {
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Idle));
 }

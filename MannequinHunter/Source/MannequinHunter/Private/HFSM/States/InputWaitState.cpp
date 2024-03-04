@@ -3,12 +3,12 @@
 
 #include "HFSM/States/InputWaitState.h"
 #include "Character/PlayerCommonEnums.h"
-#include "Singleton/StateManager.h"
+#include "Subsystem/StateSubsystem.h"
 #include "HFSM/StateMachine.h"
 #include "Controller/ActionPlayerController.h"
 #include "GameFramework/Character.h"
 
-FInputWaitState::FInputWaitState() : FState(StaticCast<uint8>(EPlayerStateEnum::InputWait), EStateInitOption::DontUpdataAndIgonereOrder)
+FInputWaitState::FInputWaitState() : FBaseMannequinHunterState(StaticCast<uint8>(EPlayerStateEnum::InputWait), EStateInitOption::DontUpdataAndIgonereOrder)
 {
 	ignoreOrder->Add(StaticCast<uint16>(EStateOrder::Jump));
 }
@@ -30,9 +30,9 @@ uint8 FInputWaitState::Condition(uint16 order)
 	if (ignoreOrder->Contains(order))
 		return newState;
 
-	FStateManager* manager = FStateManager::GetInstance();
-
-	newState = manager->GetStateID(order);
+	//FStateManager* manager = FStateManager::GetInstance();
+	newState = OrderToStateID(order);
+	//newState = manager->GetStateID(order);
 
 	return newState;
 }

@@ -1,11 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Singleton/StateManager.h"
+#include "Subsystem/StateSubsystem.h"
 
+uint8 UStateSubsystem::GetStateID(EStateOrder order)
+{
+	uint8* find = stateDataMap.Find(order);
+	if (find == nullptr)
+		return 0;
 
-FStateManager::FStateManager() : 
-	stateDataMap()
+	return (*find);
+}
+
+void UStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	stateDataMap.Add(EStateOrder::Idle, StaticCast<uint8>(EPlayerStateEnum::Idle));
 	stateDataMap.Add(EStateOrder::Attack, StaticCast<uint8>(EPlayerStateEnum::Attack));
@@ -16,19 +23,9 @@ FStateManager::FStateManager() :
 
 
 	stateDataMap.Add(EStateOrder::Falling, StaticCast<uint8>(EPlayerStateMachine::Falling));
-	
 }
 
-FStateManager::~FStateManager()
+void UStateSubsystem::Deinitialize()
 {
-	stateDataMap.Reset();
-}
-
-uint8 FStateManager::GetStateID(EStateOrder order)
-{
-	 uint8* find = stateDataMap.Find(order);
-	 if (find == nullptr)
-		 return 0;
-
-	 return (*find);
+	stateDataMap.Empty();
 }

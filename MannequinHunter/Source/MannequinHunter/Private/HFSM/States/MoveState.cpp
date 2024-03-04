@@ -7,10 +7,10 @@
 #include "Player/PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatSystem/CharacterCombatComponent.h"
-#include "Singleton/StateManager.h"
+#include "Subsystem/StateSubsystem.h"
 
 FMoveState::FMoveState() :
-FState(StaticCast<uint8>(EPlayerStateEnum::Move), DontUpdataAndConvertOrder)
+	FBaseMannequinHunterState(StaticCast<uint8>(EPlayerStateEnum::Move), DontUpdataAndConvertOrder)
 {
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Dodge));
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Attack));
@@ -35,7 +35,8 @@ uint8 FMoveState::Condition(uint16 order)
 
 	if (convertOrder->Contains(order))
 	{
-		newStateID = FStateManager::GetInstance()->GetStateID(order);
+		//newStateID = FStateManager::GetInstance()->GetStateID(order);
+		newStateID = OrderToStateID(order);
 	}
 
 	//EStateOrder eOrder = StaticCast<EStateOrder>(order);

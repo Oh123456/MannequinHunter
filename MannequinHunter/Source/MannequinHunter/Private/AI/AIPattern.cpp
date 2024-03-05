@@ -4,6 +4,7 @@
 #include "AI/AIPattern.h"
 #include "Subsystem/TableSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "AI/AIPatternTable.h"
 
 
 UAIPattern::~UAIPattern()
@@ -17,24 +18,18 @@ void UAIPattern::LoadTableData(UWorld* world)
 
 	if (gameInstance)
 	{
-		const UDataTable* table = gameInstance->GetSubsystem<UTableSubsystem>()->GetTable<FAIPatternTable>();//FTableManager::GetInstance()->GetTable<FAIPatternTable>();
+		const UDataTable* table = gameInstance->GetSubsystem<UTableSubsystem>()->GetTable<FAIPatternTreeTable>();
 		if (table)
 		{
-			tableData = table->FindRow<FAIPatternTable>(tableName, TEXT(""));
-
-			FAIPatternTable* defaultTable = table->FindRow<FAIPatternTable>(TEXT("Default"), TEXT(""));
-			if (defaultTable)
-			{
-				defaultWeight = defaultTable->patternData.begin().Value().datas[0].weight;
-			}
+			tableData = table->FindRow<FAIPatternTreeTable>(tableName, TEXT(""));
 		}
 	}
 }
 
-const FAIPatternDataArray* UAIPattern::GetAIPatternData(float distance/*const FName& patternKey*/) const
+const FAIPatternTreeTableDataArray* UAIPattern::GetAIPatternData(float distance) const
 {
 	if (tableData == nullptr)
 		return nullptr;
 
-	return tableData->patternData.Find(distance);
+	return nullptr;
 }

@@ -51,6 +51,8 @@ public:
 			tableMap.Add(TTable::StaticStruct(), findTable);
 		}
 	}
+private:
+	void LoadAIPatternDataTable();
 
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

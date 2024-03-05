@@ -4,14 +4,23 @@
 #include "Subsystem/TableSubsystem.h"
 #include "Table/MannequinHunterStatusTable.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
-#include "AI/AIPattern.h"
+#include "AI/AIPatternTable.h"
+
+void UTableSubsystem::LoadAIPatternDataTable()
+{
+
+	LoadTable<FAIPatternDataTable>(TEXT("/Game/BP/DataTable/AIPatternDataTables/DT_MannequinAIPatternData.DT_MannequinAIPatternData"));
+}
 
 void UTableSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 
-	LoadTable<FMannequinHunterStatusDataTable>(TEXT("/Game/BP/DataTable/StatuesDataTable.StatuesDataTable"));
-	LoadTable<FCommandDataTable>(TEXT("/Game/BP/DataTable/CommandTable.CommandTable"));
-	LoadTable<FAIPatternTable>(TEXT("/Game/BP/DataTable/AIPattenDataTable.AIPattenDataTable"));
+	LoadTable<FMannequinHunterStatusDataTable>(TEXT("/Game/BP/DataTable/DT_StatuesData.DT_StatuesData"));
+	LoadTable<FCommandDataTable>(TEXT("/Game/BP/DataTable/DT_Command.DT_Command"));
+	LoadTable<FAIPatternTreeTable>(TEXT("/Game/BP/DataTable/DT_AIPatternTree.DT_AIPatternTree"));
+
+	LoadAIPatternDataTable();
+
 }
 
 void UTableSubsystem::Deinitialize()

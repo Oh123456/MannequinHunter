@@ -29,5 +29,4 @@ private:
 	void AddCommandListTree(const FCommandDataTable* table);
 private:
 	TCommandListTree<EPlayerInputType, ECharacterCombatMontageType> commandList;
-
 };

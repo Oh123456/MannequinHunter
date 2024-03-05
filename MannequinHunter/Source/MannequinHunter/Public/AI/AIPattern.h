@@ -51,7 +51,7 @@ struct MANNEQUINHUNTER_API FAIPatternTable : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	TMap<float, FAIPatternDataArray> patternData;
+	TMap<int32, FAIPatternDataArray> patternData;
 
 };
 

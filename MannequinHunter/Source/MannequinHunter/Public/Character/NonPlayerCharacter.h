@@ -14,8 +14,8 @@ class MANNEQUINHUNTER_API ANonPlayerCharacter : public ABaseActionCharacter
 {
 	GENERATED_BODY()
 public:
-	template<typename TEnum>
-	void SetState(TEnum state) { SetState(static_cast<uint8>(state)); }
+	template<typename TKey>
+	void SetState(TKey state) { SetState(static_cast<uint8>(state)); }
 	void SetState(uint8 state) { currentState = state; }
 	bool IsState(uint8 state) const { return state == currentState; }
 

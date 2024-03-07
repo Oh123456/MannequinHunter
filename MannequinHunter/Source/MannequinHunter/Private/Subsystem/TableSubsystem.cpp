@@ -6,20 +6,22 @@
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "AI/AIPatternTable.h"
 
-void UTableSubsystem::LoadAIPatternDataTable()
-{
+const TCHAR* AIPatternPath = TEXT("/Game/BP/DataTable/AIPatternDataTables/");
 
-	LoadTable<FAIPatternDataTable>(TEXT("/Game/BP/DataTable/AIPatternDataTables/DT_MannequinAIPatternData.DT_MannequinAIPatternData"));
+const UDataTable* UTableSubsystem::LoadAIPatternTable(const FName& tableName)
+{
+	FString path = AIPatternPath;
+	path.Append(tableName.ToString());
+	return LoadObject<UDataTable>(nullptr, (*path));
 }
 
 void UTableSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 
-	LoadTable<FMannequinHunterStatusDataTable>(TEXT("/Game/BP/DataTable/DT_StatuesData.DT_StatuesData"));
-	LoadTable<FCommandDataTable>(TEXT("/Game/BP/DataTable/DT_Command.DT_Command"));
-	LoadTable<FAIPatternTreeTable>(TEXT("/Game/BP/DataTable/DT_AIPatternTree.DT_AIPatternTree"));
+	LoadTable<FMannequinHunterStatusDataTable>(TEXT("/Game/BP/DataTable/DT_StatuesData"));
+	LoadTable<FCommandDataTable>(TEXT("/Game/BP/DataTable/DT_Command"));
+	LoadTable<FAIPatternTreeTable>(TEXT("/Game/BP/DataTable/DT_AIPatternTree"));
 
-	LoadAIPatternDataTable();
 
 }
 

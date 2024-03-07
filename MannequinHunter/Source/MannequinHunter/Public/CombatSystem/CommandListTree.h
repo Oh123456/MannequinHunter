@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include <stack>
 
 /**
  * 
  */
+
+using namespace std;
 
 namespace CommandListKeyTypeCheck
 {
@@ -115,6 +118,55 @@ public:
 	}
 
 	TSharedPtr<TCommandListNode<TKey, TValue>> GetRoot() const { return root; }
+
+	void ForEach(std::function<void(TSharedPtr<TCommandListNode<TKey, TValue>>&)> process = nullptr)
+	{
+		stack<TSharedPtr<TCommandListNode<TKey, TValue>>> nodeStack;
+
+		nodeStack.push(root);
+
+		while (!nodeStack.empty())
+		{
+			TSharedPtr<TCommandListNode<TKey, TValue>> node = nodeStack.top();
+			nodeStack.pop();
+
+			if (process != nullptr)
+				process(node);
+
+			const TArray<TSharedPtr<TCommandListNode<TKey, TValue>>>& childs = node->GetChilds();
+
+			for(const TSharedPtr<TCommandListNode<TKey, TValue>> child : childs)
+			{
+				nodeStack.push(child);
+			}
+		}
+	}
+
+	const TSharedPtr<TCommandListNode<TKey, TValue>> Find(TKey key)
+	{
+		stack<TSharedPtr<TCommandListNode<TKey, TValue>>> nodeStack;
+
+		nodeStack.push(root);
+
+		while (!nodeStack.empty())
+		{
+			TSharedPtr<TCommandListNode<TKey, TValue>> node = nodeStack.top();
+			nodeStack.pop();
+
+			if (node->GetKey() == key)
+				return node;
+
+
+			const TArray<TSharedPtr<TCommandListNode<TKey, TValue>>>& childs = node->GetChilds();
+
+			for (const TSharedPtr<TCommandListNode<TKey, TValue>> child : childs)
+			{
+				nodeStack.push(child);
+			}
+		}
+
+		return nullptr;
+	}
 
 private:
 	TSharedPtr<TCommandListNode<TKey, TValue>> root;

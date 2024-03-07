@@ -14,7 +14,7 @@ void UCommandListSubsystem::LoadCommandListTable(const UDataTable* table)
 		FCommandDataTable* rowTable = table->FindRow<FCommandDataTable>(name, TEXT(""));
 		AddCommandListTree(rowTable);
 	}
-	
+
 }
 
 void UCommandListSubsystem::AddCommandListTree(const FCommandDataTable* table)

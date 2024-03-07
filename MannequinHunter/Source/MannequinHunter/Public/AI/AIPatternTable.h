@@ -9,6 +9,21 @@
 /**
  * 
  */
+
+USTRUCT(Blueprinttype)
+struct MANNEQUINHUNTER_API FAIPatternData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	FName patternName;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 weight;
+};
+
+
+
 USTRUCT(Blueprinttype)
 struct FAIPatternCondition
 {
@@ -32,20 +47,10 @@ struct MANNEQUINHUNTER_API FAIPatternDataTable : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly)
 	FAIPatternCondition condition;
-};
-
-USTRUCT(Blueprinttype)
-struct MANNEQUINHUNTER_API FAIPatternTreeData
-{
-	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	FName patternName;
-
-	UPROPERTY(EditDefaultsOnly)
-	int32 weight;
+	TArray<FAIPatternData> addPatternName;
 };
-
 
 USTRUCT(Blueprinttype)
 struct MANNEQUINHUNTER_API FAIPatternTreeTableData
@@ -53,10 +58,7 @@ struct MANNEQUINHUNTER_API FAIPatternTreeTableData
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	FAIPatternTreeData data;
-
-	UPROPERTY(EditDefaultsOnly)
-	TArray<FAIPatternTreeData> addPattern;
+	FAIPatternData data;
 };
 
 

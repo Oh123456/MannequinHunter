@@ -4,9 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "Container/Tree.h"
+#include "CombatSystem/CommandListTree.h"
 #include "AI/AIPatternTable.h"
 #include "AIManagerSubsystem.generated.h"
+
+class FAIPatternStartData
+{
+public:
+	void SetMaxWeight(int32 weight) { maxWeight = weight; }
+	const int32 GetMaxWeight() const { return maxWeight; }
+
+	void AddPattern(const FName& name, const int32 weight);
+	void AddWeightArray(int32 weight);
+private:
+	TArray<int32> weights;
+	TArray<FName> patternNames;
+
+	int32 maxWeight;
+};
 
 
 // 가중치에 따라 나누기
@@ -14,23 +29,27 @@ class FPatternData
 {
 public:
 
-	void SetPatternData(const FAIPatternDataTable& data, int32 weightValue) { patternData = data; this->weight = weightValue; }
+	void SetPatternData(const FAIPatternDataTable& data);
 
 	const FAIPatternDataTable& GetPatternData() const { return patternData; }
-	const int32 GetWeight() const { return weight; }
-
-	void AddWeightArray(int32 weight);
+	const FAIPatternStartData& GetPatternStateData() const { return patternStartData; }
 
 private:
 	FAIPatternDataTable patternData;
-	int32 weight;
-	TArray<int32> weightArray;
+	FAIPatternStartData patternStartData;
 };
 
-struct FAIPatternTree
+class FAIPatternTree
 {
+public:
+
+public:
 	// int32 거리 , 패턴 트리
-	TMap<int32, TTree<FName, FPatternData>> patternTrees;
+	TArray<int32> indexArray;
+
+	TArray<FAIPatternStartData> patternTrees;
+
+	TMap<FName, FPatternData> patternDataMap;
 };
 
 
@@ -39,10 +58,10 @@ class MANNEQUINHUNTER_API UAIManagerSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 public:
-	const TSharedPtr<FAIPatternTree> GetPattern(const FName& tableName) const;
+	const TSharedPtr<FAIPatternTree>* GetPattern(const FName& tableName);
 
 private:
-	void LoadPattern(const FName& tableRowName);
+	const TSharedPtr<FAIPatternTree>* LoadPattern(const FName& tableRowName);
 
 private:
 	TMap<FName, TSharedPtr<FAIPatternTree>> AIPatternMap;

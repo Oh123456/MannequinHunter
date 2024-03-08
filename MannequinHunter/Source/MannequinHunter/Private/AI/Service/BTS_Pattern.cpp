@@ -24,29 +24,5 @@ void UBTS_Pattern::SetOwner(AActor* ActorOwner)
 	if (AIController)
 	{
 		const UAIPattern* AIPattern = AIController->GetAIPattern();
-
-		int32 defaultWeight = AIPattern->GetDefaultWeight();
-		int32 totalWeight = defaultWeight;
-
-		patternDatas.Add(FPatternData(TEXT("None"), defaultWeight));
-
-		//for (const FName& name : patternNames)
-		//{
-		//	const FAIPatternData* data = AIPattern->GetAIPatternData(name);
-		//	if (data->weight <= 0)
-		//		continue;
-		//	FPatternData patternData;
-		//	patternData.nameKey = name;
-		//	patternData.weight = data->weight + totalWeight;
-		//	totalWeight += data->weight;
-		//	patternDatas.Add(patternData);
-		//}
-
-		//for (FPatternData& data : patternDatas)
-		//{
-		//	data.weight /= totalWeight;
-		//	//UE_LOG(LogTemp, Log, TEXT("%s Is %f Total %d"), *data.nameKey.ToString(), data.weight , totalWeight);
-		//}
-
 	}
 }

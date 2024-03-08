@@ -10,24 +10,7 @@
 #include "AI/AIPatternTable.h"
 #include "AIPattern.generated.h"
 
-// 가중치에 따라 나누기
-class FAICommandTreeData
-{
-public:
-
-	void SetPatternData(const FAIPatternDataTable& data, int32 weightValue) { patternData = data; this->weight = weightValue; }
-
-	const FAIPatternDataTable& GetPatternData() const { return patternData; }
-	const int32 GetWeight() const { return weight; }
-
-	void AddWeightArray(int32 weight);
-
-private:
-	FAIPatternDataTable patternData;
-	int32 weight;
-	TArray<int32> weightArray;
-};
-
+class FAIPatternTree;
 
 UCLASS(Blueprintable)
 class MANNEQUINHUNTER_API UAIPattern : public UObject
@@ -38,13 +21,8 @@ public:
 
 	void LoadTableData(UWorld* world);
 
-	int32 GetDefaultWeight() const { return defaultWeight; }
-	const FAIPatternTreeTableDataArray* GetAIPatternData(float distance) const;
-
 private:
-	const FAIPatternTreeTable* tableData;
-	int32 defaultWeight = 100;
-
+	TSharedPtr<FAIPatternTree> pattern;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Table, meta = (ALLOW_PRIVATE_ACCESS))
 	FName tableName;

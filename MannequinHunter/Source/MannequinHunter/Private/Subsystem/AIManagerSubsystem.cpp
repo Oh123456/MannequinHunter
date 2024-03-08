@@ -6,27 +6,43 @@
 #include "DebugLog.h"
 #include "../MannequinHunter.h"
 
-void FPatternData::AddWeightArray(int32 weightValue)
+void FAIPatternStartData::AddPattern(const FName& name, const int32 weight)
 {
-	if (weightValue == 0)
-		return;
-	if (weightArray.Num() == 0)
-		weightArray.Add(0);
-	weightArray.Add(weightValue);
+	AddWeightArray(weight);
+	patternNames.Add(name);
 }
 
-const TSharedPtr<FAIPatternTree> UAIManagerSubsystem::GetPattern(const FName& tableName) const
+void FAIPatternStartData::AddWeightArray(int32 weight)
+{
+	if (weight == 0)
+		return;
+	if (weights.Num() == 0)
+		weights.Add(0);
+	weights.Add(weight);
+}
+
+const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::GetPattern(const FName& tableName)
 {
 	const TSharedPtr<FAIPatternTree>* findPattern = AIPatternMap.Find(tableName);
 	if (findPattern == nullptr)
-	{
-
-	}
-
-	return nullptr;
+		return LoadPattern(tableName);
+	return findPattern;
 }
 
-void UAIManagerSubsystem::LoadPattern(const FName& tableRowName)
+void FPatternData::SetPatternData(const FAIPatternDataTable& data)
+{
+	patternData = data;
+	int32 total = 0;
+	for (const FAIPatternData& data : patternData.addPatterns)
+	{
+		patternStartData.AddPattern(data.patternName, data.weight + total);
+		total += data.weight;
+	}
+	patternStartData.SetMaxWeight(total);
+}
+
+
+const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::LoadPattern(const FName& tableRowName)
 {
 	UTableSubsystem* tableSubsystem = GetGameInstance()->GetSubsystem<UTableSubsystem>();
 
@@ -34,42 +50,51 @@ void UAIManagerSubsystem::LoadPattern(const FName& tableRowName)
 
 	FAIPatternTreeTable* row = patternTreeTable->FindRow<FAIPatternTreeTable>(tableRowName, TEXT("Check AIPatternTreeTable"));
 	if (row == nullptr)
-		return;
+		return nullptr;
 
 	const UDataTable* patternTable = tableSubsystem->LoadAIPatternTable(row->patternDataTableName);
 
 	if (patternTable == nullptr)
 	{
 		UE_LOG_WARNING(GameInstanceSubsystem, TEXT("%s Check Table"), *row->patternDataTableName.ToString());
-		return;
+		return nullptr;
 	}
 
-	TSharedPtr<FAIPatternTree> AIPatternTree = MakeShared<FAIPatternTree>();
+	 TSharedPtr<FAIPatternTree>& AIPatternTree = AIPatternMap.Add(row->patternDataTableName, MakeShared<FAIPatternTree>());
+
+	 TArray<FAIPatternDataTable*> allDatas;
+	 patternTable->GetAllRows(TEXT(""), allDatas);
+
+	 for (const FAIPatternDataTable* tableData : allDatas)
+	 {
+		 FPatternData& patternData = AIPatternTree->patternDataMap.Add(tableData->patternName, FPatternData());
+		 patternData.SetPatternData(*tableData);
+	 }
 
 
+	 row->patternData.KeySort([](const int32 a, const int32 b)
+		{
+			return a < b;
+		});
+
+	int32 index = 0;
+	int32 total = 0;
 	for (auto& patternDataPair : row->patternData)
 	{
-		;
-		 
-		TTree<FName, FPatternData>& addedTree = AIPatternTree->patternTrees.Add(patternDataPair.Key, TTree<FName, FPatternData>());
+		int32 key = patternDataPair.Key;
+		AIPatternTree->indexArray.Add(key);
+		AIPatternTree->patternTrees.Add(FAIPatternStartData());
+		total = 0;
+		FAIPatternStartData& patternDataMap = AIPatternTree->patternTrees[index];
 		for (const FAIPatternTreeTableData& data : patternDataPair.Value.datas)
 		{
-			data.data.patternName;
-
-			FAIPatternDataTable* aiPatternData = patternTable->FindRow<FAIPatternDataTable>(data.data.patternName, TEXT(""));
-			if (aiPatternData == nullptr)
-				continue;
-
-			FPatternData patternData;
-			patternData.SetPatternData(*aiPatternData, data.data.weight);
-
-
-			addedTree.AddRootChilde(aiPatternData->patternName, &patternData);
-
-			//넓이 우선이 좋을듯..
+			patternDataMap.AddPattern(data.data.patternName, data.data.weight + total);
+			total += data.data.weight;
 		}
+		patternDataMap.SetMaxWeight(total);
+		++index;
 	}
 
-
-	//AIPatternMap.Add(tableRowName)
+	return &AIPatternTree;
 }
+

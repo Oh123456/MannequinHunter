@@ -26,18 +26,18 @@ class TCommandListNode : public TSharedFromThis<TCommandListNode<TKey, TValue>>
 public:
 	TCommandListNode()
 	{
-		CommandListKeyTypeCheck::Check<TKey>();
+		//CommandListKeyTypeCheck::Check<TKey>();
 	}
 	TCommandListNode(TKey key, const TSharedPtr<TValue>& value)
 	{
-		CommandListKeyTypeCheck::Check<TKey>();
+		//CommandListKeyTypeCheck::Check<TKey>();
 		this->key = key;
 		this->value = value;
 	}
 
 	TCommandListNode(TKey key, TValue* value)
 	{
-		CommandListKeyTypeCheck::Check<TKey>();
+		//CommandListKeyTypeCheck::Check<TKey>();
 		this->key = key;
 		this->value = MakeShared<TValue>(value);
 	}
@@ -98,7 +98,7 @@ public:
 	TCommandListTree()
 	{
 		
-		CommandListKeyTypeCheck::Check<TKey>();
+		//CommandListKeyTypeCheck::Check<TKey>();
 	
 		root = MakeShared<TCommandListNode<TKey, TValue>>();
 	}

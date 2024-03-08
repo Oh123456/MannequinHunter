@@ -11,23 +11,23 @@
  * 
  */
 
-struct FPatternData
-{
-	FPatternData()
-	{
-
-	}
-
-	FPatternData(const FName& name, float weight)
-	{
-		this->weight = weight;
-		this->nameKey = name;
-	}
-
-
-	float weight;
-	FName nameKey;
-};
+//struct FPatternData
+//{
+//	FPatternData()
+//	{
+//
+//	}
+//
+//	FPatternData(const FName& name, float weight)
+//	{
+//		this->weight = weight;
+//		this->nameKey = name;
+//	}
+//
+//
+//	float weight;
+//	FName nameKey;
+//};
 
 UCLASS()
 class MANNEQUINHUNTER_API UBTS_Pattern : public UBTService
@@ -40,7 +40,7 @@ protected:
 private:
 	virtual void SetOwner(AActor* ActorOwner) override;
 private:
-	TArray<FPatternData> patternDatas;
+	//TArray<FPatternData> patternDatas;
 private:
 	UPROPERTY(EditAnywhere, Category = Blackboard, meta = (ALLOW_PRIVATE_ACCESS))
 	TArray<FName> patternNames;

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "CombatSystem/CombatAnimationEnums.h"
 #include "AIPatternTable.generated.h"
 
 /**
@@ -43,13 +44,16 @@ struct MANNEQUINHUNTER_API FAIPatternDataTable : public FTableRowBase
 	FName patternName;
 
 	UPROPERTY(EditDefaultsOnly)
+	ECharacterCombatMontageType animSlot;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UAnimMontage> montage;
 
 	UPROPERTY(EditDefaultsOnly)
 	FAIPatternCondition condition;
 
 	UPROPERTY(EditDefaultsOnly)
-	TArray<FAIPatternData> addPatternName;
+	TArray<FAIPatternData> addPatterns;
 };
 
 USTRUCT(Blueprinttype)

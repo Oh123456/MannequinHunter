@@ -42,7 +42,7 @@ private:
 class FAIPatternTree
 {
 public:
-
+	const FPatternData& GetPatternData(int32 distance, const FName& currentPatternName);
 public:
 	// int32 거리 , 패턴 트리
 	TArray<int32> indexArray;

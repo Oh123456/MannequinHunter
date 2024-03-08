@@ -15,14 +15,24 @@ UBTS_Pattern::UBTS_Pattern()
 void UBTS_Pattern::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	AActor* targetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
+	if (patternClass && targetActor)
+	{
+		double distance = FVector::Distance(actorOwner->GetActorLocation(), targetActor->GetActorLocation());
+
+		//ÀÌºÐ¹ý
+		patternClass->
+
+	}
 }
 
 void UBTS_Pattern::SetOwner(AActor* ActorOwner)
 {
+	actorOwner = ActorOwner;
 	ABaseAIController* AIController = ActorOwner->GetInstigatorController<ABaseAIController>();
 
 	if (AIController)
 	{
-		const UAIPattern* AIPattern = AIController->GetAIPattern();
+		patternClass = AIController->GetAIPattern();
 	}
 }

@@ -3,6 +3,7 @@
 
 #include "AI/Service/BTS_Pattern.h"
 #include "AI/AIPattern.h"
+#include "Subsystem/AIManagerSubsystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AI/Controller/BaseAIController.h"
 
@@ -10,18 +11,40 @@
 UBTS_Pattern::UBTS_Pattern()
 {
 	bCreateNodeInstance = true;
+	bNotifyTick = true;
+}
+
+UBTS_Pattern::~UBTS_Pattern()
+{
+	patternData = nullptr;
+	patternClass = nullptr;
+	actorOwner = nullptr;
 }
 
 void UBTS_Pattern::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-	AActor* targetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
+	UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();
+	if (patternData)
+	{
+
+	}
+
+	AActor* targetActor = Cast<AActor>(bbc->GetValueAsObject(GetSelectedBlackboardKey()));
 	if (patternClass && targetActor)
 	{
 		double distance = FVector::Distance(actorOwner->GetActorLocation(), targetActor->GetActorLocation());
 
-		//ÀÌºÐ¹ý
-		patternClass->
+		const TSharedPtr<FAIPatternTree>& pattern = patternClass->GetPattern();
+
+		if (pattern)
+		{
+			const FPatternData* data = pattern->GetPatternData(StaticCast<int32>(distance));
+			FName patternName = "None";
+			if (data)
+				patternName = data->GetPatternData().patternName;
+			bbc->SetValueAsName(patternKeyName, patternName);
+		}
 
 	}
 }

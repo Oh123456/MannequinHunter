@@ -18,12 +18,17 @@ class MANNEQUINHUNTER_API UBTS_Pattern : public UBTService_BlackboardBase
 	GENERATED_BODY()
 public:
 	UBTS_Pattern();
+	virtual ~UBTS_Pattern();
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	virtual void SetOwner(AActor* ActorOwner) override;
 private:
+	const class FPatternData* patternData = nullptr;
+private:
+	UPROPERTY(EditDefaultsOnly,meta = (ALLOW_PRIVATE_ACCESS))
+	FName patternKeyName = "PatternName";
 	UPROPERTY()
-	const class UAIPattern* patternClass;
+	const class UAIPattern* patternClass = nullptr;
 	UPROPERTY()
-	const class AActor* actorOwner;
+	const class AActor* actorOwner = nullptr;
 };

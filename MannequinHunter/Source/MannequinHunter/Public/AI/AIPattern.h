@@ -21,6 +21,7 @@ public:
 
 	void LoadTableData(UWorld* world);
 
+	const TSharedPtr<FAIPatternTree>& GetPattern() const { return pattern; }
 private:
 	TSharedPtr<FAIPatternTree> pattern;
 private:

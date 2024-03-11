@@ -4,7 +4,17 @@
 #include "Subsystem/AIManagerSubsystem.h"
 #include "Subsystem/TableSubsystem.h"
 #include "DebugLog.h"
+#include "Algo/BinarySearch.h"
+#include "Math/UnrealMathUtility.h"
 #include "../MannequinHunter.h"
+
+const FName& FAIPatternStartData::GetPattern() const
+{
+	int32 rand = FMath::RandRange(0, maxWeight );
+	int32 index = Algo::UpperBound(weights, rand) - 1;
+
+	return patternNames[index];
+}
 
 void FAIPatternStartData::AddPattern(const FName& name, const int32 weight)
 {
@@ -29,10 +39,29 @@ const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::GetPattern(const FName& t
 	return findPattern;
 }
 
-const FPatternData& FAIPatternTree::GetPatternData(int32 distance, const FName& currentPatternName)
+void FAIPatternTree::SetupArrayData()
 {
-	int32 halfIndex = indexArray.Num() * 0.5f;
-	//TODO:: ÀÌºÐ¹ý~
+	if (indexArray.IsEmpty())
+		return;
+	fastArrayData = indexArray[0];
+	lastArrayData = indexArray.Last();
+}
+
+const FPatternData* FAIPatternTree::GetPatternData(int32 distance)
+{
+	if (lastArrayData < distance)
+		return nullptr;
+	int32 index = Algo::UpperBound(indexArray, distance);
+
+	if (currentIndex != index)
+	{
+		currentIndex = index;
+		currentStartData = &patternTrees[index];
+	}
+
+	const FName& patternName = currentStartData->GetPattern();
+
+	return patternDataMap.Find(patternName);
 }
 
 void FPatternData::SetPatternData(const FAIPatternDataTable& data)
@@ -72,7 +101,8 @@ const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::LoadPattern(const FName& 
 
 	 for (const FAIPatternDataTable* tableData : allDatas)
 	 {
-		 FPatternData& patternData = AIPatternTree->patternDataMap.Add(tableData->patternName, FPatternData());
+		 //FPatternData& patternData = AIPatternTree->patternDataMap.Add(tableData->patternName, FPatternData());
+		 FPatternData& patternData = AIPatternTree->AddPatternDataMap(tableData->patternName);
 		 patternData.SetPatternData(*tableData);
 	 }
 
@@ -87,10 +117,12 @@ const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::LoadPattern(const FName& 
 	for (auto& patternDataPair : row->patternData)
 	{
 		int32 key = patternDataPair.Key;
-		AIPatternTree->indexArray.Add(key * key);
-		AIPatternTree->patternTrees.Add(FAIPatternStartData());
+		AIPatternTree->AddIndexArray(key * key);
+		AIPatternTree->CreatePatternTree();
+		//AIPatternTree->indexArray.Add(key * key);
+		//AIPatternTree->patternTrees.Add(FAIPatternStartData());
 		total = 0;
-		FAIPatternStartData& patternDataMap = AIPatternTree->patternTrees[index];
+		FAIPatternStartData& patternDataMap = AIPatternTree->GetPatternTree(index);
 		for (const FAIPatternTreeTableData& data : patternDataPair.Value.datas)
 		{
 			patternDataMap.AddPattern(data.data.patternName, data.data.weight + total);
@@ -99,6 +131,8 @@ const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::LoadPattern(const FName& 
 		patternDataMap.SetMaxWeight(total);
 		++index;
 	}
+
+	AIPatternTree->SetupArrayData();
 
 	return &AIPatternTree;
 }

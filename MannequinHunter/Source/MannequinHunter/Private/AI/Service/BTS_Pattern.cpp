@@ -25,11 +25,6 @@ void UBTS_Pattern::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 	UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();
-	if (patternData)
-	{
-
-	}
-
 	AActor* targetActor = Cast<AActor>(bbc->GetValueAsObject(GetSelectedBlackboardKey()));
 	if (patternClass && targetActor)
 	{

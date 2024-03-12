@@ -3,10 +3,10 @@
 
 #include "AI/BTTask/BTT_PatternAction.h"
 #include "GameFramework/Character.h"
-#include "AI/Controller/BaseAIController.h"
 #include "AI/AIPattern.h"
 #include "Subsystem/AIManagerSubsystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "AI/Controller/MannequinAIController.h"
 
 EBTNodeResult::Type UBTT_PatternAction::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -26,6 +26,7 @@ EBTNodeResult::Type UBTT_PatternAction::ExecuteTask(UBehaviorTreeComponent& Owne
 			if (patternData)
 			{
 				character->PlayAnimMontage(patternData->GetPatternData().montage);
+				bbc->SetValueAsEnum(enumKey.SelectedKeyName, StaticCast<uint8>(EMannequinBlackBoardState::Attack));
 				return EBTNodeResult::Type::Succeeded;
 			}
 		}

@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+//#include "../AIPattern.h"
 #include "BaseAIController.generated.h"
 
 /**
  * 
  */
+
+
 UCLASS()
 class MANNEQUINHUNTER_API ABaseAIController : public AAIController
 {
@@ -17,7 +20,7 @@ class MANNEQUINHUNTER_API ABaseAIController : public AAIController
 public:
 	ABaseAIController();
 
-	const class UAIPattern* GetAIPattern() const { return AIPattern.GetDefaultObject(); }
+	const class UAIPattern* GetAIPattern() const;
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;

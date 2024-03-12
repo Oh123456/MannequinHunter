@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"OJKFramework",
 				"Engine",
-				"AIModule"
+				"AIModule",
+				"CoreUObject"
 			]
 		},
 		{

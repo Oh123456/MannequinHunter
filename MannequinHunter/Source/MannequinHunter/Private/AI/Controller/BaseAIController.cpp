@@ -11,6 +11,11 @@ ABaseAIController::ABaseAIController()
 	aiPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 }
 
+const UAIPattern* ABaseAIController::GetAIPattern() const
+{
+	 return AIPattern.GetDefaultObject(); 
+}
+
 void ABaseAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);

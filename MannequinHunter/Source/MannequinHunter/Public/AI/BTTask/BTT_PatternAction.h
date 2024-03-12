@@ -15,4 +15,7 @@ class MANNEQUINHUNTER_API UBTT_PatternAction : public UBTTask_BlackboardBase
 	GENERATED_BODY()
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+protected:
+	UPROPERTY(EditAnywhere, Category = Blackboard)
+	struct FBlackboardKeySelector enumKey;
 };

@@ -19,6 +19,16 @@ enum class EMannequinBlackBoardChase : uint8
 	Lost,
 };
 
+UENUM(BlueprintType)
+enum class EMannequinBlackBoardState : uint8
+{
+	None = 0,
+	Idle = 1,
+	Attack,
+	Hit,
+	AttackAble,
+};
+
 UCLASS()
 class MANNEQUINHUNTER_API AMannequinAIController : public ABaseAIController
 {
@@ -26,6 +36,8 @@ class MANNEQUINHUNTER_API AMannequinAIController : public ABaseAIController
 private:
 	const static FName CHASE_ENUM_KEY;
 	const static FName TARGET_ACTOR_KEY;
+	const static FName INITIAL_LOCATION;
+	const static FName STATE_ENUM;
 
 protected:
 	virtual void BeginPlay() override;

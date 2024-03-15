@@ -42,7 +42,8 @@ public:
 	virtual const TArray<UAnimMontage*>* GetMontageArray(const ECharacterCombatMontageType type) const override;
 	
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("AssetItems", GetFName()); }
-
+protected:
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<ECharacterCombatMontageType, FAnimMontageArray> combatMontageMap;

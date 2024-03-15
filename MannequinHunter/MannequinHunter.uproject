@@ -28,6 +28,14 @@
 				"Engine",
 				"CoreUObject"
 			]
+		},
+		{
+			"Name": "MannequinHunterEditor",
+			"Type": "Runtime",
+			"LoadingPhase": "PostEngineInit",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [

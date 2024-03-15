@@ -25,8 +25,8 @@ protected:
 private:
 	const class FPatternData* patternData = nullptr;
 private:
-	UPROPERTY(EditDefaultsOnly,meta = (ALLOW_PRIVATE_ACCESS))
-	FName patternKeyName = "PatternName";
+	UPROPERTY(EditAnywhere, Category = Blackboard)
+	struct FBlackboardKeySelector patternKey;
 	UPROPERTY()
 	const class UAIPattern* patternClass = nullptr;
 	UPROPERTY()

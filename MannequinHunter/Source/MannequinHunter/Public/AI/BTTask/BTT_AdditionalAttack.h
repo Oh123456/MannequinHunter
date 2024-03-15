@@ -5,16 +5,15 @@
 #include "CoreMinimal.h"
 //#include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "BTT_BaseAnimation.h"
-#include "BTT_PatternAction.generated.h"
+#include "BTT_AdditionalAttack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MANNEQUINHUNTER_API UBTT_PatternAction : public UBTT_BaseAnimation
+class MANNEQUINHUNTER_API UBTT_AdditionalAttack : public UBTT_BaseAnimation
 {
 	GENERATED_BODY()
-	
-	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

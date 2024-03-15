@@ -242,6 +242,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	inline void SetIsActorRotation(bool b);
+
+	void PlayAnimation(ECharacterCombatMontageType animtype, float playRate = 1.0f, std::function<void()> callback = nullptr, std::function<void()> cancelCallback = nullptr);
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Hit Event")
 	uint8 OnHitDirection();

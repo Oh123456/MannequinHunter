@@ -10,17 +10,19 @@
  * 
  */
 
-namespace EEnemyState
+
+UENUM(BlueprintType)
+enum class EEnemyState : uint8
 {
-	enum Type
-	{
-		Idle,
-		Move,
-		Combat,
-		Hit,
-		END,
-	};
-}
+	None = 0,
+	Idle = 1,
+	Attack,
+	Combat,
+	Hit,
+	AttackAble,
+};
+
+
 
 class UAICombatComponent;
 UCLASS()
@@ -30,8 +32,4 @@ class MANNEQUINHUNTER_API ABaseEnemyCharacter : public ANonPlayerCharacter
 	
 public:
 	ABaseEnemyCharacter();
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UAICombatComponent> aiCombatComponent;
 };

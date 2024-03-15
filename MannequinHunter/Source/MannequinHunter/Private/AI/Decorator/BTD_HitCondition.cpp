@@ -12,5 +12,7 @@ bool UBTD_HitCondition::CalculateRawConditionValue(UBehaviorTreeComponent& Owner
 	if (enemyCharacter == nullptr)
 		return false;
 
-	return enemyCharacter->IsState(EEnemyState::Hit);
+
+
+	return true;
 }

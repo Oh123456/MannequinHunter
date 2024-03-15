@@ -20,6 +20,8 @@
 #include "Utility/PlayerInputLog.h"
 #include "Subsystem/TableSubsystem.h"
 #include "Table/MannequinHunterStatusTable.h"
+#include "Equipment/FistWeapon.h"
+#include "CombatSystem/CharacterCombatComponent.inl"
 
 ARYU::ARYU() : Super()
 {
@@ -205,6 +207,12 @@ void ARYU::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+	// юс╫ц
+	AFistWeapon* weapon = (combatComponent->CreateEquipment<AFistWeapon>(weaponClass, ECombatEquipmentSlot::E_MainWeapon));
+
+	weapon->AttachToActor(this,FAttachmentTransformRules::KeepRelativeTransform);
+	weapon->SetWeaponOwner(this);
+
 	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
 	mannequinHunterCombatComponent->SetWeaponType(EWeaponType::Fist);
 	mannequinHunterCombatComponent->SetCombatAnimationData(EWeaponType::Fist);

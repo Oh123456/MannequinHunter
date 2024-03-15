@@ -5,12 +5,9 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Utility/MannequinHunterTags.h"
+#include "Character/BaseEnemyCharacter.h"
 
 
-const FName AMannequinAIController::CHASE_ENUM_KEY = TEXT("ChaseEnum");
-const FName AMannequinAIController::TARGET_ACTOR_KEY = TEXT("TargetActor");
-const FName AMannequinAIController::INITIAL_LOCATION = TEXT("InitialLocation");
-const FName AMannequinAIController::STATE_ENUM = TEXT("StateEnum");
 
 void AMannequinAIController::BeginPlay()
 {
@@ -24,7 +21,7 @@ void AMannequinAIController::OnPossess(APawn* InPawn)
 
 
 	Blackboard->SetValueAsVector(INITIAL_LOCATION, InPawn->GetActorLocation());
-	Blackboard->SetValueAsEnum(STATE_ENUM, StaticCast<uint8>(EMannequinBlackBoardState::Idle));
+	Blackboard->SetValueAsEnum(STATE_ENUM, StaticCast<uint8>(EEnemyState::Idle));
 }
 
 void AMannequinAIController::TargetPerceptionUpdated(AActor* actor, FAIStimulus stimulus)

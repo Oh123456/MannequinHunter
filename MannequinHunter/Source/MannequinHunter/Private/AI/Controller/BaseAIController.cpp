@@ -6,6 +6,12 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+
+const FName ABaseAIController::STATE_ENUM = TEXT("StateEnum");
+const FName ABaseAIController::CHASE_ENUM_KEY = TEXT("ChaseEnum");
+const FName ABaseAIController::TARGET_ACTOR_KEY = TEXT("TargetActor");
+const FName ABaseAIController::INITIAL_LOCATION = TEXT("InitialLocation");
+
 ABaseAIController::ABaseAIController()
 {
 	aiPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));

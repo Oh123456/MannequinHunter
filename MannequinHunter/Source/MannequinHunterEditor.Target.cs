@@ -13,5 +13,6 @@ public class MannequinHunterEditorTarget : TargetRules
 		ExtraModuleNames.Add("MannequinHunter");
         ExtraModuleNames.Add("OJKUtility");
         ExtraModuleNames.Add("OJKFramework");
+        ExtraModuleNames.Add("MannequinHunterEditor");
     }
 }

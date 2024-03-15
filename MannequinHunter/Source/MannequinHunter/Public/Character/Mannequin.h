@@ -6,15 +6,6 @@
 #include "Character/BaseEnemyCharacter.h"
 #include "Mannequin.generated.h"
 
-
-namespace EEnemyState
-{
-	enum MannequinType
-	{
-		Test = END,
-	};
-}
-
 UCLASS()
 class MANNEQUINHUNTER_API AMannequin : public ABaseEnemyCharacter
 {

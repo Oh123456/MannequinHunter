@@ -53,8 +53,6 @@ inline void UCharacterCombatComponent::SetIsActorRotation(bool b)
 }
 
 
-
-
 template<typename TEquipmentItems>
 TEquipmentItems* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> createEquipment, ECombatEquipmentSlot slot, int32 addIndex)
 {

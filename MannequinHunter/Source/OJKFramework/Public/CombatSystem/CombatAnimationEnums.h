@@ -57,6 +57,16 @@ enum class ECharacterCombatMontageType : uint8
 	Attack49,
 	Attack50,
 
+	SP_Attack1 = 90,
+	SP_Attack2,
+	SP_Attack3,
+	SP_Attack4,
+	SP_Attack5,
+	SP_Attack6,
+	SP_Attack7,
+	SP_Attack8,
+	SP_Attack9,
+	SP_Attack10,
 
 	Dodge1 = 100,
 	Dodge2,

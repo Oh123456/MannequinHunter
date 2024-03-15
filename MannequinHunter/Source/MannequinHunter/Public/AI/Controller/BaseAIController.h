@@ -16,7 +16,12 @@ UCLASS()
 class MANNEQUINHUNTER_API ABaseAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+public:
+	const static FName STATE_ENUM;
+	const static FName CHASE_ENUM_KEY;
+	const static FName TARGET_ACTOR_KEY;
+	const static FName INITIAL_LOCATION;
+
 public:
 	ABaseAIController();
 

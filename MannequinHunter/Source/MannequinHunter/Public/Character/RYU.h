@@ -55,7 +55,8 @@ protected:
 	virtual void BeginPlay();
 
 private:
-
+	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AEquipment> weaponClass;
 #ifdef UE_BUILD_DEBUG
 	TSharedPtr<class FPlayerInputLog> playerInputLog;
 

@@ -202,6 +202,37 @@ void UCharacterCombatComponent::OnHitEnd()
 	
 }
 
+void UCharacterCombatComponent::PlayAnimation(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback)
+{
+	ChangeCombatType(animtype);
+
+	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
+
+	if (currentAnimMontages == nullptr)
+		return;
+
+	ACharacter* owner = characterCombatData.owner;
+
+	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
+	UAnimMontage* attackMontage = (*currentAnimMontages)[0];
+
+	animInstance->Montage_Play(attackMontage, playRate);
+
+	FOnMontageEnded montageEnded;
+	montageEnded.BindLambda([this, callback, cancelCallback](UAnimMontage* animMontage, bool bInterrupted)
+		{
+			if (!bInterrupted)
+			{
+				if (callback)
+					(callback)();
+			}
+
+			if (cancelCallback)
+				cancelCallback();
+		});
+	animInstance->Montage_SetEndDelegate(montageEnded, attackMontage);
+}
+
 void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> callback, std::function<void()> cancelCallback)
 {
 	ChangeCombatType(animtype);

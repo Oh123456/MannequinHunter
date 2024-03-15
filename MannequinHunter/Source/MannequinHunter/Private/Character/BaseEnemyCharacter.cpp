@@ -6,6 +6,6 @@
 
 ABaseEnemyCharacter::ABaseEnemyCharacter()
 {
-	aiCombatComponent = CreateDefaultSubobject<UAICombatComponent>(TEXT("AICombatSystem"));
+	combatComponent = CreateDefaultSubobject<UAICombatComponent>(TEXT("AICombatSystem"));
 }
 

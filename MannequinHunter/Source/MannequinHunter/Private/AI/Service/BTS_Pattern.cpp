@@ -28,17 +28,18 @@ void UBTS_Pattern::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 	AActor* targetActor = Cast<AActor>(bbc->GetValueAsObject(GetSelectedBlackboardKey()));
 	if (patternClass && targetActor)
 	{
-		double distance = FVector::Distance(actorOwner->GetActorLocation(), targetActor->GetActorLocation());
+		double distance = FVector::DistSquared(actorOwner->GetActorLocation(), targetActor->GetActorLocation());
 
 		const TSharedPtr<FAIPatternTree>& pattern = patternClass->GetPattern();
-
 		if (pattern)
 		{
 			const FPatternData* data = pattern->GetPatternData(StaticCast<int32>(distance));
 			FName patternName = "None";
 			if (data)
+			{
 				patternName = data->GetPatternData().patternName;
-			bbc->SetValueAsName(patternKeyName, patternName);
+				bbc->SetValueAsName(patternKey.SelectedKeyName, patternName);
+			}
 		}
 
 	}
@@ -46,11 +47,11 @@ void UBTS_Pattern::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 
 void UBTS_Pattern::SetOwner(AActor* ActorOwner)
 {
-	actorOwner = ActorOwner;
-	ABaseAIController* AIController = ActorOwner->GetInstigatorController<ABaseAIController>();
+	ABaseAIController* AIController = Cast<ABaseAIController>(ActorOwner);
 
 	if (AIController)
 	{
+		actorOwner = AIController->GetPawn();
 		patternClass = AIController->GetAIPattern();
 	}
 }

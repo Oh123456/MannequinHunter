@@ -36,5 +36,7 @@ private:
 	float LockOnLength;
 
 	TArray<AActor*> lockOnTargetIgnoreActor;
+private:
+	UPROPERTY(EditDefaultsOnly, Category = LockOn, meta = (AllowPrivateAccess = "true"))
 	TArray<TEnumAsByte<EObjectTypeQuery>> lockOnTargetObjectType;
 };

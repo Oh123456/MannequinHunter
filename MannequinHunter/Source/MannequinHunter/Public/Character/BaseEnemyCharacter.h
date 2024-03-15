@@ -32,4 +32,7 @@ class MANNEQUINHUNTER_API ABaseEnemyCharacter : public ANonPlayerCharacter
 	
 public:
 	ABaseEnemyCharacter();
+
+public:
+	virtual void BeginPlay() override;
 };

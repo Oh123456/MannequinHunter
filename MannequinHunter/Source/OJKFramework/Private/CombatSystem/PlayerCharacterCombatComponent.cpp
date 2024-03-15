@@ -30,8 +30,6 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 
 	FVector ownerLocation = owner->GetActorLocation();
 
-	const AActor* targetActor = GetTargetActor();
-
 
 	TArray<FHitResult> hitResults;
 
@@ -42,7 +40,7 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 		lockOnTargetObjectType, false ,
 		TArray<AActor*>(), EDrawDebugTrace::ForDuration, hitResults, true);
 
-	AActor* hitActor = nullptr;
+	AActor* targetActor = nullptr;
 	bool bOrientRotationToMovement = false;
 	if (isHit)
 	{
@@ -50,25 +48,27 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 		float length = 0.0f;
 		int32 size = hitResults.Num();
 		FHitResult& hitResult = hitResults[0];
-		hitActor = hitResult.GetActor();
+		AActor* hitActor = hitResult.GetActor();
+		targetActor = hitActor;
 		minLength = FVector::DistSquared(hitActor->GetActorLocation(), ownerLocation);
-		for (int32 i = 1 ; i < size; i++)
+		for (int32 i = 1; i < size; i++)
 		{
 			hitResult = hitResults[i];
-			if (hitActor->GetComponentByClass<UCombatComponent>())
+			hitActor = hitResult.GetActor();
+			//if (hitActor->GetComponentByClass<UCombatComponent>())
+
+			length = FVector::DistSquared(hitActor->GetActorLocation(), ownerLocation);
+			if (minLength > length)
 			{
-				length = FVector::DistSquared(hitActor->GetActorLocation(), ownerLocation);
-				if (minLength > length)
-				{
-					minLength = length;
-					hitActor = hitResult.GetActor();
-				}
+				minLength = length;
+				targetActor = hitResult.GetActor();
 			}
+
 		}
 	}
 
  	//targetActor = hitActor;
-	SetTargetActor(hitActor);
+	SetTargetActor(targetActor);
 	//owner->GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovement;
 	//owner->bUseControllerRotationYaw = !bOrientRotationToMovement;
 }
@@ -84,6 +84,5 @@ void UPlayerCharacterCombatComponent::BeginPlay()
 
 	lockOnTargetIgnoreActor.Add(characterCombatData.owner);
 
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectType;
-	lockOnTargetObjectType.Add(static_cast<EObjectTypeQuery>(ECollisionChannel::ECC_Pawn));
+	//lockOnTargetObjectType.Add(static_cast<EObjectTypeQuery>(ECollisionChannel::ECC_Pawn));
 }

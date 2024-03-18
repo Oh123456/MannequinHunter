@@ -21,6 +21,7 @@ protected:
 	ABaseEnemyCharacter* GetEnemyOwner();
 protected:
 	virtual void OnHitEnd() override;
+	virtual void BeginPlay() override;
 protected:
 	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser) override;
 

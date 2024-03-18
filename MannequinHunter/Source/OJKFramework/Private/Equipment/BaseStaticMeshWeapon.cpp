@@ -6,10 +6,10 @@
 
 ABaseStaticMeshWeapon::ABaseStaticMeshWeapon() : Super()
 {
-	USceneComponent* defulatRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefulatRoot"));
-	RootComponent = defulatRoot;
+	USceneComponent* defaultRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultRoot"));
+	RootComponent = defaultRoot;
 
 	weaponMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	weaponMeshComponent->SetupAttachment(defulatRoot);
+	weaponMeshComponent->SetupAttachment(defaultRoot);
 	weaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

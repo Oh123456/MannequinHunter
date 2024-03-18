@@ -17,6 +17,12 @@ void UAICombatComponent::OnHitEnd()
 		enemy->SetState(EEnemyState::Idle);
 }
 
+void UAICombatComponent::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+
 void UAICombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
 	Super::TakeDamage(damageAmount, damageEvent, eventInstigator, damageCauser);

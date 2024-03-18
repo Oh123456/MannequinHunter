@@ -12,6 +12,7 @@ ABaseEnemyCharacter::ABaseEnemyCharacter()
 
 void ABaseEnemyCharacter::BeginPlay()
 {
+	Super::BeginPlay();
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 }
 

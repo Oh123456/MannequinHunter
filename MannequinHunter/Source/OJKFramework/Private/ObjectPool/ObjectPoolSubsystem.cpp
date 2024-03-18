@@ -22,7 +22,7 @@ void UObjectPoolSubsystem::ChangeWorld()
 AActor* UObjectPoolSubsystem::GetActor(TSubclassOf<AActor> actorClass)
 {
 	UWorld* world = GetWorld();
-	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorClass->StaticClass()));
+	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorClass->GetDefaultObject()->GetClass()));
 	if (findPool == nullptr)
 	{
 		return CreateObjectPool(actorClass)->Get(world);
@@ -33,7 +33,7 @@ AActor* UObjectPoolSubsystem::GetActor(TSubclassOf<AActor> actorClass)
 
 bool UObjectPoolSubsystem::SetActor(AActor* actorObject)
 {
-	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorObject->StaticClass()));
+	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorObject->GetClass()));
 	if (findPool == nullptr)
 		return false;
 
@@ -44,7 +44,7 @@ bool UObjectPoolSubsystem::SetActor(AActor* actorObject)
 TSharedPtr<FObjectPool> UObjectPoolSubsystem::CreateObjectPool(const TSubclassOf<AActor>& actorClass)
 {
 	TSharedPtr<FObjectPool> pool = MakeShared<FObjectPool>(actorClass);
-	pools.Add(FObjectPoolKey(actorClass->StaticClass()), pool);
+	pools.Add(FObjectPoolKey(actorClass->GetDefaultObject()->GetClass()), pool);
 	return pool;
 }
 

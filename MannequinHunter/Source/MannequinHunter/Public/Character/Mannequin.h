@@ -10,5 +10,11 @@ UCLASS()
 class MANNEQUINHUNTER_API AMannequin : public ABaseEnemyCharacter
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
 	
+private:
+	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AEquipment> weaponClass;
 };

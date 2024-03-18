@@ -207,11 +207,15 @@ void ARYU::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
 	// юс╫ц
 	AFistWeapon* weapon = (combatComponent->CreateEquipment<AFistWeapon>(weaponClass, ECombatEquipmentSlot::E_MainWeapon));
-
-	weapon->AttachToActor(this,FAttachmentTransformRules::KeepRelativeTransform);
-	weapon->SetWeaponOwner(this);
+	
+	if (weapon)
+	{
+		weapon->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		weapon->SetWeaponOwner(this);
+	}
 
 	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
 	mannequinHunterCombatComponent->SetWeaponType(EWeaponType::Fist);

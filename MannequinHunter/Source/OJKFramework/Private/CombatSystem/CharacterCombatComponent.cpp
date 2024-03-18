@@ -675,7 +675,7 @@ AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> c
 
 int8 UCharacterCombatComponent::DodgeDirection(const FVector2D& directionVector)
 {
-	int8 dodgeDirection = 0;
+	int8 dodgeDirection;
 	if (directionVector.Y > 0.f)
 		dodgeDirection |= static_cast<int8>(EDodgeDirection::F);
 	else if (directionVector.Y < 0.f)

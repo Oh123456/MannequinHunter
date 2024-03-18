@@ -12,9 +12,9 @@ void AMannequin::BeginPlay()
 	Super::BeginPlay();
 
 	ABlueprintBaseWeapon* weapon = combatComponent->CreateEquipment<ABlueprintBaseWeapon>(weaponClass, ECombatEquipmentSlot::E_MainWeapon);
-	weapon->SetActorLocation(FVector(0.0f, 50.0f, 0.0f));
-	weapon->SetActorRotation(FRotator(0.0f, 0.0f, 90.0f));
+
 	weapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("Weapon_r"));
 	weapon->SetWeaponOwner(this);
-
+	//weapon->SetActorLocation(FVector(0.0f, 50.0f, 0.0f));
+	//weapon->SetActorRotation(FRotator(0.0f, 0.0f, 90.0f));
 }

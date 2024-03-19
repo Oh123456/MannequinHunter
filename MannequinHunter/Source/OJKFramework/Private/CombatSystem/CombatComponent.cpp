@@ -77,7 +77,7 @@ void UCombatComponent::BeginPlay()
 float UCombatComponent::CalculateApplyDamage()
 {
 	if (status.GetStatusData() == nullptr)
-		return 0.0f;
+		return 1.0f;
 	return status.GetStatusData()->attack;
 }
 

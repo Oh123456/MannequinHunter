@@ -349,6 +349,11 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, flo
 		animMontageInstance->OnMontageEnded.Unbind();
 	}
 
+	const FAnimSlotData* data =combatAnimationData->GetSlotData(animtype);
+
+	isSuperArmor = data->isSuperArmor;
+	isImmortality = data->isImmortality;
+
 	animInstance->Montage_Play(attackMontage, playRate);
 	characterRotationData.isActorRotation = true;
 
@@ -631,6 +636,12 @@ void UCharacterCombatComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	LockOn();
 	
+}
+
+void UCharacterCombatComponent::ClearStateData()
+{
+	Super::ClearStateData();
+	isSuperArmor = false;
 }
 
 void UCharacterCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)

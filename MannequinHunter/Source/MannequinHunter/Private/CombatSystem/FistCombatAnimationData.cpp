@@ -24,6 +24,11 @@ const TArray<UAnimMontage*>* UFistCombatAnimationData::GetMontageArray(const ECh
 	return &montageArray->montages;
 }
 
+const FAnimSlotData* UFistCombatAnimationData::GetSlotData(const ECharacterCombatMontageType type) const
+{
+	return combatMontageMap.Find(type);
+}
+
 void UFistCombatAnimationData::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	if (GET_MEMBER_NAME_CHECKED(UFistCombatAnimationData, combatMontageMap) != PropertyChangedEvent.Property->GetFName())

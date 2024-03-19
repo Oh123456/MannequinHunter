@@ -260,6 +260,7 @@ public:
 	virtual void Attack(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
 	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser) override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void ClearStateData();
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnHitEnd();

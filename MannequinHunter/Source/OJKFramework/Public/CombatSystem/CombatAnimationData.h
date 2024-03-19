@@ -43,6 +43,7 @@ public:
 	virtual const TArray<UAnimMontage*>* GetMontageArray(const ECharacterCombatMontageType type) const override;
 	
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("AssetItems", GetFName()); }
+	virtual const FAnimSlotData* GetSlotData(const ECharacterCombatMontageType type) const override;
 protected:
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 protected:

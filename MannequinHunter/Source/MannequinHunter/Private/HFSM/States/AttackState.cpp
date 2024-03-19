@@ -55,11 +55,6 @@ void FAttackState::Enter()
 				this->CheckState();
 				combatComponent->SetIsImmortality(false);
 				combatComponent->SetIsSuperArmor(false);
-			},
-			[this, combatComponent]()
-			{
-				combatComponent->SetIsImmortality(false);
-				combatComponent->SetIsSuperArmor(false);
 			});
 		}
 	}

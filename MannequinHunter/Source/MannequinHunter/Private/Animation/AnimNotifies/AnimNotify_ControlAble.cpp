@@ -18,8 +18,10 @@ void UAnimNotify_ControlAble::Notify(USkeletalMeshComponent* meshComp, UAnimSequ
 		return;
 
 	if (characterCombatComponent->IsLockOn())
+	{
 		characterCombatComponent->SetIsActorRotation(true);
-
+		characterCombatComponent->ClearStateData();
+	}
 	APlayerCharacter* playerCharacter = Cast<APlayerCharacter>(character);
 	if (playerCharacter)
 	{

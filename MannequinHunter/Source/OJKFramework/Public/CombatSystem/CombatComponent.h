@@ -36,6 +36,9 @@ public:
 
 	void SetIsImmortality(bool b) { isImmortality = b; }
 	bool GetIsImmortality() const { return isImmortality; }
+public:
+	// Immortality Reset
+	virtual void ClearStateData() { isImmortality = false; }
 protected:
 	virtual void BeginPlay() override;
 	virtual float CalculateApplyDamage();
@@ -50,7 +53,7 @@ protected:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AActor> damageCauserActor;
-private:
+
 	UPROPERTY(EditDefaultsOnly)
 	bool isImmortality;
 

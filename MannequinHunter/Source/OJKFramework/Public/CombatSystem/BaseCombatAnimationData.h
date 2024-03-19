@@ -31,4 +31,5 @@ class OJKFRAMEWORK_API UBaseCombatAnimationData : public UPrimaryDataAsset
 public:
 	virtual const TArray<UAnimMontage*>* GetMontageArray(const ECharacterCombatMontageType type) const PURE_VIRTUAL(UBaseCombatAnimationData::GetMontageArray, return nullptr;);
 	virtual const UAnimMontage* GetMontage(const ECharacterCombatMontageType type, const int32 index) const;
+	virtual const FAnimSlotData* GetSlotData(const ECharacterCombatMontageType type) const PURE_VIRTUAL(UBaseCombatAnimationData::GetSlotData, return nullptr;);
 };

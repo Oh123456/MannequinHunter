@@ -55,6 +55,7 @@ public:
 
 public:
 	virtual const TArray<UAnimMontage*>* GetMontageArray(const ECharacterCombatMontageType type) const override;
+	virtual const FAnimSlotData* GetSlotData(const ECharacterCombatMontageType type) const override;
 protected:
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 private:

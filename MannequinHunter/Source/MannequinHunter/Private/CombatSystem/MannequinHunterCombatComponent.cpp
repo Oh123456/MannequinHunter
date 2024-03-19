@@ -3,6 +3,9 @@
 
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Subsystem/CommandListSubsystem.h"
+#include "Player/PlayerCharacter.h"
+#include "HFSM/HFSMComponent.h"
+#include "Character/PlayerCommonEnums.h"
 #ifdef UE_BUILD_DEBUG
 #include "Character/RYU.h"
 #include "Utility/PlayerInputLog.h"
@@ -61,6 +64,34 @@ void UMannequinHunterCombatComponent::BeginPlay()
 
 	SetCommandList();
 	//OnChangeWeaponType.AddUObject(this,&UMannequinHunterCombatComponent::ChangeCommandList);
+}
+
+void UMannequinHunterCombatComponent::Hit(ECharacterCombatMontageType animtype)
+{
+	Super::Hit(animtype);
+
+	APlayerCharacter* player = Cast<APlayerCharacter>(GetOwner());
+	if (player == nullptr)
+		return;
+
+	UHFSMComponent* hfsm = player->GetHFSM();
+	if (hfsm == nullptr)
+		return;
+
+	hfsm->SetStateOrder(EStateOrder::StatemMachineHit | EStateOrder::Hit);
+}
+
+void UMannequinHunterCombatComponent::OnHitEnd()
+{
+	APlayerCharacter* player = Cast<APlayerCharacter>(GetOwner());
+	if (player == nullptr)
+		return;
+
+	UHFSMComponent* hfsm = player->GetHFSM();
+	if (hfsm == nullptr)
+		return;
+
+	hfsm->SetStateOrder(EStateOrder::Combat | EStateOrder::Idle);
 }
 
 

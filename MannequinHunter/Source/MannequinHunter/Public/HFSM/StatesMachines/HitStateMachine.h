@@ -15,5 +15,7 @@ public:
 	~FHitStateMachine();
 
 protected:
+	virtual void ChangeState(uint16 order, OUT FStateMachineConditionResult& result) override;
 	virtual void CreateStates() override;
+	virtual void SetCondition() override;
 };

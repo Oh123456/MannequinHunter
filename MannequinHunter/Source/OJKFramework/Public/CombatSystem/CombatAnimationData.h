@@ -15,7 +15,7 @@
 class UAnimMontage;
 
 USTRUCT()
-struct OJKFRAMEWORK_API FAnimMontageArray
+struct OJKFRAMEWORK_API FAnimMontageArray : public FAnimSlotData
 {
 	GENERATED_BODY()
 
@@ -25,6 +25,7 @@ struct OJKFRAMEWORK_API FAnimMontageArray
 	}
 	UPROPERTY(EditDefaultsOnly)
 	TArray<UAnimMontage*> montages;
+
 };
 
 

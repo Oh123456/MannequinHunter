@@ -50,9 +50,16 @@ void FAttackState::Enter()
 			
 			UE_LOG(LogTemp, Log, TEXT("attackSpeed : %d  playRate : %f"), combatComponent->GetStatusData().GetStatusData()->attackSpeed,playRate);
 
-			combatComponent->Attack(attackMontageType, playRate,[this]()
+			combatComponent->Attack(attackMontageType, playRate,[this, combatComponent]()
 			{
 				this->CheckState();
+				combatComponent->SetIsImmortality(false);
+				combatComponent->SetIsSuperArmor(false);
+			},
+			[this, combatComponent]()
+			{
+				combatComponent->SetIsImmortality(false);
+				combatComponent->SetIsSuperArmor(false);
 			});
 		}
 	}

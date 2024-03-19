@@ -2,11 +2,12 @@
 
 
 #include "CombatSystem/PlayerCharacterCombatComponent.h"
-#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Player/PlayerCharacter.h"
+
 
 UPlayerCharacterCombatComponent::UPlayerCharacterCombatComponent() : Super(),
 LockOnLength(1000.f)

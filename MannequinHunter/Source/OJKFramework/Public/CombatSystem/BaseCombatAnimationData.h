@@ -10,6 +10,19 @@ enum class ECharacterCombatMontageType : uint8;
 /**
  * 
  */
+
+USTRUCT()
+struct FAnimSlotData
+{
+	GENERATED_BODY()
+	UPROPERTY(EditDefaultsOnly)
+	bool isSuperArmor = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool isImmortality = false;
+};
+
+
 UCLASS(abstract, BlueprintType, Blueprintable)
 class OJKFRAMEWORK_API UBaseCombatAnimationData : public UPrimaryDataAsset
 {

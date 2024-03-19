@@ -39,7 +39,6 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 		TSubclassOf<UDamageType> const ValidDamageTypeClass = damageTypeClass ? damageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
 		FDamageEvent damageEvent(ValidDamageTypeClass);
 
-		//damageComponent->GetOwner()->TakeDamage(actualDamage, DamageEvent, eventInstigator, damageCauser);
 		damageComponent->TakeDamage(actualDamage, damageEvent, eventInstigator, damageCauser);
 	}
 

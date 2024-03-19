@@ -20,16 +20,16 @@ FCombatStateMachine::~FCombatStateMachine()
 {
 }
 
-void FCombatStateMachine::ChangeCombat(uint16 order, OUT FStateMachineConditionResult& result)
+void FCombatStateMachine::ChangeState(uint16 order, OUT FStateMachineConditionResult& result)
 {
 	if (result.isChange)
 		return;
 	result.SetDefaultStateID(stateMachineID);
 
 	if (order == StaticCast<uint16>(EStateOrder::ToggleCombat))
-	{
 		result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Default));
-	}
+	else if (order == StaticCast<uint16>(EStateOrder::StatemMachineHit))
+		result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Hit));
 
 }
 
@@ -45,5 +45,5 @@ void FCombatStateMachine::CreateStates()
 
 void FCombatStateMachine::SetCondition()
 {
-	OnStateMachineCondition.AddRaw(this, &FCombatStateMachine::ChangeCombat);
+	OnStateMachineCondition.AddRaw(this, &FCombatStateMachine::ChangeState);
 }

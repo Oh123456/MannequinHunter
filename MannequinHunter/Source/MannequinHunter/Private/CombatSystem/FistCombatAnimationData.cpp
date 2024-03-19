@@ -23,3 +23,14 @@ const TArray<UAnimMontage*>* UFistCombatAnimationData::GetMontageArray(const ECh
 
 	return &montageArray->montages;
 }
+
+void UFistCombatAnimationData::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	if (GET_MEMBER_NAME_CHECKED(UFistCombatAnimationData, combatMontageMap) != PropertyChangedEvent.Property->GetFName())
+		return;
+
+	combatMontageMap.KeySort([](ECharacterCombatMontageType data1, ECharacterCombatMontageType data2)
+		{
+			return data1 < data2;
+		});
+}

@@ -74,7 +74,9 @@ private:
 	void SetCommandList();
 public:
 	virtual void BeginPlay() override;
-
+	virtual void Hit(ECharacterCombatMontageType animtype) override;
+protected:
+	virtual void OnHitEnd() override;
 public:
 	FChangeWeaponType OnChangeWeaponType;
 private:

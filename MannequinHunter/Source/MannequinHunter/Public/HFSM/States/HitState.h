@@ -13,4 +13,5 @@ class MANNEQUINHUNTER_API FHitState : public FBaseMannequinHunterState
 public:
 	FHitState();
 	virtual ~FHitState();
+
 };

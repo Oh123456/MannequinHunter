@@ -22,9 +22,7 @@ public:
 
 
 	const FOnFindCameraComponent& OnFindCameraComponent() { return findCameraComponentDelegate; }
-
 public:
-
 	virtual void SetLockOnTarget() override;
 
 protected:

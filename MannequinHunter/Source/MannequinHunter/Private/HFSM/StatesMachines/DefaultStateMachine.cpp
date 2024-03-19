@@ -17,16 +17,16 @@ FDefaultStateMachine::~FDefaultStateMachine()
 {
 }
 
-void FDefaultStateMachine::ChangeCombat(uint16 order, OUT FStateMachineConditionResult& result)
+void FDefaultStateMachine::ChangeState(uint16 order, OUT FStateMachineConditionResult& result)
 {
 	if (result.isChange)
 		return;
 	result.SetDefaultStateID(stateMachineID);
 
 	if (order == StaticCast<uint16>(EStateOrder::ToggleCombat))
-	{
 		result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Combat));
-	}
+	else if (order == StaticCast<uint16>(EStateOrder::StatemMachineHit))
+		result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Hit));
 
 }
 
@@ -39,5 +39,5 @@ void FDefaultStateMachine::CreateStates()
 
 void FDefaultStateMachine::SetCondition()
 {
-	OnStateMachineCondition.AddRaw(this, &FDefaultStateMachine::ChangeCombat);
+	OnStateMachineCondition.AddRaw(this, &FDefaultStateMachine::ChangeState);
 }

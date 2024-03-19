@@ -204,6 +204,10 @@ public:
 	ECharacterCombatMontageType GetCurrentCombatMontageType() const { return characterCombatAnimationData.currentAnimType; }
 	
 	void ResetLockOn();
+
+	void SetIsSuperArmor(bool b) { isSuperArmor = b; }
+	bool GetIsSuperArmor() const { return isSuperArmor; }
+
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);
 	inline void SubtractCombatAbleFlag(ECombatAble combatAble);
@@ -235,7 +239,7 @@ public:
 	void Dodge(ECharacterCombatMontageType animtype);
 
 	UFUNCTION(BlueprintCallable)
-	void Hit(ECharacterCombatMontageType animtype);
+	virtual void Hit(ECharacterCombatMontageType animtype);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SetLockOnTarget();
@@ -267,7 +271,8 @@ private:
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBaseCombatAnimationData> combatAnimationData;
-
+	UPROPERTY(EditAnywhere)
+	bool isSuperArmor;
 
 
 };

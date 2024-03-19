@@ -37,11 +37,6 @@ public:
 	template<typename T>
 	void SetStateOrder(T order) { SetStateOrder(StaticCast<uint16>(order)); }
 protected:
-	//template<typename TStateMachine>
-	//TSharedPtr<FStateMachine>* AddStateMachine();
-
-	//template<typename T>
-	//TSharedPtr<FStateMachine>* AddStateMachine(T id, uint8 defaultSateID = 0);
 
 	template<typename TStateMachine, typename T>
 	TSharedPtr<FStateMachine>* AddStateMachine(T id);

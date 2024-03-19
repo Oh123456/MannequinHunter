@@ -82,6 +82,7 @@ public:
 	template<typename TStateEnum>
 	inline void AddState(TStateEnum stateid, TSharedPtr<FState>& newState) { states.Add(StaticCast<uint8>(stateid), newState); }
 protected:
+	virtual void ChangeState(uint16 order, OUT FStateMachineConditionResult& result) {};
 	virtual void CreateStates() {}
 	virtual void SetCondition() {}
 protected:

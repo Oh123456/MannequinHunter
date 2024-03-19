@@ -16,7 +16,22 @@ FHitStateMachine::~FHitStateMachine()
 	
 }
 
+void FHitStateMachine::ChangeState(uint16 order, OUT FStateMachineConditionResult& result)
+{
+	if (result.isChange)
+		return;
+	result.SetDefaultStateID(stateMachineID);
+
+	if (order == StaticCast<uint16>(EStateOrder::Combat))
+		result.SetStateID(StaticCast<uint16>(EPlayerStateMachine::Combat));
+}
+
 void FHitStateMachine::CreateStates()
 {
 	CreateState<FHitState>(EPlayerStateEnum::Hit);
+}
+
+void FHitStateMachine::SetCondition()
+{
+	OnStateMachineCondition.AddRaw(this, &FHitStateMachine::ChangeState);
 }

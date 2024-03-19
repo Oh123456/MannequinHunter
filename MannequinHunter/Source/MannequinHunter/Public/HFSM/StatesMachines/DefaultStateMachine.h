@@ -14,9 +14,8 @@ public:
 	FDefaultStateMachine(UHFSMComponent* ownerCharacter);
 	virtual ~FDefaultStateMachine();
 
-private:
-	void ChangeCombat(uint16 order, OUT FStateMachineConditionResult& result);
 protected:
+	virtual void ChangeState(uint16 order, OUT FStateMachineConditionResult& result) override;
 	virtual void CreateStates() override;
 	virtual void SetCondition() override;
 };

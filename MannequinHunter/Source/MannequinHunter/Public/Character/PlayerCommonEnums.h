@@ -38,19 +38,24 @@ enum class EPlayerStateMachine : uint8
 
 enum class EStateOrder : uint16
 {
+	Shift = 8,
+
 	None = 0,
 	Idle,
 	Attack,
 	Dodge,
 	Jump,
 	InputWait,
+	Hit,
 
-	ToggleCombat = 1 << 8,
-	Falling = 2 << 8,
+	ToggleCombat = 1 << Shift,
+	Falling = 2 << Shift,
+	StatemMachineHit = 3 << Shift,
+	Combat = 4 << Shift,
 
 
 	StateOrderBit = UINT8_MAX,
-	StatemMachineOrderBit = UINT8_MAX << 8,
+	StatemMachineOrderBit = UINT8_MAX << Shift,
 };
 
 ENUM_CLASS_FLAGS(EStateOrder)

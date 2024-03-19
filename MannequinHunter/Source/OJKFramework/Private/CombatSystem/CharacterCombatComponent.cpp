@@ -18,7 +18,7 @@
 const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
 
 UCharacterCombatComponent::UCharacterCombatComponent() : Super(),
-characterCombatData(), characterRotationData(), characterCombatAnimationData()
+characterCombatData(), characterRotationData(), characterCombatAnimationData() , isSuperArmor(false)
 {
 	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::F, EDirectionIndex::Front);
 	characterCombatAnimationData.eightDodgeDirectionIndexMap.Add(EDodgeDirection::FL, EDirectionIndex::Front_Left);
@@ -495,22 +495,19 @@ void UCharacterCombatComponent::Hit(ECharacterCombatMontageType animtype)
 
 	montage = (*currentAnimMontages)[direction];
 
-	//FOnMontageEnded montageEnded;
-	//montageEnded.BindLambda([this](UAnimMontage* animMontage, bool bInterrupted)
-	//	{
-	//		OnHitEnd();
-	//	});
-	//animInstance->Montage_SetEndDelegate(montageEnded, montage);
-
-	FOnMontageBlendingOutStarted montageBlendingOutStarted;
-	montageBlendingOutStarted.BindLambda([this](UAnimMontage* animMontage, bool bInterrupted)
+	FOnMontageEnded montageEnded;
+	montageEnded.BindLambda([this](UAnimMontage* animMontage, bool bInterrupted)
 		{
+			UE_LOG(LogTemp,Log, TEXT("HitEnd"))
 			OnHitEnd();
 		});
 
-	animInstance->Montage_SetBlendingOutDelegate(montageBlendingOutStarted, montage);
-
+	UE_LOG(LogTemp, Log, TEXT("HitStart"))
 	animInstance->Montage_Play(montage);
+	UE_LOG(LogTemp, Log, TEXT("HitStart2"))
+	animInstance->Montage_SetEndDelegate(montageEnded, montage);
+	//animInstance->Montage_SetBlendingOutDelegate(montageBlendingOutStarted, montage);
+
 }
 
 void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float yaw)
@@ -639,7 +636,8 @@ void UCharacterCombatComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 void UCharacterCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
 	Super::TakeDamage(damageAmount, damageEvent, eventInstigator, damageCauser);
-	Hit(ECharacterCombatMontageType::Hit1);
+	if (!isSuperArmor)
+		Hit(ECharacterCombatMontageType::Hit1);
 }
 
 void UCharacterCombatComponent::BeginPlay()

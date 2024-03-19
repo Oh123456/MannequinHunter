@@ -34,6 +34,8 @@ public:
 	const FDeathEvent& OnDeath() { return deathEvent; }
 	const FTakeDamage& OnTakeDamage() { return takeDamage; }
 
+	void SetIsImmortality(bool b) { isImmortality = b; }
+	bool GetIsImmortality() const { return isImmortality; }
 protected:
 	virtual void BeginPlay() override;
 	virtual float CalculateApplyDamage();

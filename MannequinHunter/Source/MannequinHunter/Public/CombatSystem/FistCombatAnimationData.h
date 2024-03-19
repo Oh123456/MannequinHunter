@@ -31,7 +31,7 @@ struct MANNEQUINHUNTER_API FFistAnimMontageHitBoxFlagArray
 };
 
 USTRUCT()
-struct MANNEQUINHUNTER_API FFistAnimMontageArray
+struct MANNEQUINHUNTER_API FFistAnimMontageArray : public FAnimSlotData
 {
 	GENERATED_BODY()
 
@@ -55,7 +55,8 @@ public:
 
 public:
 	virtual const TArray<UAnimMontage*>* GetMontageArray(const ECharacterCombatMontageType type) const override;
-
+protected:
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 private:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<ECharacterCombatMontageType, FFistAnimMontageArray> combatMontageMap = {};

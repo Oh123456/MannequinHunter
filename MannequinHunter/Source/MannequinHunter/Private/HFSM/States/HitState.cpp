@@ -12,3 +12,4 @@ FHitState::FHitState() :
 FHitState::~FHitState()
 {
 }
+

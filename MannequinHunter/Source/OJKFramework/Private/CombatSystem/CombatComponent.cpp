@@ -33,6 +33,12 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 	if (damageComponent == nullptr)
 		return;
 	
+	if (damageComponent->GetImmortality())
+	{
+		UE_LOG(Framework,Log,TEXT("Avoidance !! "))
+		return;
+	}
+
 	float actualDamage = CalculateApplyDamage();
 	if ((actualDamage != 0.f))
 	{
@@ -48,6 +54,9 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 void UCombatComponent::ApplyPointDamage(UCombatComponent* damageComponent, float BaseDamage, const FVector& HitFromDirection, const FHitResult& HitInfo, AController* EventInstigator, AActor* DamageCauser, TSubclassOf<class UDamageType> DamageTypeClass)
 {
 	if (damageComponent == nullptr)
+		return;
+
+	if (damageComponent->GetImmortality())
 		return;
 
 	float actualDamage = CalculateApplyDamage();

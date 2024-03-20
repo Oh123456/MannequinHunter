@@ -509,7 +509,7 @@ void UCharacterCombatComponent::Hit(ECharacterCombatMontageType animtype)
 
 	UE_LOG(LogTemp, Log, TEXT("HitStart"))
 	animInstance->Montage_Play(montage);
-	UE_LOG(LogTemp, Log, TEXT("HitStart2"))
+
 	animInstance->Montage_SetEndDelegate(montageEnded, montage);
 	//animInstance->Montage_SetBlendingOutDelegate(montageBlendingOutStarted, montage);
 

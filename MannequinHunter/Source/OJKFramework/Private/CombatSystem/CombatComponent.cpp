@@ -8,6 +8,7 @@
 #include "CombatSystem/DeathInfo.h"
 #include "OJKFramework.h"
 #include "DebugLog.h"
+#include "DamageType/ActionGameDamageTypeInterface.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent() : 
@@ -44,6 +45,22 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 
 }
 
+void UCombatComponent::ApplyPointDamage(UCombatComponent* damageComponent, float BaseDamage, const FVector& HitFromDirection, const FHitResult& HitInfo, AController* EventInstigator, AActor* DamageCauser, TSubclassOf<class UDamageType> DamageTypeClass)
+{
+	if (damageComponent == nullptr)
+		return;
+
+	float actualDamage = CalculateApplyDamage();
+	if (actualDamage != 0.f)
+	{
+		// make sure we have a good damage type
+		TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
+		FPointDamageEvent PointDamageEvent(actualDamage, HitInfo, HitFromDirection, ValidDamageTypeClass);
+
+		damageComponent->TakeDamage(actualDamage, PointDamageEvent, EventInstigator, DamageCauser);
+	}
+}
+
 void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
 	damageCauserActor = damageCauser;
@@ -54,14 +71,24 @@ void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damage
 		return;
 	}
 	int32 actualDamage = CalculateTakeDamage(damageAmount);
-	statusData->health -= actualDamage;
-	
-	takeDamage.Broadcast(status, actualDamage, damageEvent, eventInstigator, damageCauser);
 
-	if (!isImmortality && statusData->health <= 0)
+	if (damageEvent.DamageTypeClass->ImplementsInterface(UActionGameDamageTypeInterface::StaticClass()))
 	{
-		FDeathInfo deathInfo = FDeathInfo();
-		deathEvent.Broadcast(deathInfo);
+		IActionGameDamageTypeInterface* damageType = Cast<IActionGameDamageTypeInterface>(damageEvent.DamageTypeClass->GetDefaultObject());
+		actualDamage = damageType->ExecuteDamageType(actualDamage, this, eventInstigator, damageCauser);
+	}
+
+	if (!isImmortality)
+	{
+		statusData->health -= actualDamage;
+
+		takeDamage.Broadcast(status, actualDamage, damageEvent, eventInstigator, damageCauser);
+
+		if (statusData->health <= 0)
+		{
+			FDeathInfo deathInfo = FDeathInfo();
+			deathEvent.Broadcast(deathInfo);
+		}
 	}
 }
 

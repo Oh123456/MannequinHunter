@@ -53,8 +53,6 @@ void FAttackState::Enter()
 			combatComponent->Attack(attackMontageType, playRate,[this, combatComponent]()
 			{
 				this->CheckState();
-				combatComponent->SetIsImmortality(false);
-				combatComponent->SetIsSuperArmor(false);
 			});
 		}
 	}

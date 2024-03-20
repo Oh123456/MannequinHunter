@@ -137,6 +137,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Mesh);
 	TObjectPtr<class UMeshComponent> weaponMeshComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = Damage)
+	TSubclassOf<class UDamageType> damageTypeClass; 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
 	FWeaponHitData weaponHitData;

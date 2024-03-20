@@ -97,7 +97,7 @@ bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 void ABaseWeapon::ApplyDamage(UCombatComponent* damagedObject, const FHitResult& hitResult)
 {
 	UCharacterCombatComponent* ownerCharacterCombat = weaponData.ownerCharacter->GetCombatComponent();
-	ownerCharacterCombat->ApplyDamage(damagedObject, Owner->GetInstigatorController(), this, UDamageType::StaticClass());
+	ownerCharacterCombat->ApplyDamage(damagedObject, Owner->GetInstigatorController(), this, damageTypeClass);
 }
 
 void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)

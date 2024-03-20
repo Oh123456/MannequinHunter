@@ -205,8 +205,8 @@ public:
 	
 	void ResetLockOn();
 
-	void SetIsSuperArmor(bool b) { isSuperArmor = b; }
-	bool GetIsSuperArmor() const { return isSuperArmor; }
+	void SetSuperArmor(bool b) { isSuperArmor = b; }
+	bool GetSuperArmor() const { return isSuperArmor; }
 
 protected:
 	inline void AddCombatAbleFlag(ECombatAble combatAble);

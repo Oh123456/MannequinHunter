@@ -26,6 +26,7 @@ public:
 	virtual ~UCombatComponent();
 
 	void ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser, TSubclassOf<UDamageType> damageTypeClass);
+	void ApplyPointDamage(UCombatComponent* damageComponent, float BaseDamage, const FVector& HitFromDirection, const FHitResult& HitInfo, AController* EventInstigator, AActor* DamageCauser, TSubclassOf<class UDamageType> DamageTypeClass);
 	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser);
 
 	inline void SetStatusData(const struct FStatusDataTableBase* table) { status.SetStatus(table); }
@@ -34,8 +35,8 @@ public:
 	const FDeathEvent& OnDeath() { return deathEvent; }
 	const FTakeDamage& OnTakeDamage() { return takeDamage; }
 
-	void SetIsImmortality(bool b) { isImmortality = b; }
-	bool GetIsImmortality() const { return isImmortality; }
+	void SetImmortality(bool b) { isImmortality = b; }
+	bool GetImmortality() const { return isImmortality; }
 public:
 	// Immortality Reset
 	virtual void ClearStateData() { isImmortality = false; }

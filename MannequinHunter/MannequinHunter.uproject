@@ -12,7 +12,8 @@
 				"OJKFramework",
 				"Engine",
 				"AIModule",
-				"CoreUObject"
+				"CoreUObject",
+				"UMG"
 			]
 		},
 		{

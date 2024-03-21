@@ -13,6 +13,13 @@ class AMannequinHunterGameMode : public AGameModeBase
 
 public:
 	AMannequinHunterGameMode();
+
+protected:
+	virtual void BeginPlay() override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> mainWidgetClass;
 };
 
 

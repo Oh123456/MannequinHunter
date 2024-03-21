@@ -8,6 +8,6 @@ public class MannequinHunter : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput" , "OJKFramework", "OJKUtility", "AIModule", "GameplayTasks" , "MannequinHunterEditor" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput" , "OJKFramework", "OJKUtility", "AIModule", "GameplayTasks" , "MannequinHunterEditor", "UMG" });
     }
 }

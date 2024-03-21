@@ -1,5 +1,6 @@
 #pragma once
 #include "CharacterCombatComponent.h"
+#include "GameFramework/Character.h"
 
 
 inline AEquipment* FEquipmentItem::GetEquipment(int32 intdex)
@@ -50,6 +51,7 @@ inline void UCharacterCombatComponent::SubtractCombatAbleFlag(int32 combatAble)
 inline void UCharacterCombatComponent::SetIsActorRotation(bool b)
 {
 	this->characterRotationData.isActorRotation = b;
+	this->characterCombatData.owner->bUseControllerRotationYaw = b;
 }
 
 

@@ -17,18 +17,14 @@ class OJKFRAMEWORK_API UActionCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 
-//protected:
-//	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
-//	FORCEINLINE float GetAngle() { return angle; }
-//
-//	UFUNCTION(BlueprintPure, Category = CombatCharacter, meta = (BlueprintThreadSafe))
-//	FORCEINLINE float GetSpeed() { return speed; }
-
+private:
+	void SetBlendSpaceValue(const class UCharacterMovementComponent* const characterMovement);
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-private:
-	void SetBlendSpaceValue(const class UCharacterMovementComponent* const characterMovement);
+protected:
+	virtual void SetSpeed(const UCharacterMovementComponent* characterMovement);
+	virtual void SetAngle(const UCharacterMovementComponent* characterMovement);
 protected:
 	TObjectPtr<ABaseActionCharacter> ownerCharacter;
 

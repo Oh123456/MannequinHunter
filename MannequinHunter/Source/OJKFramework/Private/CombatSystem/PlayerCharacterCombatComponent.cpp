@@ -71,7 +71,7 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
  	//targetActor = hitActor;
 	SetTargetActor(targetActor);
 	//owner->GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovement;
-	//owner->bUseControllerRotationYaw = !bOrientRotationToMovement;
+	owner->bUseControllerRotationYaw = !bOrientRotationToMovement;
 }
 
 void UPlayerCharacterCombatComponent::BeginPlay()

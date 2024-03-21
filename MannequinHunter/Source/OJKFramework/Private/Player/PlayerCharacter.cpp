@@ -75,6 +75,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
+		//const FRotator Rotation = Cast<AActor>(Controller)->GetActorRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
@@ -130,10 +131,13 @@ void APlayerCharacter::BeginPlay()
 	}
 	combatComponent->DodgeDirectionDelegate().BindLambda([this]()
 		{
-			if (!GetCharacterMovement()->bOrientRotationToMovement || 
+			if (this->combatComponent->IsLockOn() ||
 				GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr))
+			{
+				UE_LOG(LogTemp,Log,TEXT("InputDirection X : %f, Y : %f"), this->inputDirection.X, this->inputDirection.Y)
 				return this->inputDirection;
-			return FVector2D(0.0f, 1.0f);
+			}
+			return FVector2D::ZeroVector;
 		});
 }
 

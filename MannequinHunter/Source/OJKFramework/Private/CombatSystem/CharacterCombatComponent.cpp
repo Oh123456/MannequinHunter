@@ -252,6 +252,9 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, floa
 
 	int8 dodgeDirection = 0;
 
+	if (directionVector.IsZero())
+		directionVector.Y = 1.0f;
+
 	if (directionVector.Y >= 0.f)
 		dodgeDirection |= static_cast<int8>(EDodgeDirection::F);
 	else if (directionVector.Y < 0.f)
@@ -416,6 +419,9 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 		FVector2D directionVector = UKismetMathLibrary::Normal2D(characterCombatAnimationData.dodgeDirectionDelegate.Execute());
 		UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
 		UAnimMontage* dodgeMontage = nullptr;
+
+		if (directionVector.IsZero())
+			directionVector.Y = 1.0f;
 
 		int8 dodgeDirection = DodgeDirection(directionVector);
 		EDodgeDirection eDodgeDirection = static_cast<EDodgeDirection>(dodgeDirection);

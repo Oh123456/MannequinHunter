@@ -14,7 +14,12 @@ const FName& FAIPatternStartData::GetPattern() const
 	int32 index = Algo::LowerBound(weights, rand);
 
 	UE_LOG(LogTemp, Log, TEXT("Rand : %d, index : %d, weight : %d"), rand, index, weights[index]);
-	return patternNames[index - 1];
+	index = index - 1;
+	if (index < 0)
+		index = 0;
+	else if (index >= weights.Num())
+		index = weights.Num();
+	return patternNames[index];
 }
 
 void FAIPatternStartData::AddPattern(const FName& name, const int32 weight)

@@ -186,7 +186,7 @@ public:
 
 	const class UBaseCombatAnimationData* const GetCombatAnimationData() const { return combatAnimationData; }
 
-	inline bool IsLockOn() { return characterRotationData.targetActor != nullptr; }
+	inline bool IsLockOn() const { return characterRotationData.targetActor != nullptr; }
 	inline FDodgeDirection& DodgeDirectionDelegate() { return characterCombatAnimationData.dodgeDirectionDelegate; }
 
 	inline AEquipment* GetEquipment(ECombatEquipmentSlot slot, int32 index = 0);

@@ -5,9 +5,11 @@
 #include "Character/BaseEnemyCharacter.h"
 #include "AI/AIPattern.h"
 #include "CombatSystem/CharacterCombatComponent.h"
+#include "CombatSystem/Status.h"
 #include "Subsystem/AIManagerSubsystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AI/Controller/MannequinAIController.h"
+#include "Utility/MannequinHunterUtility.h"
 
 EBTNodeResult::Type UBTT_PatternAction::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -23,11 +25,12 @@ EBTNodeResult::Type UBTT_PatternAction::ExecuteTask(UBehaviorTreeComponent& Owne
 		ABaseEnemyCharacter* character = Cast<ABaseEnemyCharacter>(AIController->GetPawn());
 		if (character)
 		{
+			float playRate = FMannequinHunterUtility::GetPlayRate(character->GetCombatComponent()->GetStatusData().GetStatusData()->attackSpeed);
 			const TSharedPtr<FAIPatternTree>& pattern = AIController->GetAIPattern()->GetPattern();
 			const FPatternData* patternData = pattern->GetPatternData(key);
 			if (patternData)
 			{
-				PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, 1.0f);
+				PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, playRate);
 				bbc->SetValueAsEnum(enumKey.SelectedKeyName, StaticCast<uint8>(EEnemyState::Attack));
 				return EBTNodeResult::Type::Succeeded;
 			}

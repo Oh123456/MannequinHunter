@@ -6,6 +6,8 @@
 #include "CombatSystem/CharacterCombatComponent.inl"
 #include "Equipment/BlueprintBaseWeapon.h"
 #include "DebugLog.h"
+#include "Table/MannequinHunterStatusTable.h"
+#include "Subsystem/TableSubsystem.h"
 
 void AMannequin::BeginPlay()
 {
@@ -16,5 +18,10 @@ void AMannequin::BeginPlay()
 	weapon->SetActorRotation(FRotator(0.0f, 0.0f, 90.0f));
 	weapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("Weapon_r"));
 	weapon->SetWeaponOwner(this);
+
+
+	const FMannequinHunterStatusDataTable* rowTableData = GetGameInstance()->GetSubsystem<UTableSubsystem>()->GetTable<FMannequinHunterStatusDataTable>(TEXT("Mannequin"));
+
+	combatComponent->SetStatusData(rowTableData);
 
 }

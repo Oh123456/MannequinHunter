@@ -231,7 +231,7 @@ void ARYU::BeginPlay()
 		}
 	}
 
-	const FMannequinHunterStatusDataTable* rowTableData = GetGameInstance()->GetSubsystem<UTableSubsystem>()->GetTable<FMannequinHunterStatusDataTable>(TEXT("Test"));
+	const FMannequinHunterStatusDataTable* rowTableData = GetGameInstance()->GetSubsystem<UTableSubsystem>()->GetTable<FMannequinHunterStatusDataTable>(TEXT("RYU"));
 
 	mannequinHunterCombatComponent->SetStatusData(rowTableData);
 

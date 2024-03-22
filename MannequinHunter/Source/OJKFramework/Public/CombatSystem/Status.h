@@ -48,15 +48,37 @@ struct OJKFRAMEWORK_API FStatusData : public FStatusDataBase
 class OJKFRAMEWORK_API FStatus 
 {
 public:
+	DECLARE_EVENT_OneParam(FStatus, FOnChangeStatus, const TSharedPtr<FStatusData>&)
+public:
 	virtual ~FStatus() {}
 
 	void SetStatus(const FStatusDataTableBase* dataTable);
 
-	TSharedPtr<FStatusData>& GetStatusData() {return status;}
+	//TSharedPtr<FStatusData>& GetStatusData() {return status;}
 
+	void ChangeStatus(std::function<void(TSharedPtr<FStatusData>&)> fun);
+
+	void AddHP(int32 addValue);
+	void SetHP(int32 setValue);
+	void SetMaxHP(int32 setValue);
+
+	void AddStamina(int32 addValue);
+	void SetStamina(int32 setValue);
+	void SetMaxStamina(int32 setValue);	
+
+	bool CheckStamina() const { return status->stamina > 0; }
+	bool CheckMaxStamina() const { return status->maxStamina <= status->stamina; }
+	bool CheckMaxHP() const { return status->maxHealth <= status->health; }
+
+	const TSharedPtr<FStatusData>& GetStatusData() const { return status; }
 protected:
 	virtual void CreateStatus();
 	virtual const FStatusDataBase* GetStatusDataFormTable(const FStatusDataTableBase* dataTable);
+public:
+	// HP,Stamina Exception Chanage Call Event
+	FOnChangeStatus OnChangeStatus;
+	FOnChangeStatus OnChangeHPStatus;
+	FOnChangeStatus OnChangeStaminaStatus;
 protected:
 	TSharedPtr<FStatusData> status;
 };

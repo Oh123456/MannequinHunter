@@ -77,12 +77,15 @@ public:
 	virtual void Hit(ECharacterCombatMontageType animtype) override;
 protected:
 	virtual void OnHitEnd() override;
+	virtual int32 CalculateRecoveryStamina() override;
 public:
 	FChangeWeaponType OnChangeWeaponType;
 private:
 	FCommandListData commandListData;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-	TMap<EWeaponType, TObjectPtr<class UBaseCombatAnimationData>> weaponTypeAnimationData;
+	TMap<EWeaponType, TObjectPtr<class UBaseCombatAnimationData>> weaponTypeAnimationData;	
 
+	UPROPERTY()
+	class UHFSMComponent* ownerHFSM;
 };

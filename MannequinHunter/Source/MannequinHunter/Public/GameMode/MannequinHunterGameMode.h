@@ -20,6 +20,9 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mainWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UMainUIWidget> mainWidget;
 };
 
 

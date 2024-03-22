@@ -20,6 +20,9 @@ struct FAnimSlotData
 
 	UPROPERTY(EditDefaultsOnly)
 	bool isImmortality = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 stamina = 10;
 };
 
 

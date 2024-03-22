@@ -15,6 +15,17 @@ LockOnLength(1000.f)
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void UPlayerCharacterCombatComponent::RecoverStamina()
+{
+	status.AddStamina(CalculateRecoveryStamina());
+
+	if (status.CheckMaxStamina())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(staminaTimerHandle);
+	}
+	
+}
+
 void UPlayerCharacterCombatComponent::SetLockOnTarget()
 {
 	ACharacter* owner = characterCombatData.owner;
@@ -85,5 +96,16 @@ void UPlayerCharacterCombatComponent::BeginPlay()
 
 	lockOnTargetIgnoreActor.Add(characterCombatData.owner);
 
-	//lockOnTargetObjectType.Add(static_cast<EObjectTypeQuery>(ECollisionChannel::ECC_Pawn));
+	status.OnChangeStaminaStatus.AddLambda([this](const TSharedPtr<FStatusData>& statusData)
+	{
+		if (statusData->maxStamina > statusData->stamina)
+		{
+			GetWorld()->GetTimerManager().SetTimer(staminaTimerHandle, this, &UPlayerCharacterCombatComponent::RecoverStamina, recoveryStaminaTime, true);
+		}
+	});
+}
+
+int32 UPlayerCharacterCombatComponent::CalculateRecoveryStamina()
+{
+	return recoveryStamina * recoveryStaminaTime;
 }

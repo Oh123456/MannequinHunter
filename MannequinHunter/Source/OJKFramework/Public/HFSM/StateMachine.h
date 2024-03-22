@@ -55,7 +55,6 @@ public:
 	void ChangeState(uint8 stateID);
 
 	void SetStateOrder(uint16 order);
-	//uint16 GetStateOrder() { uint16 value = stateOrder; stateOrder = 0; return value; }
 	 
 	template<typename T>
 	T GetStateOrder() { return StaticCast<T>(GetStateOrder()); }

@@ -9,6 +9,11 @@
 /**
  * 
  */
+
+class UProgressBar;
+class UTextBlock;
+struct FStatusData;
+
 UCLASS()
 class MANNEQUINHUNTER_API UMainUIWidget : public UUserWidget
 {
@@ -17,17 +22,23 @@ class MANNEQUINHUNTER_API UMainUIWidget : public UUserWidget
 protected:
 	virtual void NativeOnInitialized() override;
 
+public:
+	void SetHP(const TSharedPtr<FStatusData>& status);
+	void SetStamina(const TSharedPtr<FStatusData>& status);
+
+private:
+	void SetProgressBar(UProgressBar* bar, UTextBlock* text, int32 currentData, int32 maxData);
 private:
 	UPROPERTY()
-	TObjectPtr< class UProgressBar> hpBar;
+	TObjectPtr<UProgressBar> hpBar;
 	
 	UPROPERTY()
-	TObjectPtr < class UTextBlock> hpText;
+	TObjectPtr <UTextBlock> hpText;
 
 	UPROPERTY()
-	TObjectPtr< class UProgressBar> staminaBar;
+	TObjectPtr<UProgressBar> staminaBar;
 
 	UPROPERTY()
-	TObjectPtr < class UTextBlock> staminaText;
+	TObjectPtr <UTextBlock> staminaText;
 
 };

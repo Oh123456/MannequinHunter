@@ -63,35 +63,36 @@ void UMannequinHunterCombatComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SetCommandList();
-	//OnChangeWeaponType.AddUObject(this,&UMannequinHunterCombatComponent::ChangeCommandList);
+
+	APlayerCharacter* player = Cast<APlayerCharacter>(GetOwner());
+	if (player == nullptr)
+		return;
+
+	ownerHFSM = player->GetHFSM();
 }
 
 void UMannequinHunterCombatComponent::Hit(ECharacterCombatMontageType animtype)
 {
 	Super::Hit(animtype);
 
-	APlayerCharacter* player = Cast<APlayerCharacter>(GetOwner());
-	if (player == nullptr)
-		return;
-
-	UHFSMComponent* hfsm = player->GetHFSM();
-	if (hfsm == nullptr)
-		return;
-
-	hfsm->SetStateOrder(EStateOrder::StatemMachineHit | EStateOrder::Hit);
+	ownerHFSM->SetStateOrder(EStateOrder::StatemMachineHit | EStateOrder::Hit);
 }
 
 void UMannequinHunterCombatComponent::OnHitEnd()
 {
-	APlayerCharacter* player = Cast<APlayerCharacter>(GetOwner());
-	if (player == nullptr)
-		return;
+	ownerHFSM->SetStateOrder(EStateOrder::Combat | EStateOrder::Idle);
+}
 
-	UHFSMComponent* hfsm = player->GetHFSM();
-	if (hfsm == nullptr)
-		return;
+int32 UMannequinHunterCombatComponent::CalculateRecoveryStamina()
+{
+	int32 recoveryStaminaValue = Super::CalculateRecoveryStamina();
 
-	hfsm->SetStateOrder(EStateOrder::Combat | EStateOrder::Idle);
+	if (ownerHFSM->GetCurrentStateID() != StaticCast<uint8>(EPlayerStateEnum::Idle))
+	{
+		recoveryStaminaValue = recoveryStaminaValue * 0.5f;
+	}
+
+	return recoveryStaminaValue;
 }
 
 

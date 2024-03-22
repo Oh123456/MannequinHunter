@@ -15,7 +15,58 @@ void FStatus::SetStatus(const FStatusDataTableBase* dataTable)
 
 	const FStatusDataBase* data = GetStatusDataFormTable(dataTable);
 	if (data)
+	{
 		status->Copy(*data);
+		OnChangeStatus.Broadcast(status);
+		OnChangeHPStatus.Broadcast(status);
+		OnChangeStaminaStatus.Broadcast(status);		
+	}
+}
+
+void FStatus::ChangeStatus(std::function<void(TSharedPtr<FStatusData>&)> fun)
+{
+	fun(status);
+	OnChangeStatus.Broadcast(status);
+}
+
+void FStatus::AddHP(int32 addValue)
+{
+	status->health += addValue;
+	if (CheckMaxHP())
+		status->health = status->maxHealth;
+	OnChangeHPStatus.Broadcast(status);
+}
+
+void FStatus::SetHP(int32 setValue)
+{
+	status->health = setValue;
+	OnChangeHPStatus.Broadcast(status);
+}
+
+void FStatus::SetMaxHP(int32 setValue)
+{
+	status->maxHealth = setValue;
+	OnChangeHPStatus.Broadcast(status);
+}
+
+void FStatus::AddStamina(int32 addValue)
+{
+	status->stamina += addValue;
+	if (CheckMaxStamina())
+		status->stamina = status->maxStamina;
+	OnChangeStaminaStatus.Broadcast(status);
+}
+
+void FStatus::SetStamina(int32 setValue)
+{
+	status->stamina = setValue;
+	OnChangeStaminaStatus.Broadcast(status);
+}
+
+void FStatus::SetMaxStamina(int32 setValue)
+{
+	status->maxStamina = setValue;
+	OnChangeStaminaStatus.Broadcast(status);
 }
 
 void FStatus::CreateStatus()
@@ -47,7 +98,7 @@ void FStatusData::Copy(const FStatusDataBase& data)
 	FStatusDataBase::Copy(data);
 	const FStatusData& statusData = static_cast<const FStatusData&>(data);
 
-	health = statusData.health;
-	stamina = statusData.stamina;
+	health = statusData.maxHealth;
+	stamina = statusData.maxStamina;
 
 }

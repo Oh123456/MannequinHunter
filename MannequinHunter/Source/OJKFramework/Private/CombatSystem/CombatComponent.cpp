@@ -73,7 +73,7 @@ void UCombatComponent::ApplyPointDamage(UCombatComponent* damageComponent, float
 void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
 	damageCauserActor = damageCauser;
-	TSharedPtr<FStatusData>& statusData = status.GetStatusData();
+	const TSharedPtr<const FStatusData>& statusData = status.GetStatusData();
 	if (statusData == nullptr)
 	{
 		UE_LOG_WARNING(Framework, TEXT("%s StatusData is None"), *UKismetSystemLibrary::GetDisplayName(GetOwner()));
@@ -89,7 +89,7 @@ void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damage
 
 	if (!isImmortality)
 	{
-		statusData->health -= actualDamage;
+		status.AddHP(-actualDamage);
 
 		takeDamage.Broadcast(status, actualDamage, damageEvent, eventInstigator, damageCauser);
 
@@ -118,7 +118,7 @@ float UCombatComponent::CalculateApplyDamage()
 
 int32 UCombatComponent::CalculateTakeDamage(float damageAmount)
 {
-	TSharedPtr<FStatusData>& statusData = status.GetStatusData();
+	const TSharedPtr<const FStatusData>& statusData = status.GetStatusData();
 	if (statusData)
 		return static_cast<int32>(damageAmount) - statusData->defensive;
 

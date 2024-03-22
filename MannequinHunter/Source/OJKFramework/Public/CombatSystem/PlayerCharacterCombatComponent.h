@@ -22,19 +22,30 @@ public:
 
 
 	const FOnFindCameraComponent& OnFindCameraComponent() { return findCameraComponentDelegate; }
+private:
+	UFUNCTION()
+	void RecoverStamina();
 public:
 	virtual void SetLockOnTarget() override;
 
 protected:
 	virtual void BeginPlay() override;
 
+	virtual int32 CalculateRecoveryStamina();
 private:
 	FOnFindCameraComponent findCameraComponentDelegate;
 
 	float LockOnLength;
 
 	TArray<AActor*> lockOnTargetIgnoreActor;
+	
+	FTimerHandle staminaTimerHandle;
 private:
+	UPROPERTY(EditDefaultsOnly, Category = Recover, meta = (AllowPrivateAccess = "true"))
+	float recoveryStaminaTime = 0.2f;
+	UPROPERTY(EditDefaultsOnly, Category = Recover, meta = (AllowPrivateAccess = "true"))
+	int32 recoveryStamina = 10;
+
 	UPROPERTY(EditDefaultsOnly, Category = LockOn, meta = (AllowPrivateAccess = "true"))
 	TArray<TEnumAsByte<EObjectTypeQuery>> lockOnTargetObjectType;
 };

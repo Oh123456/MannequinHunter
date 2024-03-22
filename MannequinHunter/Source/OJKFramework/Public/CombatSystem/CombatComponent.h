@@ -32,8 +32,9 @@ public:
 	inline void SetStatusData(const struct FStatusDataTableBase* table) { status.SetStatus(table); }
 	inline FStatus& GetStatusData() {return status;}
 
-	const FDeathEvent& OnDeath() { return deathEvent; }
-	const FTakeDamage& OnTakeDamage() { return takeDamage; }
+	FDeathEvent& OnDeath() { return deathEvent; }
+	FTakeDamage& OnTakeDamage() { return takeDamage; }
+
 
 	void SetImmortality(bool b) { isImmortality = b; }
 	bool GetImmortality() const { return isImmortality; }

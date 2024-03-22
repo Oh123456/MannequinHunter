@@ -3,6 +3,11 @@
 #include "GameMode/MannequinHunterGameMode.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "CombatSystem/CharacterCombatComponent.h"
+#include "GameFramework/Character.h"
+#include "Player/PlayerCharacter.h"
+#include "HUD/MainUIWidget.h"
 
 AMannequinHunterGameMode::AMannequinHunterGameMode()
 {
@@ -14,6 +19,7 @@ AMannequinHunterGameMode::AMannequinHunterGameMode()
 	}
 }
 
+
 void AMannequinHunterGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -21,11 +27,20 @@ void AMannequinHunterGameMode::BeginPlay()
 	if (mainWidgetClass == nullptr)
 		return;
 
-
-	UUserWidget* mainWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), mainWidgetClass));
+	mainWidget = Cast<UMainUIWidget>(CreateWidget(GetWorld(), mainWidgetClass));
 
 	if (mainWidget)
 	{
 		mainWidget->AddToViewport();
+
+	
+		UCharacterCombatComponent* characterCombat = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))->GetCombatComponent();
+
+		FStatus& status = characterCombat->GetStatusData();
+
+		status.OnChangeHPStatus.AddUObject(mainWidget, &UMainUIWidget::SetHP);
+		status.OnChangeStaminaStatus.AddUObject(mainWidget, &UMainUIWidget::SetStamina);
 	}
 }
+
+

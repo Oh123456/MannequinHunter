@@ -235,6 +235,12 @@ void UCharacterCombatComponent::PlayAnimation(ECharacterCombatMontageType animty
 
 void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> callback, std::function<void()> cancelCallback)
 {
+	const FAnimSlotData* data = combatAnimationData->GetSlotData(animtype);
+	if (!status.CheckStamina())
+		return;
+
+	status.AddStamina(-data->stamina);
+
 	ChangeCombatType(animtype);
 
 	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
@@ -333,6 +339,16 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, floa
 
 void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback)
 {
+	const FAnimSlotData* data = combatAnimationData->GetSlotData(animtype);
+
+	isSuperArmor = data->isSuperArmor;
+	isImmortality = data->isImmortality;
+
+	if (!status.CheckStamina())
+		return;
+
+	status.AddStamina(-data->stamina);
+
 	ChangeCombatType(animtype);
 
 	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;
@@ -352,10 +368,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, flo
 		animMontageInstance->OnMontageEnded.Unbind();
 	}
 
-	const FAnimSlotData* data =combatAnimationData->GetSlotData(animtype);
 
-	isSuperArmor = data->isSuperArmor;
-	isImmortality = data->isImmortality;
 
 	animInstance->Montage_Play(attackMontage, playRate);
 	characterRotationData.isActorRotation = true;
@@ -401,6 +414,7 @@ void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, flo
 
 void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype)
 {
+
 	ChangeCombatType(animtype);
 
 	const TArray<UAnimMontage*>* currentAnimMontages = characterCombatAnimationData.currentAnimMontages;

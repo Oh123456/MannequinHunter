@@ -33,3 +33,34 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	}
 	RunBehaviorTree(behaviorTree);
 }
+
+void ABaseAIController::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	aiPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::TargetPerceptionUpdated);
+}
+
+void ABaseAIController::LookTarget(AActor* actor, FAIStimulus stimulus)
+{
+}
+
+void ABaseAIController::LostTarget(AActor* actor, FAIStimulus stimulus)
+{
+}
+
+void ABaseAIController::TargetPerceptionUpdated(AActor* actor, FAIStimulus stimulus)
+{
+	for (const FName& tag : actor->Tags)
+	{
+		if (targetTags.Contains(tag))
+		{
+			if (stimulus.WasSuccessfullySensed())
+				LookTarget(actor, stimulus);
+			else
+				LostTarget(actor, stimulus);
+			return;
+		}
+	}
+
+}

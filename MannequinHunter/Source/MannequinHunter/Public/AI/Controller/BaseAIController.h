@@ -29,7 +29,14 @@ public:
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void BeginPlay() override;
 
+	virtual void LookTarget(AActor* actor, FAIStimulus stimulus);
+	virtual void LostTarget(AActor* actor, FAIStimulus stimulus);
+
+private:
+	UFUNCTION()
+	void TargetPerceptionUpdated(AActor* actor, FAIStimulus stimulus);
 protected:
 	UPROPERTY(EditAnywhere, Category = AI)
 	TObjectPtr<UAIPerceptionComponent> aiPerception;
@@ -41,4 +48,7 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = BehaviorTree, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> behaviorTree;
+
+	UPROPERTY(EditAnywhere, Category = TargetTag, meta = (AllowPrivateAccess = "true"))
+	TSet<FName> targetTags;
 };

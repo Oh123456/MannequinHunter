@@ -1,1 +1,6 @@
 UE5.vcxproj filter=lfs diff=lfs merge=lfs -text
+DemoMapNight.umap filter=lfs diff=lfs merge=lfs -text
+DemoMapDay.umap filter=lfs diff=lfs merge=lfs -text
+MannequinHunter/Content/Map/DemoMapDay.umap filter=lfs diff=lfs merge=lfs -text
+MannequinHunter/Content/ModularGothicFantasyEnvironment/Maps/DemoMapDay.umap filter=lfs diff=lfs merge=lfs -text
+*.umap filter=lfs diff=lfs merge=lfs -text

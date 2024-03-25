@@ -25,9 +25,10 @@ class MANNEQUINHUNTER_API AMannequinAIController : public ABaseAIController
 	GENERATED_BODY()
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
-private:
-	UFUNCTION()
-	void TargetPerceptionUpdated(AActor* actor, FAIStimulus stimulus);
+
+
+	virtual void LookTarget(AActor* actor, FAIStimulus stimulus) override;
+	virtual void LostTarget(AActor* actor, FAIStimulus stimulus) override;
+
 };

@@ -8,13 +8,6 @@
 #include "Character/BaseEnemyCharacter.h"
 
 
-
-void AMannequinAIController::BeginPlay()
-{
-	Super::BeginPlay();
-	aiPerception->OnTargetPerceptionUpdated.AddDynamic(this, &AMannequinAIController::TargetPerceptionUpdated);
-}
-
 void AMannequinAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
@@ -24,21 +17,15 @@ void AMannequinAIController::OnPossess(APawn* InPawn)
 	Blackboard->SetValueAsEnum(STATE_ENUM, StaticCast<uint8>(EEnemyState::Idle));
 }
 
-void AMannequinAIController::TargetPerceptionUpdated(AActor* actor, FAIStimulus stimulus)
+void AMannequinAIController::LookTarget(AActor* actor, FAIStimulus stimulus)
 {
-	if (actor->ActorHasTag(MannequinHnterTags::PLAYER) )
-	{
-		
-		if (stimulus.WasSuccessfullySensed())
-		{
-			Blackboard->SetValueAsEnum(CHASE_ENUM_KEY, static_cast<uint8>(EMannequinBlackBoardChase::LineofSight));
-			Blackboard->SetValueAsObject(TARGET_ACTOR_KEY, actor);
-		}
-		else
-		{
-			Blackboard->SetValueAsEnum(CHASE_ENUM_KEY, static_cast<uint8>(EMannequinBlackBoardChase::Lost));
-			Blackboard->SetValueAsObject(TARGET_ACTOR_KEY, nullptr);
-		}
-	}
+	Blackboard->SetValueAsEnum(CHASE_ENUM_KEY, static_cast<uint8>(EMannequinBlackBoardChase::LineofSight));
+	Blackboard->SetValueAsObject(TARGET_ACTOR_KEY, actor);
+}
+
+void AMannequinAIController::LostTarget(AActor* actor, FAIStimulus stimulus)
+{
+	Blackboard->SetValueAsEnum(CHASE_ENUM_KEY, static_cast<uint8>(EMannequinBlackBoardChase::Lost));
+	Blackboard->SetValueAsObject(TARGET_ACTOR_KEY, nullptr);
 }
 

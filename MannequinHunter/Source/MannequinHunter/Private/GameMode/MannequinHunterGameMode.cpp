@@ -8,6 +8,9 @@
 #include "GameFramework/Character.h"
 #include "Player/PlayerCharacter.h"
 #include "HUD/MainUIWidget.h"
+#include "ObjectPool/ObjectPoolSubsystem.h"
+#include "Subsystem/TableSubsystem.h"
+#include "Table/SpawnTable.h"
 
 AMannequinHunterGameMode::AMannequinHunterGameMode()
 {
@@ -16,6 +19,20 @@ AMannequinHunterGameMode::AMannequinHunterGameMode()
 	if (playerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = playerPawnBPClass.Class;
+	}
+}
+
+void AMannequinHunterGameMode::SpawnBoos(const FName& name)
+{
+	UObjectPoolSubsystem* objPool = GetGameInstance()->GetSubsystem<UObjectPoolSubsystem>();
+
+	UTableSubsystem* table =  GetGameInstance()->GetSubsystem<UTableSubsystem>();
+	FSpawnDataTable* data = table->GetTable<FSpawnDataTable>()->FindRow<FSpawnDataTable>(name,TEXT("Not Find SpawnData Table"));
+	if (data)
+	{
+		// 家券篮 登绰单 港没秦咙
+		AActor* actor = objPool->GetActor(data->spawnActor);
+		actor->SetActorLocation(FVector(2320, 1140, 88));
 	}
 }
 

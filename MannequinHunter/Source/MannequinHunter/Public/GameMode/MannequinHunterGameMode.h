@@ -14,6 +14,8 @@ class AMannequinHunterGameMode : public AGameModeBase
 public:
 	AMannequinHunterGameMode();
 
+	void SpawnBoos(const FName& name);
+
 protected:
 	virtual void BeginPlay() override;
 

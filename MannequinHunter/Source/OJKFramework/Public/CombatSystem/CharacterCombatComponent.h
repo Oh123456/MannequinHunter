@@ -165,6 +165,7 @@ protected:
 		TMap<EDodgeDirection, EDirectionIndex> eightDodgeDirectionIndexMap = {};
 		TMap<EDodgeDirection, EDirectionIndex> fourDodgeDirectionIndexMap = {};
 		FDodgeDirection dodgeDirectionDelegate = {};
+		FTimerHandle superArmorStiffenTimerHandle;
 	};
 
 	struct FCharacterCombatRotationData
@@ -226,6 +227,7 @@ protected:
 private:
 	int32 GetPreviousAttackCount();
 	int8 DodgeDirection(const FVector2D& directionVector);
+	void StiffenSuperArmor();
 public:
 	// Not Use HFSM !!
 	// if UserCharacter Use HFSM ,
@@ -264,6 +266,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnHitEnd();
+	virtual float GetPlayRate(UAnimInstance* animInstance);
 protected:
 	FCharacterCombatData characterCombatData;
 	FCharacterCombatAnimationData characterCombatAnimationData;

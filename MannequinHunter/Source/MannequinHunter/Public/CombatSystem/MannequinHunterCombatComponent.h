@@ -78,6 +78,7 @@ public:
 protected:
 	virtual void OnHitEnd() override;
 	virtual int32 CalculateRecoveryStamina() override;
+	virtual float GetPlayRate(UAnimInstance* animInstance) override;
 public:
 	FChangeWeaponType OnChangeWeaponType;
 private:

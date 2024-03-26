@@ -2,7 +2,9 @@
 
 
 #include "Object/Door.h"
+#include "Object/DoorObjectComponent.h"
 #include "Components/BoxComponent.h"
+#include "Utility/MannequinHunterTags.h"
 
 // Sets default values
 ADoor::ADoor()
@@ -13,11 +15,30 @@ ADoor::ADoor()
 	doorWallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorWall"));
 	SetRootComponent(doorWallMesh);
 
-	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door"));
+	doorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	doorMesh->SetupAttachment(doorWallMesh);
+
 
 	trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DoorTrigger"));
 	trigger->SetupAttachment(doorWallMesh);
 
+	doorObjectComponent = CreateDefaultSubobject<UDoorObjectComponent>(TEXT("Door"));
+	doorObjectComponent->SetDoorMesh(doorMesh);
+
+}
+
+void ADoor::MoveDoor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag(MannequinHnterTags::PLAYER))
+	{
+		doorObjectComponent->CallMoveDoor();
+	}
+}
+
+void ADoor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	trigger->OnComponentBeginOverlap.AddDynamic(this, &ADoor::MoveDoor);
 }
 

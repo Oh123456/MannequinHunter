@@ -6,6 +6,7 @@
 #include "Player/PlayerCharacter.h"
 #include "HFSM/HFSMComponent.h"
 #include "Character/PlayerCommonEnums.h"
+#include "Utility/MannequinHunterUtility.h"
 #ifdef UE_BUILD_DEBUG
 #include "Character/RYU.h"
 #include "Utility/PlayerInputLog.h"
@@ -93,6 +94,11 @@ int32 UMannequinHunterCombatComponent::CalculateRecoveryStamina()
 	}
 
 	return recoveryStaminaValue;
+}
+
+float UMannequinHunterCombatComponent::GetPlayRate(UAnimInstance* animInstance)
+{
+	return FMannequinHunterUtility::GetPlayRate(GetStatusData().GetStatusData()->attackSpeed);
 }
 
 

@@ -14,8 +14,10 @@
 #include "TimerManager.h"
 #include "DebugLog.h"
 #include "DrawDebugHelpers.h"
+#include "TimerManager.h"
 
 const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
+const float LOCK_ON_ANGLE_CORRECTION = 1.5f;
 
 UCharacterCombatComponent::UCharacterCombatComponent() : Super(),
 characterCombatData(), characterRotationData(), characterCombatAnimationData() , isSuperArmor(false)
@@ -200,6 +202,11 @@ uint8 UCharacterCombatComponent::ConvertDirectionToHitDirection(uint8 direction)
 void UCharacterCombatComponent::OnHitEnd()
 {
 	
+}
+
+float UCharacterCombatComponent::GetPlayRate(UAnimInstance* animInstance)
+{
+	return animInstance->Montage_GetPlayRate(nullptr);
 }
 
 void UCharacterCombatComponent::PlayAnimation(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback)
@@ -603,7 +610,7 @@ void UCharacterCombatComponent::LockOn()
 
 		FRotator lookAtRotator = UKismetMathLibrary::FindLookAtRotation(ownerLocation, targetActor->GetActorLocation());
 		FRotator newCamRotator = UKismetMathLibrary::RInterpTo(ownerRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), characterRotationData.lockOnInterpSpeed);
-		//newCamRotator.Roll = ownerRotator.Roll;
+		newCamRotator.Pitch -= LOCK_ON_ANGLE_CORRECTION;
 
 		ownerController->SetControlRotation(newCamRotator);
 		if (characterRotationData.isActorRotation)
@@ -669,6 +676,8 @@ void UCharacterCombatComponent::TakeDamage(float damageAmount, FDamageEvent cons
 	Super::TakeDamage(damageAmount, damageEvent, eventInstigator, damageCauser);
 	if (!isSuperArmor)
 		Hit(ECharacterCombatMontageType::Hit1);
+	else
+		StiffenSuperArmor();
 }
 
 void UCharacterCombatComponent::BeginPlay()
@@ -716,4 +725,21 @@ int8 UCharacterCombatComponent::DodgeDirection(const FVector2D& directionVector)
 		dodgeDirection |= static_cast<int8>(EDodgeDirection::L);
 
 	return dodgeDirection;
+}
+
+void UCharacterCombatComponent::StiffenSuperArmor()
+{
+	UAnimInstance* animInstance = characterCombatData.owner->GetMesh()->GetAnimInstance();
+	if (animInstance->Montage_IsPlaying(nullptr))
+	{
+		float rate = GetPlayRate(animInstance);
+		animInstance->Montage_SetPlayRate(nullptr, 0.2f);
+		GetWorld()->GetTimerManager().SetTimer(characterCombatAnimationData.superArmorStiffenTimerHandle,
+			[rate, animInstance]()
+			{
+				UE_LOG(Framework,Log,TEXT("SuperArmor Stiffen PlayRate : %f "), rate)
+				animInstance->Montage_SetPlayRate(nullptr, rate);
+			}
+		, 0.2f, false);
+	}
 }

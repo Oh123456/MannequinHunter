@@ -3,6 +3,7 @@
 
 #include "CombatSystem/AICombatComponent.h"
 #include "Character/BaseEnemyCharacter.h"
+#include "Utility/MannequinHunterUtility.h"
 
 ABaseEnemyCharacter* UAICombatComponent::GetEnemyOwner()
 {
@@ -29,4 +30,9 @@ void UAICombatComponent::TakeDamage(float damageAmount, FDamageEvent const& dama
 	ABaseEnemyCharacter* enemy = GetEnemyOwner();
 	if (enemy)
 		enemy->SetState(EEnemyState::Hit);
+}
+
+float UAICombatComponent::GetPlayRate(UAnimInstance* animInstance)
+{
+	return FMannequinHunterUtility::GetPlayRate(GetStatusData().GetStatusData()->attackSpeed);
 }

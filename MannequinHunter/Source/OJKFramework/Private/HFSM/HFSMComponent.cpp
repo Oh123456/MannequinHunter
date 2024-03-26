@@ -57,7 +57,9 @@ void UHFSMComponent::ChangeStateMachine(uint8 changeStateID)
 
 void UHFSMComponent::CheckStateMachineCondition()
 {
-	
+
+	if (currentStateMachine == nullptr)
+		return;
 	uint8 stateID = currentStateMachine->Condition(stateMachineOrder);
 
 	if (currentStateMachine->GetStateMachineID() != stateID)
@@ -72,6 +74,8 @@ void UHFSMComponent::CheckStateMachineCondition()
 
 void UHFSMComponent::SetStateOrder(uint16 order)
 {
+	if (currentStateMachine == nullptr)
+		return;
 	stateMachineOrder = GetStateMachineOrder(order);
 	if (stateMachineOrder != 0)
 		CheckStateMachineCondition();

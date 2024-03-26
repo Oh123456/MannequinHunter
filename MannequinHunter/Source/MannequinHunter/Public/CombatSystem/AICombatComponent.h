@@ -24,5 +24,5 @@ protected:
 	virtual void BeginPlay() override;
 protected:
 	virtual void TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser) override;
-
+	virtual float GetPlayRate(UAnimInstance* animInstance) override;
 };

@@ -31,8 +31,9 @@ void AMannequinHunterGameMode::SpawnBoos(const FName& name)
 	if (data)
 	{
 		// 家券篮 登绰单 港没秦咙
-		AActor* actor = objPool->GetActor(data->spawnActor);
+		APawn* actor = Cast<APawn>(objPool->GetActor(data->spawnActor));
 		actor->SetActorLocation(FVector(2320, 1140, 88));
+		actor->SpawnDefaultController();
 	}
 }
 

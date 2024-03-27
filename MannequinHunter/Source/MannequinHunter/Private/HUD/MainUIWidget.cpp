@@ -5,36 +5,45 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "CombatSystem/Status.h"
+#include "HUD/TextProgressBarWidget.h"
 
 void UMainUIWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+	playerHPBar = Cast<UTextProgressBarWidget>(GetWidgetFromName(TEXT("WBP_HP")));
+	widgetMap.Add(EMainUIWidgetEnum::PlayerHPBar, playerHPBar);
 
-	hpBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));
-	hpText = Cast<UTextBlock>(GetWidgetFromName(TEXT("HP_Text")));
+	playerStaminaBar = Cast<UTextProgressBarWidget>(GetWidgetFromName(TEXT("WBP_Stamina")));
+	widgetMap.Add(EMainUIWidgetEnum::PlayerStaminaBar, playerStaminaBar);
 
-	staminaBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Stamina_Bar")));
-	staminaText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Stamina_Text")));
+	bossHPBar = Cast<UTextProgressBarWidget>(GetWidgetFromName(TEXT("WBP_BossHP")));
+	widgetMap.Add(EMainUIWidgetEnum::BossHPBar, bossHPBar);
+
+	bossHPBar->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UMainUIWidget::SetHP(const TSharedPtr<FStatusData>& status)
+void UMainUIWidget::SetWidgetVisibility(EMainUIWidgetEnum widgetEnum, ESlateVisibility visibillty)
 {
-	SetProgressBar(hpBar, hpText, status->health, status->maxHealth);
+	widgetMap[widgetEnum]->SetVisibility(visibillty);
 }
 
-void UMainUIWidget::SetStamina(const TSharedPtr<FStatusData>& status)
+void UMainUIWidget::SetHPBar(TObjectPtr<UTextProgressBarWidget> bar, const TSharedPtr<FStatusData>& status)
 {
-	SetProgressBar(staminaBar, staminaText, status->stamina, status->maxStamina);
+	bar->SetProgressBar(status->health, status->maxHealth);
 }
 
-void UMainUIWidget::SetProgressBar(UProgressBar* bar, UTextBlock* text, int32 currentData, int32 maxData)
+void UMainUIWidget::SetStaminaBar(const TSharedPtr<FStatusData>& status)
 {
-	text->SetText(FText::AsNumber(currentData));
+	playerStaminaBar->SetProgressBar(status->stamina, status->maxStamina);
+}
 
+void UMainUIWidget::SetPlayerHPBar(const TSharedPtr<FStatusData>& status)
+{
+	SetHPBar(playerHPBar, status);
+}
 
-	float percent = StaticCast<float>(StaticCast<float>(currentData) / StaticCast<float>(maxData));
-
-
-	bar->SetPercent(percent);	
+void UMainUIWidget::SetBossHPBar(const TSharedPtr<FStatusData>& status)
+{
+	SetHPBar(bossHPBar, status);
 }

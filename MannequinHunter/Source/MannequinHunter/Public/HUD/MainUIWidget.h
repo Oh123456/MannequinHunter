@@ -10,9 +10,16 @@
  * 
  */
 
-class UProgressBar;
-class UTextBlock;
+class UTextProgressBarWidget;
 struct FStatusData;
+
+UENUM()
+enum class EMainUIWidgetEnum : uint8
+{
+	PlayerHPBar = 0,
+	PlayerStaminaBar,
+	BossHPBar,
+};
 
 UCLASS()
 class MANNEQUINHUNTER_API UMainUIWidget : public UUserWidget
@@ -23,22 +30,29 @@ protected:
 	virtual void NativeOnInitialized() override;
 
 public:
-	void SetHP(const TSharedPtr<FStatusData>& status);
-	void SetStamina(const TSharedPtr<FStatusData>& status);
+	void SetWidgetVisibility(EMainUIWidgetEnum widgetEnum, ESlateVisibility visibillty);
+
+	void SetStaminaBar(const TSharedPtr<FStatusData>& status);
+
+	void SetPlayerHPBar(const TSharedPtr<FStatusData>& status);
+	void SetBossHPBar(const TSharedPtr<FStatusData>& status);
+private:
+	void SetHPBar(TObjectPtr<UTextProgressBarWidget> bar ,const TSharedPtr<FStatusData>& status);
 
 private:
-	void SetProgressBar(UProgressBar* bar, UTextBlock* text, int32 currentData, int32 maxData);
-private:
-	UPROPERTY()
-	TObjectPtr<UProgressBar> hpBar;
-	
-	UPROPERTY()
-	TObjectPtr <UTextBlock> hpText;
 
 	UPROPERTY()
-	TObjectPtr<UProgressBar> staminaBar;
+	TMap<EMainUIWidgetEnum, TObjectPtr<UWidget>> widgetMap;
 
+	// 자주 호출하는것은 캐스팅 비용 아끼기위해 따로 저장함
 	UPROPERTY()
-	TObjectPtr <UTextBlock> staminaText;
+	TObjectPtr<UTextProgressBarWidget> playerHPBar;
+	// 자주 호출하는것은 캐스팅 비용 아끼기위해 따로 저장함
+	UPROPERTY()
+	TObjectPtr<UTextProgressBarWidget> playerStaminaBar;
+	// 자주 호출하는것은 캐스팅 비용 아끼기위해 따로 저장함
+	UPROPERTY()
+	TObjectPtr<UTextProgressBarWidget> bossHPBar;
+
 
 };

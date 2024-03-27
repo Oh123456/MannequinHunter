@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Object/TwoTriggerDoor.h"
-#include "BoosRoomDoor.generated.h"
+#include "BossRoomDoor.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MANNEQUINHUNTER_API ABoosRoomDoor : public ATwoTriggerDoor
+class MANNEQUINHUNTER_API ABossRoomDoor : public ATwoTriggerDoor
 {
 	GENERATED_BODY()
 protected:

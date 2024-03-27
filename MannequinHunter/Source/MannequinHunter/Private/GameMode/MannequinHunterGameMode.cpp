@@ -22,7 +22,7 @@ AMannequinHunterGameMode::AMannequinHunterGameMode()
 	}
 }
 
-void AMannequinHunterGameMode::SpawnBoos(const FName& name)
+void AMannequinHunterGameMode::SpawnMonster(const FName& name, const FTransform& spawnTransform, bool isBoss)
 {
 	UObjectPoolSubsystem* objPool = GetGameInstance()->GetSubsystem<UObjectPoolSubsystem>();
 
@@ -30,10 +30,28 @@ void AMannequinHunterGameMode::SpawnBoos(const FName& name)
 	FSpawnDataTable* data = table->GetTable<FSpawnDataTable>()->FindRow<FSpawnDataTable>(name,TEXT("Not Find SpawnData Table"));
 	if (data)
 	{
-		// 家券篮 登绰单 港没秦咙
 		APawn* actor = Cast<APawn>(objPool->GetActor(data->spawnActor));
-		actor->SetActorLocation(FVector(2320, 1140, 88));
+		actor->SetActorLocation(spawnTransform.GetLocation());
+		actor->SetActorRotation(spawnTransform.GetRotation());
 		actor->SpawnDefaultController();
+
+		if (isBoss)
+			spawnBoss = actor;
+	}
+}
+
+void AMannequinHunterGameMode::SetBossHUD()
+{
+	if (spawnBoss)
+	{
+		UCharacterCombatComponent* characterCombat = Cast<ABaseActionCharacter>(spawnBoss)->GetCombatComponent();
+		FStatus& status = characterCombat->GetStatusData();
+
+		status.OnChangeHPStatus.AddUObject(mainWidget, &UMainUIWidget::SetBossHPBar);
+
+		mainWidget->SetBossHPBar(status.GetStatusData());
+
+		mainWidget->SetWidgetVisibility(EMainUIWidgetEnum::BossHPBar, ESlateVisibility::Visible);
 	}
 }
 
@@ -53,11 +71,11 @@ void AMannequinHunterGameMode::BeginPlay()
 
 	
 		UCharacterCombatComponent* characterCombat = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))->GetCombatComponent();
-
 		FStatus& status = characterCombat->GetStatusData();
-
-		status.OnChangeHPStatus.AddUObject(mainWidget, &UMainUIWidget::SetHP);
-		status.OnChangeStaminaStatus.AddUObject(mainWidget, &UMainUIWidget::SetStamina);
+		
+		status.OnChangeHPStatus.AddUObject(mainWidget, &UMainUIWidget::SetPlayerHPBar);
+		status.OnChangeStaminaStatus.AddUObject(mainWidget, &UMainUIWidget::SetStaminaBar);
+		
 	}
 }
 

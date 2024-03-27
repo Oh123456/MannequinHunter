@@ -14,8 +14,9 @@ class AMannequinHunterGameMode : public AGameModeBase
 public:
 	AMannequinHunterGameMode();
 
-	void SpawnBoos(const FName& name);
+	void SpawnMonster(const FName& name,const FTransform& spawnTransform, bool isBoss = false);
 
+	void SetBossHUD();
 protected:
 	virtual void BeginPlay() override;
 
@@ -25,6 +26,10 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UMainUIWidget> mainWidget;
+
+private:
+	UPROPERTY()
+	TObjectPtr<APawn> spawnBoss;
 };
 
 

@@ -109,3 +109,10 @@ int32 UPlayerCharacterCombatComponent::CalculateRecoveryStamina()
 {
 	return recoveryStamina * recoveryStaminaTime;
 }
+
+void UPlayerCharacterCombatComponent::Death(const FDeathInfo& deathInfo)
+{
+	Super::Death(deathInfo);
+	
+	characterCombatData.owner->DisableInput(Cast<APlayerController>(characterCombatData.owner->GetController()));
+}

@@ -32,6 +32,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual int32 CalculateRecoveryStamina();
+	virtual void Death(const FDeathInfo& deathInfo) override;
 private:
 	FOnFindCameraComponent findCameraComponentDelegate;
 

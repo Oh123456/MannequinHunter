@@ -249,7 +249,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	inline void SetIsActorRotation(bool b);
 
-	void PlayAnimation(ECharacterCombatMontageType animtype, float playRate = 1.0f, std::function<void()> callback = nullptr, std::function<void()> cancelCallback = nullptr);
+	void PlayAnimation(ECharacterCombatMontageType animtype, float playRate = 1.0f, std::function<void()> callback = nullptr, std::function<void()> cancelCallback = nullptr, bool isRandomPlay = false);
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Hit Event")
 	uint8 OnHitDirection();
@@ -267,6 +267,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnHitEnd();
 	virtual float GetPlayRate(UAnimInstance* animInstance);
+	virtual void Death(const FDeathInfo& deathInfo);
 protected:
 	FCharacterCombatData characterCombatData;
 	FCharacterCombatAnimationData characterCombatAnimationData;

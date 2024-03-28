@@ -11,7 +11,6 @@
  */
 class ABaseActionCharacter;
 
-
 UCLASS()
 class OJKFRAMEWORK_API UActionCharacterAnimInstance : public UAnimInstance
 {

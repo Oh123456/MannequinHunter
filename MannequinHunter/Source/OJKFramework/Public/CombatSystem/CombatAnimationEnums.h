@@ -85,6 +85,9 @@ enum class ECharacterCombatMontageType : uint8
 	Hit9,
 	Hit10,
 
+	Die1 = 200,
+	Die2,
+
 	Turn1 = 250,
 	Turn2,
 };

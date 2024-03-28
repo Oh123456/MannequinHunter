@@ -21,7 +21,7 @@ enum class EPlayerStateEnum : uint8
 	Dodge,
 	Jump,
 	InputWait,
-
+	Death,
 };
 
 
@@ -32,6 +32,7 @@ enum class EPlayerStateMachine : uint8
 	Default,
 	Falling,
 	Hit,
+	Death,
 	Combat = 1 << 7,
 };
 
@@ -47,12 +48,13 @@ enum class EStateOrder : uint16
 	Jump,
 	InputWait,
 	Hit,
+	Death,
 
 	ToggleCombat = 1 << Shift,
 	Falling = 2 << Shift,
 	StatemMachineHit = 3 << Shift,
 	Combat = 4 << Shift,
-
+	StatemMachineDeath = 5 << Shift,
 
 	StateOrderBit = UINT8_MAX,
 	StatemMachineOrderBit = UINT8_MAX << Shift,

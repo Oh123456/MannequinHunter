@@ -20,13 +20,23 @@ public:
 public:
 	UFUNCTION(BlueprintPure, Category = HFSM, meta = (BlueprintThreadSafe))
 	bool IsCombat() { return (StaticCast<uint8>(ryuStateMachineState) & StaticCast<uint8>(EPlayerStateMachine::Combat)); }
+
 private:
 	UFUNCTION(BlueprintPure, Category = WeaponType , meta = (BlueprintThreadSafe))
 	EWeaponType GetWeaponType();
 
+	void Death(const FDeathInfo& deathInfo);
 public:
+	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float deltaSeconds) override;
 private:
+
+	UPROPERTY(EditAnywhere, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	TMap<EWeaponType, int8> weaponTypeDeathCounts;
+
+	UPROPERTY(BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	int32 deathAnimIndex;
+
 	UPROPERTY(BlueprintReadOnly, Category = WeaponType, meta = (AllowPrivateAccess = "true"))
 	EWeaponType weaponType;
 
@@ -35,4 +45,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = InputState, meta = (AllowPrivateAccess = "true"))
 	bool isInputJumpKey = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
+	bool isDeath = false;
+
+
 };

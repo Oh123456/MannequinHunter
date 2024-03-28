@@ -33,7 +33,7 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 	if (damageComponent == nullptr)
 		return;
 	
-	if (damageComponent->GetImmortality())
+	if (damageComponent->GetImmortality() || damageComponent->IsDeath())
 	{
 		UE_LOG(Framework,Log,TEXT("Avoidance !! "))
 		return;
@@ -101,6 +101,15 @@ void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damage
 	}
 }
 
+
+bool UCombatComponent::IsDeath() const
+{
+	const TSharedPtr<FStatusData>& data = status.GetStatusData();
+	if (data == nullptr)
+		return true;
+
+	return data->health <= 0;
+}
 
 void UCombatComponent::BeginPlay()
 {

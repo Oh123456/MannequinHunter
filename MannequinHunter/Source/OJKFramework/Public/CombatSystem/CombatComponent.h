@@ -38,6 +38,7 @@ public:
 
 	void SetImmortality(bool b) { isImmortality = b; }
 	bool GetImmortality() const { return isImmortality; }
+	bool IsDeath() const;
 public:
 	// Immortality Reset
 	virtual void ClearStateData() { isImmortality = false; }

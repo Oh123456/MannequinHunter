@@ -209,7 +209,7 @@ float UCharacterCombatComponent::GetPlayRate(UAnimInstance* animInstance)
 	return animInstance->Montage_GetPlayRate(nullptr);
 }
 
-void UCharacterCombatComponent::PlayAnimation(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback)
+void UCharacterCombatComponent::PlayAnimation(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback, bool isRandomPlay)
 {
 	ChangeCombatType(animtype);
 
@@ -221,7 +221,9 @@ void UCharacterCombatComponent::PlayAnimation(ECharacterCombatMontageType animty
 	ACharacter* owner = characterCombatData.owner;
 
 	UAnimInstance* animInstance = owner->GetMesh()->GetAnimInstance();
-	UAnimMontage* attackMontage = (*currentAnimMontages)[0];
+
+	int32 index = !isRandomPlay ? 0 : FMath::RandRange(0, (*currentAnimMontages).Num() - 1);
+	UAnimMontage* attackMontage = (*currentAnimMontages)[index];
 
 	animInstance->Montage_Play(attackMontage, playRate);
 
@@ -674,6 +676,8 @@ void UCharacterCombatComponent::ClearStateData()
 void UCharacterCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
 	Super::TakeDamage(damageAmount, damageEvent, eventInstigator, damageCauser);
+	if (IsDeath())
+		return;
 	if (!isSuperArmor)
 		Hit(ECharacterCombatMontageType::Hit1);
 	else
@@ -686,6 +690,9 @@ void UCharacterCombatComponent::BeginPlay()
 
 	characterCombatData.owner = Cast<ACharacter>(GetOwner());
 	characterCombatData.ownerController = characterCombatData.owner->GetController();
+
+
+	OnDeath().AddUObject(this, &UCharacterCombatComponent::Death);
 }
 
 
@@ -742,4 +749,8 @@ void UCharacterCombatComponent::StiffenSuperArmor()
 			}
 		, 0.2f, false);
 	}
+}
+
+void UCharacterCombatComponent::Death(const FDeathInfo& deathInfo)
+{
 }

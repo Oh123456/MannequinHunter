@@ -101,4 +101,12 @@ float UMannequinHunterCombatComponent::GetPlayRate(UAnimInstance* animInstance)
 	return FMannequinHunterUtility::GetPlayRate(GetStatusData().GetStatusData()->attackSpeed);
 }
 
+void UMannequinHunterCombatComponent::Death(const FDeathInfo& deathInfo)
+{
+	ownerHFSM->ChangeStateMachine(StaticCast<uint8>(EPlayerStateMachine::Death));
+
+	Super::Death(deathInfo);
+
+}
+
 

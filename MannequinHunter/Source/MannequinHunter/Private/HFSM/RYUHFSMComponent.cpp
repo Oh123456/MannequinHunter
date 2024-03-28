@@ -10,6 +10,7 @@
 #include "HFSM/StatesMachines/CombatStateMachine.h"
 #include "HFSM/StatesMachines/FallingStateMachine.h"
 #include "HFSM/StatesMachines/HitStateMachine.h"
+#include "HFSM/StatesMachines/DeathStateMachine.h"
 #include "DebugLog.h"
 
 void URYUHFSMComponent::SetStateMachine()
@@ -23,6 +24,8 @@ void URYUHFSMComponent::SetStateMachine()
 	stateMachine = AddStateMachine<FFallingStateMachine>(EPlayerStateMachine::Falling);
 
 	stateMachine = AddStateMachine<FHitStateMachine>(EPlayerStateMachine::Hit);
+
+	stateMachine = AddStateMachine<FDeathStateMachine>(EPlayerStateMachine::Death);
 }
 
 void URYUHFSMComponent::SetConditions()

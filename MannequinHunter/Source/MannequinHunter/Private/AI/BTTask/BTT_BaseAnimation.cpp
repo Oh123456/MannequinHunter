@@ -13,10 +13,12 @@ void UBTT_BaseAnimation::PlayAnimation(ABaseEnemyCharacter* character, UBehavior
 		{
 			UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();
 			bbc->SetValueAsEnum(this->enumKey.SelectedKeyName, StaticCast<uint8>(EEnemyState::Idle));
-		}, 
-		[this, &OwnerComp]()
-		{
-			UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();
 			bbc->SetValueAsName(this->GetSelectedBlackboardKey(), TEXT_NONE);
-		});
+		}//, 
+		//[this, &OwnerComp]()
+		//{
+		//	UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();
+		//	//bbc->SetValueAsName(this->GetSelectedBlackboardKey(), TEXT_NONE);
+		//}
+		);
 }

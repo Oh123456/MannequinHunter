@@ -8,6 +8,7 @@
 #include "Subsystem/AIManagerSubsystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AI/Controller/MannequinAIController.h"
+#include "Utility/MannequinHunterUtility.h"
 
 EBTNodeResult::Type UBTT_AdditionalAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -16,6 +17,7 @@ EBTNodeResult::Type UBTT_AdditionalAttack::ExecuteTask(UBehaviorTreeComponent& O
 
 	const FName& key = bbc->GetValueAsName(GetSelectedBlackboardKey());
 	
+	bbc->SetValueAsName(GetSelectedBlackboardKey(), TEXT_NONE);
 	if (key == TEXT_NONE)
 		return EBTNodeResult::Type::Failed;
 
@@ -44,8 +46,10 @@ EBTNodeResult::Type UBTT_AdditionalAttack::ExecuteTask(UBehaviorTreeComponent& O
 	if (patternData == nullptr)
 		return EBTNodeResult::Type::Failed;
 
-	PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, 1.0f);
+	float playRate = FMannequinHunterUtility::GetPlayRate(character->GetCombatComponent()->GetStatusData().GetStatusData()->attackSpeed);
+	PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, playRate);
 
+	bbc->SetValueAsName(GetSelectedBlackboardKey(), name);
 	bbc->SetValueAsEnum(enumKey.SelectedKeyName, StaticCast<uint8>(EEnemyState::Attack));
 	return EBTNodeResult::Type::Succeeded;
 

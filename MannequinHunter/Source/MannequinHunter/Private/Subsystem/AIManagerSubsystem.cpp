@@ -10,15 +10,17 @@
 
 const FName& FAIPatternStartData::GetPattern() const
 {
+	if (maxWeight == 0)
+		return patternNames[0];
 	int32 rand = FMath::RandRange(0, maxWeight );
 	int32 index = Algo::LowerBound(weights, rand);
 
-	UE_LOG(LogTemp, Log, TEXT("Rand : %d, index : %d, weight : %d"), rand, index, weights[index]);
 	index = index - 1;
 	if (index < 0)
 		index = 0;
 	else if (index >= weights.Num())
 		index = weights.Num();
+	UE_LOG(LogTemp, Log, TEXT("Rand : %d, index : %d, weight : %d"), rand, index, weights[index]);
 	return patternNames[index];
 }
 

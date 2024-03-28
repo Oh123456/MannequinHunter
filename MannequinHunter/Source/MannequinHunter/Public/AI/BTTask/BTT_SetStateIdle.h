@@ -15,4 +15,8 @@ class MANNEQUINHUNTER_API UBTT_SetStateIdle : public UBTTask_BlackboardBase
 	GENERATED_BODY()
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
+private:
+	UPROPERTY(EditAnywhere, Category = Blackboard, meta = (AllowPrivateAccess = "true"))
+	struct FBlackboardKeySelector patternNameKey;
 };

@@ -25,10 +25,11 @@ private:
 	UFUNCTION(BlueprintPure, Category = WeaponType , meta = (BlueprintThreadSafe))
 	EWeaponType GetWeaponType();
 
-	void Death(const FDeathInfo& deathInfo);
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float deltaSeconds) override;
+protected:
+	virtual void Death(const FDeathInfo& deathInfo) override;
 private:
 
 	UPROPERTY(EditAnywhere, Category = Animation, meta = (AllowPrivateAccess = "true"))
@@ -45,9 +46,6 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = InputState, meta = (AllowPrivateAccess = "true"))
 	bool isInputJumpKey = false;
-
-	UPROPERTY(BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
-	bool isDeath = false;
 
 
 };

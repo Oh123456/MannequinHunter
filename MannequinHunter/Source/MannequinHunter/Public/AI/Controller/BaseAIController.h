@@ -21,6 +21,7 @@ public:
 	const static FName CHASE_ENUM_KEY;
 	const static FName TARGET_ACTOR_KEY;
 	const static FName INITIAL_LOCATION;
+	const static FName DEATH;
 
 public:
 	ABaseAIController();

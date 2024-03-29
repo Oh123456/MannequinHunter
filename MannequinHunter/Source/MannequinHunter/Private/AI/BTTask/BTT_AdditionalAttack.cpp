@@ -46,6 +46,9 @@ EBTNodeResult::Type UBTT_AdditionalAttack::ExecuteTask(UBehaviorTreeComponent& O
 	if (patternData == nullptr)
 		return EBTNodeResult::Type::Failed;
 
+	if (!Condition(bbc, patternData))
+		return EBTNodeResult::Type::Failed;
+
 	float playRate = FMannequinHunterUtility::GetPlayRate(character->GetCombatComponent()->GetStatusData().GetStatusData()->attackSpeed);
 	PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, playRate);
 

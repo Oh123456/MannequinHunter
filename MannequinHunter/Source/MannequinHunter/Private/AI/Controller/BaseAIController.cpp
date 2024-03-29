@@ -5,12 +5,15 @@
 #include "AI/AIPattern.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BaseActionCharacter.h"
+#include "CombatSystem/CharacterCombatComponent.h"
 
 
 const FName ABaseAIController::STATE_ENUM = TEXT("StateEnum");
 const FName ABaseAIController::CHASE_ENUM_KEY = TEXT("ChaseEnum");
 const FName ABaseAIController::TARGET_ACTOR_KEY = TEXT("TargetActor");
 const FName ABaseAIController::INITIAL_LOCATION = TEXT("InitialLocation");
+const FName ABaseAIController::DEATH = TEXT("IsDeath");
 
 ABaseAIController::ABaseAIController()
 {
@@ -31,7 +34,17 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	{
 		AIPattern.GetDefaultObject()->LoadTableData(GetWorld());
 	}
+
 	RunBehaviorTree(behaviorTree);
+
+	ABaseActionCharacter* character = Cast<ABaseActionCharacter>(InPawn);
+	if (character)
+	{
+		character->GetCombatComponent()->OnDeath().AddLambda([this](const FDeathInfo& info)
+			{
+				Blackboard->SetValueAsBool(DEATH, true);
+			});
+	}
 }
 
 void ABaseAIController::BeginPlay()

@@ -28,20 +28,11 @@ EWeaponType URYUAnimInstance::GetWeaponType()
 	return StaticCast<UMannequinHunterCombatComponent*>(ryu->GetCombatComponent())->GetWeaponType();
 }
 
-void URYUAnimInstance::Death(const FDeathInfo& deathInfo)
-{
-	isDeath = true;
 
-	int8& max = weaponTypeDeathCounts[weaponType];
-
-	deathAnimIndex = FMath::RandRange(0, max - 1);
-}
 
 void URYUAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	if(ownerCharacter)
-		ownerCharacter->GetCombatComponent()->OnDeath().AddUObject(this, &URYUAnimInstance::Death);
 }
 
 void URYUAnimInstance::NativeUpdateAnimation(float deltaSeconds)
@@ -51,4 +42,16 @@ void URYUAnimInstance::NativeUpdateAnimation(float deltaSeconds)
 	weaponType = GetWeaponType();
 
 	ryuStateMachineState = StaticCast<EPlayerStateMachine>(GetCurrentStateMachineID());
+}
+
+
+
+void URYUAnimInstance::Death(const FDeathInfo& deathInfo)
+{
+
+	Super::Death(deathInfo);
+
+	int8& max = weaponTypeDeathCounts[weaponType];
+
+	deathAnimIndex = FMath::RandRange(0, max - 1);
 }

@@ -18,15 +18,21 @@ class OJKFRAMEWORK_API UActionCharacterAnimInstance : public UAnimInstance
 
 private:
 	void SetBlendSpaceValue(const class UCharacterMovementComponent* const characterMovement);
+protected:
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 protected:
 	virtual void SetSpeed(const UCharacterMovementComponent* characterMovement);
 	virtual void SetAngle(const UCharacterMovementComponent* characterMovement);
+	virtual void Death(const struct FDeathInfo& deathInfo);
+
 protected:
 	TObjectPtr<ABaseActionCharacter> ownerCharacter;
 
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = State)
+	bool isDeath = false;
 private:
 	UPROPERTY(BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float angle;

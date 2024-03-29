@@ -89,6 +89,14 @@ struct MANNEQUINHUNTER_API FAIPatternTreeTable : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly)
 	TMap<int32, FAIPatternTreeTableDataArray> patternData;
 
+	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName)
+	{
+		FAIPatternTreeTable* row = InDataTable->FindRow<FAIPatternTreeTable>(InRowName,TEXT(""));
+		row->patternData.KeySort([](const int32& data1, const int32& data2)
+			{
+				return data1 < data2;
+			});
+	}
 };
 
 UCLASS()

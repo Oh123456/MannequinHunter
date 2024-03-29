@@ -14,6 +14,9 @@ void UActionCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	ownerCharacter = Cast<ABaseActionCharacter>(TryGetPawnOwner());
+
+	if (ownerCharacter)
+		ownerCharacter->GetCombatComponent()->OnDeath().AddUObject(this, &UActionCharacterAnimInstance::Death);
 }
 
 void UActionCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -76,4 +79,11 @@ void UActionCharacterAnimInstance::SetBlendSpaceValue(const UCharacterMovementCo
 	velocity = characterMovement->Velocity;
 	SetSpeed(characterMovement);
 	SetAngle(characterMovement);
+}
+
+void UActionCharacterAnimInstance::Death(const FDeathInfo& deathInfo)
+{
+	isDeath = true;
+
+	Montage_Stop(0.0f,nullptr);
 }

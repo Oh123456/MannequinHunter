@@ -18,7 +18,12 @@ class MANNEQUINHUNTER_API UBTT_BaseAnimation : public UBTTask_BlackboardBase
 
 protected:
 	void PlayAnimation(class ABaseEnemyCharacter* character, UBehaviorTreeComponent& OwnerComp, ECharacterCombatMontageType animSlot, float playRate = 1.0f);
+	virtual bool Condition(const class UBlackboardComponent* bbc, const class FPatternData* patternData);
+
 protected:
 	UPROPERTY(EditAnywhere, Category = Blackboard)
 	struct FBlackboardKeySelector enumKey;
+
+	UPROPERTY(EditAnywhere, Category = Blackboard)
+	struct FBlackboardKeySelector targetActorKey;
 };

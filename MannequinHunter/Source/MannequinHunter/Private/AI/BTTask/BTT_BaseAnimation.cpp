@@ -7,6 +7,7 @@
 #include "CombatSystem/CharacterCombatComponent.h"
 #include "Subsystem/AIManagerSubsystem.h"
 #include "Defines.h"
+#include "BaseActionCharacter.h"
 
 const FName SELFACTOR = TEXT("SelfActor");
 
@@ -29,13 +30,22 @@ void UBTT_BaseAnimation::PlayAnimation(ABaseEnemyCharacter* character, UBehavior
 bool UBTT_BaseAnimation::Condition(const UBlackboardComponent* bbc, const FPatternData* patternData)
 {
 	AActor* target = Cast<AActor>(bbc->GetValueAsObject(targetActorKey.SelectedKeyName));
-	AActor* selfActor = Cast<AActor>(bbc->GetValueAsObject(SELFACTOR));
+	ABaseActionCharacter* selfActor = Cast<ABaseActionCharacter>(bbc->GetValueAsObject(SELFACTOR));
 	float dis = FVector::DistSquared(selfActor->GetActorLocation(), target->GetTargetLocation());
 
-	float conditionDis = patternData->GetPatternData().condition.distance;
+	const FAIPatternDataTable& aiPatternData = patternData->GetPatternData();
+
+	float conditionDis = aiPatternData.condition.distance;
 	float powConditionDis = conditionDis * conditionDis;
 
-	if (powConditionDis >= dis)
-		return true;
-	return false;
+	if (powConditionDis < dis)
+		return false;
+
+	const TSharedPtr<FStatusData>& statusData = selfActor->GetCombatComponent()->GetStatusData().GetStatusData();
+	float present = StaticCast<float>(StaticCast<float>(statusData->health) / StaticCast<float>(statusData->maxHealth));
+
+	if (aiPatternData.condition.hpPresent < present)
+		return false;
+
+	return true;
 }

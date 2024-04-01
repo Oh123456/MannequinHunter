@@ -36,11 +36,14 @@ protected:
 
 	UFUNCTION()
 	void Spawn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-private:
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+
+	virtual void SpawnMonster(class AMannequinHunterGameMode* gameMode);
+
+protected:
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> triggerComponent;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = SpawnArctor, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = SpawnArctor)
 	FSpawnData spawnData;
 
 

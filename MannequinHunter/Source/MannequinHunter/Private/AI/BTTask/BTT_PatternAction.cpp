@@ -28,6 +28,8 @@ EBTNodeResult::Type UBTT_PatternAction::ExecuteTask(UBehaviorTreeComponent& Owne
 			float playRate = FMannequinHunterUtility::GetPlayRate(character->GetCombatComponent()->GetStatusData().GetStatusData()->attackSpeed);
 			const TSharedPtr<FAIPatternTree>& pattern = AIController->GetAIPattern()->GetPattern();
 			const FPatternData* patternData = pattern->GetPatternData(key);
+			if (!Condition(bbc, patternData))
+				return EBTNodeResult::Type::Failed;
 			if (patternData)
 			{
 				PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, playRate);

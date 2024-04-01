@@ -8,6 +8,7 @@
 
 
 
+
 UAIPattern::~UAIPattern()
 {
 	pattern = nullptr;

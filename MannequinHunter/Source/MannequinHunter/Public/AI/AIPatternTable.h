@@ -33,6 +33,9 @@ struct FAIPatternCondition
 	UPROPERTY(EditDefaultsOnly)
 	float distance;
 
+	UPROPERTY(EditDefaultsOnly)
+	float hpPresent = 1.0f;
+
 };
 
 USTRUCT(Blueprinttype)

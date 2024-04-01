@@ -6,10 +6,12 @@
 #include "Kismet/GamePlayStatics.h"
 #include "Utility/MannequinHunterTags.h"
 #include "GameMode/MannequinHunterGameMode.h"
+#include "Object/DoorObjectComponent.h"
 
 void ABossRoomDoor::BeginPlay()
 {
 	Super::BeginPlay();
+	originDoorLocation = doorMesh->GetRelativeLocation();
 	otherTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABossRoomDoor::BossMove);
 }
 
@@ -22,5 +24,7 @@ void ABossRoomDoor::BossMove(UPrimitiveComponent* OverlappedComponent, AActor* O
 		{
 			gameMode->SetBossHUD();
 		}
+
+		doorObjectComponent->MoveDoorAtLocation(originDoorLocation);
 	}
 }

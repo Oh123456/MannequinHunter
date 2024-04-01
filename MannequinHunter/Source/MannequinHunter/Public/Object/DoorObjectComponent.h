@@ -19,12 +19,20 @@ public:
 
 	void CallMoveDoor();
 
+	void MoveDoorAtLocation(const FVector& location);
+
 private:
 	UFUNCTION()
 	void MoveDoor();
 
+	UFUNCTION()
+	void MoveDoorAtLocation();
+
 private:
 	FTimerHandle doorTimerHandle;
+
+private:
+	FVector moveDoorAtLocation_Vector;
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr <class UStaticMeshComponent> doorObjectComponent;

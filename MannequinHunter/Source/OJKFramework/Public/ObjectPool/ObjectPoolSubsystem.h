@@ -7,6 +7,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "OJKFramework.h"
+#include "Engine/World.h"
 #include "ObjectPoolSubsystem.generated.h"
 
 /**
@@ -32,7 +33,9 @@ namespace OJKFramework
 				return nullptr;
 			if (objects.IsEmpty())
 			{
-				AActor* spawnActor = world->SpawnActor(instance);
+				FActorSpawnParameters spawnParameter;
+				spawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				AActor* spawnActor = world->SpawnActor<AActor>(instance, spawnParameter);
 				UE_LOG(Framework, Log, TEXT("Create Object Pool Item : %s "), *UKismetSystemLibrary::GetDisplayName(spawnActor))
 					return spawnActor;
 			}

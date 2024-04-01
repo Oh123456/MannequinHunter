@@ -19,7 +19,11 @@ protected:
 private:
 	UFUNCTION()
 	void BossMove(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+private:
+	FVector originDoorLocation;
 private:
 	UPROPERTY(EditAnywhere, Category = Door, meta = (AllowPrivateAccess = "true"))
 	FName bossName;
+
 };

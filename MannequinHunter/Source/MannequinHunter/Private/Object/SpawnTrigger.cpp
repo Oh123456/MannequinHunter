@@ -35,12 +35,17 @@ void ASpawnTrigger::Spawn(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 		AMannequinHunterGameMode* gameMode = Cast<AMannequinHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));;
 		if (gameMode)
 		{
-			gameMode->SpawnMonster(spawnData.spawnName, spawnData.spawnPoint->GetActorTransform(), spawnData.isBoss);
-			// 액터를 감춤 
-			SetActorHiddenInGame(true);
-			// 충돌 계산 비활성화
-			SetActorEnableCollision(false);
+			SpawnMonster(gameMode);
 		}
 	}
+}
+
+void ASpawnTrigger::SpawnMonster(AMannequinHunterGameMode* gameMode)
+{
+	gameMode->SpawnMonster(spawnData.spawnName, spawnData.spawnPoint->GetActorTransform(), spawnData.isBoss);
+	// 액터를 감춤 
+	SetActorHiddenInGame(true);
+	// 충돌 계산 비활성화
+	SetActorEnableCollision(false);
 }
 

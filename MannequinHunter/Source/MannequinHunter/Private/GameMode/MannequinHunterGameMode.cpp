@@ -11,6 +11,7 @@
 #include "ObjectPool/ObjectPoolSubsystem.h"
 #include "Subsystem/TableSubsystem.h"
 #include "Table/SpawnTable.h"
+#include "BaseActionCharacter.h"
 
 AMannequinHunterGameMode::AMannequinHunterGameMode()
 {
@@ -36,7 +37,11 @@ void AMannequinHunterGameMode::SpawnMonster(const FName& name, const FTransform&
 		actor->SpawnDefaultController();
 
 		if (isBoss)
-			spawnBoss = actor;
+		{
+			spawnBoss = Cast<ABaseActionCharacter>(actor);
+
+			spawnBoss->GetCombatComponent()->OnDeath().AddUObject(this, &AMannequinHunterGameMode::ClearBoss);
+		}
 	}
 }
 
@@ -53,6 +58,16 @@ void AMannequinHunterGameMode::SetBossHUD()
 
 		mainWidget->SetWidgetVisibility(EMainUIWidgetEnum::BossHPBar, ESlateVisibility::Visible);
 	}
+}
+
+void AMannequinHunterGameMode::ClearBossHUD()
+{
+	UCharacterCombatComponent* characterCombat = Cast<ABaseActionCharacter>(spawnBoss)->GetCombatComponent();
+	FStatus& status = characterCombat->GetStatusData();
+
+	status.OnChangeHPStatus.Clear();
+
+	mainWidget->SetWidgetVisibility(EMainUIWidgetEnum::BossHPBar, ESlateVisibility::Hidden);
 }
 
 
@@ -77,6 +92,15 @@ void AMannequinHunterGameMode::BeginPlay()
 		status.OnChangeStaminaStatus.AddUObject(mainWidget, &UMainUIWidget::SetStaminaBar);
 		
 	}
+}
+
+void AMannequinHunterGameMode::ClearBoss(const FDeathInfo& info)
+{
+	//spawnBoss->GetCombatComponent()->OnDeath().Clear();
+	ClearBossHUD();
+	OnClearBossEvent.Broadcast(spawnBoss);
+	spawnBoss = nullptr;
+	OnClearBossEvent.Clear();
 }
 
 

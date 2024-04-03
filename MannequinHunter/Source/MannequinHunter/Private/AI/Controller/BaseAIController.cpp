@@ -7,6 +7,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BaseActionCharacter.h"
 #include "CombatSystem/CharacterCombatComponent.h"
+#include "Subsystem/TableSubsystem.h"
+#include "Table/ActionDataTable.h"
 
 
 const FName ABaseAIController::STATE_ENUM = TEXT("StateEnum");
@@ -23,6 +25,11 @@ ABaseAIController::ABaseAIController()
 const UAIPattern* ABaseAIController::GetAIPattern() const
 {
 	 return AIPattern.GetDefaultObject(); 
+}
+
+void ABaseAIController::SetActionTableData(const FName& actionName)
+{
+	tableData = actionTable->FindRow<FActionTable>(actionName, TEXT(""));
 }
 
 void ABaseAIController::OnPossess(APawn* InPawn)
@@ -51,6 +58,10 @@ void ABaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UTableSubsystem* tableSubsystem = GetGameInstance()->GetSubsystem<UTableSubsystem>();
+
+	actionTable = tableSubsystem->GetTable<FActionTable>();
+
 	aiPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::TargetPerceptionUpdated);
 }
 

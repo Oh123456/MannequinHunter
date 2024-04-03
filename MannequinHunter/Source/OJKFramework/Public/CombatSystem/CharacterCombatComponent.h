@@ -176,6 +176,8 @@ protected:
 
 		UPROPERTY()
 		TObjectPtr<AActor> targetActor = nullptr;
+
+		FDelegateHandle lockDeathDelegateHandle;
 	};
 
 public:
@@ -220,7 +222,7 @@ protected:
 	void Turn(ECharacterCombatMontageType animtype, float yaw);
 
 
-	void SetTargetActor(AActor* target) { characterRotationData.targetActor = target; }
+	void SetTargetActor(AActor* target);
 	const AActor* GetTargetActor() const { return characterRotationData.targetActor; }
 
 

@@ -9,9 +9,10 @@
 #include "Character/PlayerCommonEnums.h"
 #include "Subsystem/StateSubsystem.h"
 #include "CombatSystem/Status.h"
+#include "Controller/MannequinHunterPlayerController.h"
 #include "Utility/MannequinHunterUtility.h"
 
-FAttackState::FAttackState() : FBaseMannequinHunterState(StaticCast<uint8>( EPlayerStateEnum::Attack), EStateInitOption::DontUpdataAndConvertOrder)
+FAttackState::FAttackState() : FBaseMannequinHunterState(StaticCast<uint8>( EPlayerStateEnum::Attack), EStateInitOption::DontUpdataAndConvertOrder) 
 {
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Idle));
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::InputWait));
@@ -26,15 +27,15 @@ void FAttackState::CheckState()
 	ownerStateMachine->SetStateOrder(StaticCast<uint16>(EStateOrder::Idle));
 }
 
-ECharacterCombatMontageType FAttackState::GetAnimSlot()
+const TSharedPtr<FCommandData>* FAttackState::GetAnimSlot()
 {
 	APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = Cast<UMannequinHunterCombatComponent>(player->GetCombatComponent());
 	if (mannequinHunterCombatComponent)
 	{
-		return mannequinHunterCombatComponent->GetCommandMontageType();
+		return (mannequinHunterCombatComponent->GetCommandMontageType());
 	}
-	return ECharacterCombatMontageType::None;
+	return nullptr;
 }
 
 void FAttackState::Enter()
@@ -74,10 +75,17 @@ bool FAttackState::EnterCondition()
 {
 	bool isEnter = FState::EnterCondition();
 	
-	attackMontageType = GetAnimSlot();
+	const TSharedPtr<FCommandData>* slot = GetAnimSlot();
 
-	if (attackMontageType == ECharacterCombatMontageType::None)
-		isEnter = false;
+	if (slot == nullptr || *slot == nullptr || (*slot)->useAnimSlot == ECharacterCombatMontageType::None)
+		return false;
+
+	attackMontageType = (*slot)->useAnimSlot;
+
+	AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
+
+	if (controller)
+		controller->SetActionTableData((*slot)->nameID);
 
 	return isEnter;
 }
@@ -85,4 +93,9 @@ bool FAttackState::EnterCondition()
 void FAttackState::Exit()
 {
 	attackMontageType = ECharacterCombatMontageType::None;
+
+	AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
+
+	if (controller)
+		controller->ClearTable();
 }

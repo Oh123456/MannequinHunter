@@ -6,6 +6,7 @@
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "AI/AIPatternTable.h"
 #include "Table/SpawnTable.h"
+#include "Table/ActionDataTable.h"
 
 const TCHAR* AIPatternPath = TEXT("/Game/BP/DataTable/AIPatternDataTables/");
 
@@ -23,7 +24,8 @@ void UTableSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	LoadTable<FCommandDataTable>(TEXT("/Game/BP/DataTable/DT_Command"));
 	LoadTable<FAIPatternTreeTable>(TEXT("/Game/BP/DataTable/DT_AIPatternTree"));
 	LoadTable<FSpawnDataTable>(TEXT("/Game/BP/DataTable/DT_SpawnTable.DT_SpawnTable"));
-	///Script/Engine.DataTable'/Game/BP/DataTable/DT_SpawnTable.DT_SpawnTable'
+	LoadTable<FActionTable>(TEXT("/Game/BP/DataTable/DT_ActionTable.DT_ActionTable"));
+	///Script/Engine.DataTable'/Game/BP/DataTable/DT_ActionTable.DT_ActionTable'
 
 
 }

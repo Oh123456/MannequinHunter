@@ -6,6 +6,7 @@
 #include "Player/PlayerCharacter.h"
 #include "CombatSystem/CharacterCombatComponent.h"
 #include "HFSM/StateMachine.h"
+#include "Controller/MannequinHunterPlayerController.h"
 #include "DebugLog.h"
 
 FDodgeState::FDodgeState() : 
@@ -34,6 +35,12 @@ void FDodgeState::Enter()
 			else
 				type = StaticCast<ECharacterCombatMontageType>(EPlayerCombatEnums::NomalDodge);
 
+			AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
+
+			// 임시 값
+			if (controller)
+				controller->SetActionTableData(TEXT("Dodge"));
+
 			characterCombatComponent->Dodge(type, 1.0f );/*[this]()
 				{
 					this->isDodgeEnd = true;
@@ -41,6 +48,15 @@ void FDodgeState::Enter()
 			)*/
 		}
 	}
+}
+
+void FDodgeState::Exit()
+{
+	AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
+
+	// 임시 값
+	if (controller)
+		controller->ClearTable();
 }
 
 uint8 FDodgeState::Condition(uint16 order)

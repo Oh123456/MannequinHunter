@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Controller/ControllerActionTableData.h"
 //#include "../AIPattern.h"
 #include "BaseAIController.generated.h"
 
@@ -13,7 +14,7 @@
 
 
 UCLASS()
-class MANNEQUINHUNTER_API ABaseAIController : public AAIController
+class MANNEQUINHUNTER_API ABaseAIController : public AAIController , public IControllerActionTableData
 {
 	GENERATED_BODY()
 public:
@@ -27,7 +28,10 @@ public:
 	ABaseAIController();
 
 	const class UAIPattern* GetAIPattern() const;
-
+public:
+	virtual void SetActionTableData(const FName& actionName) override;
+	virtual void ClearTable() override { tableData = nullptr; }
+	virtual const struct FActionTable* GetActionTableData() const override { return tableData; }
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
@@ -35,6 +39,10 @@ protected:
 	virtual void LookTarget(AActor* actor, FAIStimulus stimulus);
 	virtual void LostTarget(AActor* actor, FAIStimulus stimulus);
 
+protected:
+	const class UDataTable* actionTable;
+
+	const struct FActionTable* tableData;
 private:
 	UFUNCTION()
 	void TargetPerceptionUpdated(AActor* actor, FAIStimulus stimulus);

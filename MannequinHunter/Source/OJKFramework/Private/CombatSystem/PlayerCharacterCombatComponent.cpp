@@ -31,7 +31,7 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 	ACharacter* owner = characterCombatData.owner;
 	if (IsLockOn())
 	{
-		Super::SetLockOnTarget();
+		Super::SetLockOnTarget();		
 		//owner->GetCharacterMovement()->bOrientRotationToMovement = true;
 		return;
 	}

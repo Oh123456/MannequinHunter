@@ -145,6 +145,13 @@ protected:
 	// hit check use Cylinder? 
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (AllowPrivateAccess = "true"));
 	bool bUseCylinder = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
+	TObjectPtr<class UNiagaraSystem> hitParticles;
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
+	FRotator hitParticlesOffset { 0.0f,90.0f,0.0f };
+	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
+	FVector hitParticlesScaleOffset { 1.0f,1.0f,1.0f };
 private:
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem, meta = (EditCondition = "bUseCylinder == false", EditConditionHides, AllowPrivateAccess = "true"))
 	FWeaponTraceHitParameter weaponTraceHitParameter;

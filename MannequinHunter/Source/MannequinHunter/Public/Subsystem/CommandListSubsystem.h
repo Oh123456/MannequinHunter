@@ -15,6 +15,7 @@ enum class EWeaponType : uint8;
 enum class ECharacterCombatMontageType : uint8;
 enum class EPlayerInputType : uint8;
 struct FCommandDataTable;
+struct FCommandData;
 
 UCLASS()
 class MANNEQUINHUNTER_API UCommandListSubsystem : public UGameInstanceSubsystem
@@ -24,9 +25,9 @@ class MANNEQUINHUNTER_API UCommandListSubsystem : public UGameInstanceSubsystem
 public:
 	void LoadCommandListTable(const class UDataTable* table);
 
-	const TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>& GetCommandList() const { return commandList; }
+	const TCommandListTree<EPlayerInputType, FCommandData>& GetCommandList() const { return commandList; }
 private:
-	void AddCommandListTree(const FCommandDataTable* table);
+	void AddCommandListTree(const FCommandDataTable* table, const FName& rowName);
 private:
-	TCommandListTree<EPlayerInputType, ECharacterCombatMontageType> commandList;
+	TCommandListTree<EPlayerInputType, FCommandData> commandList;
 };

@@ -12,24 +12,28 @@ void UCommandListSubsystem::LoadCommandListTable(const UDataTable* table)
 	for (const FName& name : names)
 	{
 		FCommandDataTable* rowTable = table->FindRow<FCommandDataTable>(name, TEXT(""));
-		AddCommandListTree(rowTable);
+		AddCommandListTree(rowTable, name);
 	}
 
 }
 
-void UCommandListSubsystem::AddCommandListTree(const FCommandDataTable* table)
+void UCommandListSubsystem::AddCommandListTree(const FCommandDataTable* table, const FName& rowName)
 {
-	using CommandListNode = TCommandListNode<EPlayerInputType, ECharacterCombatMontageType>;
+	using CommandListNode = TCommandListNode<EPlayerInputType, FCommandData>;
 
 	const TArray<EPlayerInputType>& inputTypes = table->attackButton;
 	TSharedPtr<CommandListNode>* node = nullptr;
 	int32 maxCount = inputTypes.Num();
-	ECharacterCombatMontageType* value = nullptr;
-	ECharacterCombatMontageType useAnimSlot = table->useAnimSlot;
+	FCommandData* value = nullptr;
+	FCommandData data;
+	data.useAnimSlot = table->useAnimSlot;
+	data.nameID = rowName;
 	for (int i = 0; i < maxCount; i++)
 	{
 		if (i == (maxCount - 1))
-			value = &useAnimSlot;
+		{
+			value = &data;
+		}
 		node = commandList.AddTree(inputTypes[i], value, node);
 	}
 }

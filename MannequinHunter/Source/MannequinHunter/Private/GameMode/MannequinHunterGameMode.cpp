@@ -12,6 +12,7 @@
 #include "Subsystem/TableSubsystem.h"
 #include "Table/SpawnTable.h"
 #include "BaseActionCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 AMannequinHunterGameMode::AMannequinHunterGameMode()
 {
@@ -96,11 +97,24 @@ void AMannequinHunterGameMode::BeginPlay()
 
 void AMannequinHunterGameMode::ClearBoss(const FDeathInfo& info)
 {
-	//spawnBoss->GetCombatComponent()->OnDeath().Clear();
 	ClearBossHUD();
 	OnClearBossEvent.Broadcast(spawnBoss);
-	spawnBoss = nullptr;
+	spawnBoss->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+	
 	OnClearBossEvent.Clear();
+
+	
+	GetWorld()->GetTimerManager().SetTimer(bossClearTimerHandle, 
+		[this]()
+		{
+			UObjectPoolSubsystem* objPool = GetGameInstance()->GetSubsystem<UObjectPoolSubsystem>();
+			// 액터를 감춤 
+			spawnBoss->SetActorHiddenInGame(true);
+			// 충돌 계산 비활성화
+			spawnBoss->SetActorEnableCollision(false);
+			objPool->SetActor(spawnBoss);
+			spawnBoss = nullptr;
+		}, 2.0f, false);
 }
 
 

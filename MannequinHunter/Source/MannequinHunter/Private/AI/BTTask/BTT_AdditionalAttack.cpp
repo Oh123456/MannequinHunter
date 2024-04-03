@@ -50,10 +50,11 @@ EBTNodeResult::Type UBTT_AdditionalAttack::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Type::Failed;
 
 	float playRate = FMannequinHunterUtility::GetPlayRate(character->GetCombatComponent()->GetStatusData().GetStatusData()->attackSpeed);
-	PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, playRate);
 
 	bbc->SetValueAsName(GetSelectedBlackboardKey(), name);
 	bbc->SetValueAsEnum(enumKey.SelectedKeyName, StaticCast<uint8>(EEnemyState::Attack));
+
+	PlayAnimation(character, OwnerComp, patternData->GetPatternData().animSlot, playRate);
 	return EBTNodeResult::Type::Succeeded;
 
 }

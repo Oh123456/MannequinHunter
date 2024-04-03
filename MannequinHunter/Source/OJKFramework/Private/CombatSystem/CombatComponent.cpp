@@ -28,15 +28,15 @@ UCombatComponent::~UCombatComponent()
 
 }
 
-void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser,TSubclassOf<UDamageType> damageTypeClass)
+bool UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AController* eventInstigator, AActor* damageCauser,TSubclassOf<UDamageType> damageTypeClass)
 {
 	if (damageComponent == nullptr)
-		return;
+		return false;
 	
 	if (damageComponent->GetImmortality() || damageComponent->IsDeath())
 	{
 		UE_LOG(Framework,Log,TEXT("Avoidance !! "))
-		return;
+		return false;
 	}
 
 	float actualDamage = CalculateApplyDamage();
@@ -48,27 +48,9 @@ void UCombatComponent::ApplyDamage(UCombatComponent* damageComponent, AControlle
 
 		damageComponent->TakeDamage(actualDamage, damageEvent, eventInstigator, damageCauser);
 	}
-
+	return true;
 }
 
-void UCombatComponent::ApplyPointDamage(UCombatComponent* damageComponent, float BaseDamage, const FVector& HitFromDirection, const FHitResult& HitInfo, AController* EventInstigator, AActor* DamageCauser, TSubclassOf<class UDamageType> DamageTypeClass)
-{
-	if (damageComponent == nullptr)
-		return;
-
-	if (damageComponent->GetImmortality())
-		return;
-
-	float actualDamage = CalculateApplyDamage();
-	if (actualDamage != 0.f)
-	{
-		// make sure we have a good damage type
-		TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
-		FPointDamageEvent PointDamageEvent(actualDamage, HitInfo, HitFromDirection, ValidDamageTypeClass);
-
-		damageComponent->TakeDamage(actualDamage, PointDamageEvent, EventInstigator, DamageCauser);
-	}
-}
 
 void UCombatComponent::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {

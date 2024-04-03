@@ -10,6 +10,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 
 using FAttackObject = FWeaponHitData::FAttackObject;
 
@@ -97,7 +99,19 @@ bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 void ABaseWeapon::ApplyDamage(UCombatComponent* damagedObject, const FHitResult& hitResult)
 {
 	UCharacterCombatComponent* ownerCharacterCombat = weaponData.ownerCharacter->GetCombatComponent();
-	ownerCharacterCombat->ApplyDamage(damagedObject, Owner->GetInstigatorController(), this, damageTypeClass);
+	if (ownerCharacterCombat->ApplyDamage(damagedObject, Owner->GetInstigatorController(), this, damageTypeClass))
+	{
+		
+		if (hitParticles)
+		{
+			FVector point = hitResult.ImpactPoint;
+			if (point.Equals(FVector::ZeroVector))
+				point = hitResult.GetActor()->GetActorLocation();
+			FRotator rotator = hitResult.GetActor()->GetActorRotation();
+			rotator += hitParticlesOffset;
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticles, point, rotator, hitParticlesScaleOffset);
+		}
+	}
 }
 
 void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)

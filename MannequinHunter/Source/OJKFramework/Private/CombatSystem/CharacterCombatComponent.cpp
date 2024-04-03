@@ -13,7 +13,6 @@
 #include "OJKFramework.h"
 #include "TimerManager.h"
 #include "DebugLog.h"
-#include "DrawDebugHelpers.h"
 #include "TimerManager.h"
 
 const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
@@ -244,11 +243,7 @@ void UCharacterCombatComponent::PlayAnimation(ECharacterCombatMontageType animty
 
 void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> callback, std::function<void()> cancelCallback)
 {
-	const FAnimSlotData* data = combatAnimationData->GetSlotData(animtype);
-	if (!status.CheckStamina())
-		return;
 
-	status.AddStamina(-data->stamina);
 
 	ChangeCombatType(animtype);
 
@@ -348,15 +343,6 @@ void UCharacterCombatComponent::Dodge(ECharacterCombatMontageType animtype, floa
 
 void UCharacterCombatComponent::Attack(ECharacterCombatMontageType animtype, float playRate ,std::function<void()> callback, std::function<void()> cancelCallback)
 {
-	const FAnimSlotData* data = combatAnimationData->GetSlotData(animtype);
-
-	isSuperArmor = data->isSuperArmor;
-	isImmortality = data->isImmortality;
-
-	if (!status.CheckStamina())
-		return;
-
-	status.AddStamina(-data->stamina);
 
 	ChangeCombatType(animtype);
 
@@ -593,6 +579,19 @@ void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float
 	}
 }
 
+void UCharacterCombatComponent::SetTargetActor(AActor* target)
+{
+	 characterRotationData.targetActor = target; 
+	 if (target)
+		 return;
+	 UCombatComponent* combatSystem = target->GetComponentByClass<UCombatComponent>();
+	 if (combatSystem)
+		 characterRotationData.lockDeathDelegateHandle = combatSystem->OnDeath().AddLambda([this](const FDeathInfo& info)
+			 {
+				 ResetLockOn();
+			 });
+}
+
 void UCharacterCombatComponent::SetLockOnTarget()
 {
 	ResetLockOn();
@@ -631,6 +630,9 @@ void UCharacterCombatComponent::LockOn()
 
 void UCharacterCombatComponent::ResetLockOn()
 {
+	UCombatComponent* combatSystem = characterRotationData.targetActor->GetComponentByClass<UCombatComponent>();
+	if (combatSystem)
+		combatSystem->OnDeath().Remove(characterRotationData.lockDeathDelegateHandle);
 	characterRotationData.targetActor = nullptr;
 	characterRotationData.isActorRotation = true;
 }

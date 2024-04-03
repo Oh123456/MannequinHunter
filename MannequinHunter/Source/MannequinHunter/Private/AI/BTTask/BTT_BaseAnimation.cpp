@@ -8,11 +8,19 @@
 #include "Subsystem/AIManagerSubsystem.h"
 #include "Defines.h"
 #include "BaseActionCharacter.h"
+#include "AI/Controller/BaseAIController.h"
 
 const FName SELFACTOR = TEXT("SelfActor");
 
 void UBTT_BaseAnimation::PlayAnimation(ABaseEnemyCharacter* character, UBehaviorTreeComponent& OwnerComp, ECharacterCombatMontageType animSlot, float playRate)
 {
+	ABaseAIController* aiController = character->GetInstigatorController<ABaseAIController>();
+	if (aiController)
+	{
+		UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();
+		UE_LOG(LogTemp,Log, TEXT("dDD : %s"), *bbc->GetValueAsName(GetSelectedBlackboardKey()).ToString())
+		aiController->SetActionTableData(bbc->GetValueAsName(GetSelectedBlackboardKey()));
+	}
 	character->GetCombatComponent()->PlayAnimation(animSlot, playRate, [this, &OwnerComp]()
 		{
 			UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();

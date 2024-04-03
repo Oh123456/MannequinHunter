@@ -16,7 +16,19 @@
  * 
  */
 
+struct FCommandData
+{
+	FCommandData() {}
+	FCommandData(ECharacterCombatMontageType type ,const FName& name) 
+	{
+		useAnimSlot = type;
+		nameID = name;
+	}
 
+
+	FName nameID;
+	ECharacterCombatMontageType useAnimSlot;
+};
 
 USTRUCT(Blueprinttype)
 struct FCommandDataTable : public FTableRowBase
@@ -33,8 +45,8 @@ struct FCommandDataTable : public FTableRowBase
 
 struct FCommandListData
 {
-	using CommandListTree = TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>;
-	using CommandListNode = TCommandListNode<EPlayerInputType, ECharacterCombatMontageType>;
+	using CommandListTree = TCommandListTree<EPlayerInputType, FCommandData>;
+	using CommandListNode = TCommandListNode<EPlayerInputType, FCommandData>;
 
 	EPlayerInputType playerInputType;
 
@@ -51,8 +63,8 @@ class MANNEQUINHUNTER_API UMannequinHunterCombatComponent : public UPlayerCharac
 	GENERATED_BODY()
 	
 
-	using CommandListTree = TCommandListTree<EPlayerInputType, ECharacterCombatMontageType>;
-	using CommandListNode = TCommandListNode<EPlayerInputType, ECharacterCombatMontageType>;
+	using CommandListTree = TCommandListTree<EPlayerInputType, FCommandData>;
+	using CommandListNode = TCommandListNode<EPlayerInputType, FCommandData>;
 
 public:
 	virtual ~UMannequinHunterCombatComponent();
@@ -67,19 +79,25 @@ public:
 
 
 	void ResetCommandList();
-	const ECharacterCombatMontageType GetCommandMontageType();
-	const ECharacterCombatMontageType GetCommandMontageType(EPlayerInputType input);
+	const TSharedPtr<FCommandData>* GetCommandMontageType();
+	const TSharedPtr<FCommandData>* GetCommandMontageType(EPlayerInputType input);
 
 private:
 	void SetCommandList();
+	bool CheckStatus();
 public:
+	virtual float CalculateApplyDamage();
 	virtual void BeginPlay() override;
 	virtual void Hit(ECharacterCombatMontageType animtype) override;
+	virtual void Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
+	virtual void Attack(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback = nullptr, std::function<void()> cancelCallback = nullptr);
 protected:
 	virtual void OnHitEnd() override;
 	virtual int32 CalculateRecoveryStamina() override;
 	virtual float GetPlayRate(UAnimInstance* animInstance) override;
 	virtual void Death(const FDeathInfo& deathInfo) override;
+
+
 public:
 	FChangeWeaponType OnChangeWeaponType;
 private:

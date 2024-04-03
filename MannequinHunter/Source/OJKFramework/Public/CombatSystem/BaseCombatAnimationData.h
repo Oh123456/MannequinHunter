@@ -15,14 +15,14 @@ USTRUCT()
 struct FAnimSlotData
 {
 	GENERATED_BODY()
-	UPROPERTY(EditDefaultsOnly)
-	bool isSuperArmor = false;
+	//UPROPERTY(EditDefaultsOnly)
+	//bool isSuperArmor = false;
 
-	UPROPERTY(EditDefaultsOnly)
-	bool isImmortality = false;
+	//UPROPERTY(EditDefaultsOnly)
+	//bool isImmortality = false;
 
-	UPROPERTY(EditDefaultsOnly)
-	int32 stamina = 10;
+	//UPROPERTY(EditDefaultsOnly)
+	//int32 stamina = 10;
 };
 
 

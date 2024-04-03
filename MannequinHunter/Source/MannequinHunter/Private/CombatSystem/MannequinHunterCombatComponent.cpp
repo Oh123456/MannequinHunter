@@ -7,6 +7,8 @@
 #include "HFSM/HFSMComponent.h"
 #include "Character/PlayerCommonEnums.h"
 #include "Utility/MannequinHunterUtility.h"
+#include "Controller/MannequinHunterPlayerController.h"
+#include "Table/ActionDataTable.h"
 #ifdef UE_BUILD_DEBUG
 #include "Character/RYU.h"
 #include "Utility/PlayerInputLog.h"
@@ -24,7 +26,7 @@ void UMannequinHunterCombatComponent::ResetCommandList()
 	//commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
 }
 
-const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType()
+const TSharedPtr<FCommandData>* UMannequinHunterCombatComponent::GetCommandMontageType()
 {
 #ifdef UE_BUILD_DEBUG
 	ARYU* ryu = Cast<ARYU>(GetOwner());
@@ -36,7 +38,7 @@ const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMon
 	return GetCommandMontageType(commandListData.playerInputType);
 }
 
-const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMontageType(EPlayerInputType input)
+const TSharedPtr<FCommandData>* UMannequinHunterCombatComponent::GetCommandMontageType(EPlayerInputType input)
 {
 	
 	const TSharedPtr<CommandListNode>& currentCommandListNode = commandListData.currentCommandListNode;
@@ -46,17 +48,40 @@ const ECharacterCombatMontageType UMannequinHunterCombatComponent::GetCommandMon
 		if (nextCommandListNode)
 		{
 			commandListData.currentCommandListNode = *nextCommandListNode;
-			return *(*commandListData.currentCommandListNode->GetValue());
+			return (commandListData.currentCommandListNode->GetValue());
 		}
 	}
 
-	return ECharacterCombatMontageType::None;
+	return nullptr;
 }
 
 void UMannequinHunterCombatComponent::SetCommandList()
 {
 	commandListData.currentCommandListNode = GetWorld()->GetGameInstance()->GetSubsystem<UCommandListSubsystem>()->GetCommandList().GetRoot();
-	//commandListData.currentCommandListNode = FCommandListManager::GetInstance()->GetCommandList().GetRoot();
+}
+
+bool UMannequinHunterCombatComponent::CheckStatus()
+{
+	AMannequinHunterPlayerController* controller = GetOwner()->GetInstigatorController<AMannequinHunterPlayerController>();
+	const FActionTable* data = controller->GetActionTableData();
+	int32 stamina = data->useStamina;
+	if (!status.CheckStamina())
+		return false;
+
+	status.AddStamina(-stamina);
+
+	isSuperArmor = data->isSuperArmor;
+	isImmortality = data->isImmortality;
+	return true;
+}
+
+float UMannequinHunterCombatComponent::CalculateApplyDamage()
+{
+	float damage = Super::CalculateApplyDamage();
+	AMannequinHunterPlayerController* controller = GetOwner()->GetInstigatorController<AMannequinHunterPlayerController>();
+	if (controller->GetActionTableData() != nullptr)
+		damage *= controller->GetActionTableData()->damageCoefficient;
+	return damage;
 }
 
 void UMannequinHunterCombatComponent::BeginPlay()
@@ -107,6 +132,22 @@ void UMannequinHunterCombatComponent::Death(const FDeathInfo& deathInfo)
 
 	Super::Death(deathInfo);
 
+}
+
+void UMannequinHunterCombatComponent::Dodge(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback, std::function<void()> cancelCallback)
+{
+	//묶던지 합시다
+	if (!CheckStatus())
+		return;
+	Super::Dodge(animtype, playRate, endcallback, cancelCallback);
+}
+
+void UMannequinHunterCombatComponent::Attack(ECharacterCombatMontageType animtype, float playRate, std::function<void()> endcallback, std::function<void()> cancelCallback)
+{
+	if (!CheckStatus())
+		return;
+
+	Super::Attack(animtype, playRate, endcallback, cancelCallback);
 }
 
 

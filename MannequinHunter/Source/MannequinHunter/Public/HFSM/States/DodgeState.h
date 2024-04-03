@@ -16,5 +16,6 @@ public:
 
 public:
 	virtual void Enter() override;
+	virtual void Exit() override;
 	virtual uint8 Condition(uint16 order) override;
 };

@@ -40,6 +40,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<class ABaseActionCharacter> spawnBoss;
 
+
+	FTimerHandle bossClearTimerHandle;
 };
 
 

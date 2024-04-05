@@ -98,16 +98,22 @@ bool ABaseWeapon::CheckHitAble(UCombatComponent* damagedObject)
 
 void ABaseWeapon::ApplyDamage(UCombatComponent* damagedObject, const FHitResult& hitResult)
 {
+	// юс╫ц 
+	if (damageTypeClass == nullptr)
+		return;
 	UCharacterCombatComponent* ownerCharacterCombat = weaponData.ownerCharacter->GetCombatComponent();
-	if (ownerCharacterCombat->ApplyDamage(damagedObject, Owner->GetInstigatorController(), this, damageTypeClass))
+	TSubclassOf<UDamageType> damageType(damageTypeClass->GetClass());
+
+	if (ownerCharacterCombat->ApplyDamage(damagedObject, Owner->GetInstigatorController(), this, damageType))
 	{
 		
 		if (hitParticles)
 		{
 			FVector point = hitResult.ImpactPoint;
+			AActor* hitActor = hitResult.GetActor();
 			if (point.Equals(FVector::ZeroVector))
-				point = hitResult.GetActor()->GetActorLocation();
-			FRotator rotator = hitResult.GetActor()->GetActorRotation();
+				point = hitActor->GetActorLocation();
+			FRotator rotator = UKismetMathLibrary::MakeRotFromX(hitActor->GetActorLocation() - GetOwner()->GetActorLocation());
 			rotator += hitParticlesOffset;
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticles, point, rotator, hitParticlesScaleOffset);
 		}

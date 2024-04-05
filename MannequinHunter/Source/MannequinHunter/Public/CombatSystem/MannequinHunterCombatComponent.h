@@ -40,6 +40,9 @@ struct FCommandDataTable : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	ECharacterCombatMontageType useAnimSlot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	FName actionTableName;
 };
 
 

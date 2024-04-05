@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Subsystem/StateSubsystem.h"
+#include "Controller/MannequinHunterPlayerController.h"
 #ifdef UE_BUILD_DEBUG
 #include "Character/RYU.h"
 #include "Utility/PlayerInputLog.h"
@@ -29,6 +30,11 @@ void FIdleState::Enter()
 	APlayerCharacter* character = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(character->GetCombatComponent());
 	mannequinHunterCombatComponent->ResetCommandList();
+
+	AMannequinHunterPlayerController* controller = character->GetController<AMannequinHunterPlayerController>();
+
+	if (controller)
+		controller->ClearTable();
 
 #ifdef UE_BUILD_DEBUG
 	ARYU* ryu = Cast<ARYU>(character);

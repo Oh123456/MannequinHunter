@@ -97,10 +97,10 @@ public:
 	inline void HitCheck() { if (hitCheckDelegate.IsBound()) hitCheckDelegate.Execute(); }
 	inline void HitCheckEnd() { if (hitCheckEndDelegate.IsBound()) hitCheckEndDelegate.Execute(); }
 
-	
+	void SetDamageType(class UDamageType* type) { damageTypeClass = type; }
 private:
 	bool CheckHitAble(class UCombatComponent* damagedObject);
-	void ApplyDamage(class UCombatComponent* damagedObject, const FHitResult& hitResult);
+	void ApplyDamage(class UCombatComponent* damagedObject, const FHitResult& hitResult); 
 public:
 	UFUNCTION()
 	inline void ClearHitObjects() { weaponHitData.attackObjects.Reset(0); }
@@ -137,8 +137,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Mesh);
 	TObjectPtr<class UMeshComponent> weaponMeshComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = Damage)
-	TSubclassOf<class UDamageType> damageTypeClass; 
+	UPROPERTY(VisibleAnywhere, Category = DamageType);
+	class UDamageType* damageTypeClass;
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = HitSystem);
 	FWeaponHitData weaponHitData;

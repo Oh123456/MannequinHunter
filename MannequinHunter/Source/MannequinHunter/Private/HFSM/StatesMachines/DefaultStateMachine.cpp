@@ -7,6 +7,7 @@
 #include "HFSM/States/IdleState.h"
 #include "HFSM/States/MoveState.h"
 #include "HFSM/States/DodgeState.h"
+#include "HFSM/States/InputWaitState.h"
 
 FDefaultStateMachine::FDefaultStateMachine(UHFSMComponent* ownerCharacter) :
 	FStateMachine(ownerCharacter, StaticCast<uint8>(EPlayerStateMachine::Default), StaticCast<uint8>(EPlayerStateEnum::Idle))
@@ -23,7 +24,8 @@ void FDefaultStateMachine::ChangeState(uint16 order, OUT FStateMachineConditionR
 		return;
 	result.SetDefaultStateID(stateMachineID);
 
-	if (order == StaticCast<uint16>(EStateOrder::ToggleCombat))
+	if (order == StaticCast<uint16>(EStateOrder::ToggleCombat) &&
+		GetCurrentState() != StaticCast<uint16>(EPlayerStateEnum::Dodge))
 		result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Combat));
 	else if (order == StaticCast<uint16>(EStateOrder::StatemMachineHit))
 		result.SetStateID(StaticCast<uint8>(EPlayerStateMachine::Hit));
@@ -34,6 +36,7 @@ void FDefaultStateMachine::CreateStates()
 {
 	CreateState<FIdleState>(EPlayerStateEnum::Idle);
 	CreateState<FMoveState>(EPlayerStateEnum::Move);
+	CreateState<FInputWaitState>(EPlayerStateEnum::InputWait);
 	CreateState<FDodgeState>(EPlayerStateEnum::Dodge);
 }
 

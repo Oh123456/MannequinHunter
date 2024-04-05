@@ -7,7 +7,8 @@
 
 void AMannequinHunterPlayerController::SetActionTableData(const FName& actionName)
 {
-	tableData = actionTable->FindRow<FActionTable>(actionName, TEXT(""));
+	UE_LOG(LogTemp, Log, TEXT("%s"), *actionName.ToString())
+	tableData = actionTable->FindRow<FActionTable>(actionName, TEXT("ActionTable Not Found"));
 }
 
 void AMannequinHunterPlayerController::BeginPlay()

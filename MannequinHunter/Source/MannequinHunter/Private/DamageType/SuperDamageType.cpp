@@ -4,7 +4,7 @@
 #include "DamageType/SuperDamageType.h"
 #include "CombatSystem/CharacterCombatComponent.h"
 
-float USuperDamageType::ExecuteDamageType(float damageAmount, UCombatComponent* damagedCombatSystem, AController* eventInstigator, AActor* damageCauser)
+float USuperDamageType::ExecuteSuperArmorBreakDamageType(float damageAmount, UCombatComponent* damagedCombatSystem, AController* eventInstigator, AActor* damageCauser)
 {
     if (damagedCombatSystem->IsA(UCharacterCombatComponent::StaticClass()))
     {

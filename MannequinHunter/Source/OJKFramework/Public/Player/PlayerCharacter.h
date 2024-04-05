@@ -40,6 +40,9 @@ struct FPlayerInputData
 	TObjectPtr<UInputAction> dodgeAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> dodgeAction2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> AttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)

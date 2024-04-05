@@ -9,6 +9,8 @@
 #include "Defines.h"
 #include "BaseActionCharacter.h"
 #include "AI/Controller/BaseAIController.h"
+#include "Equipment/BaseWeapon.h"
+#include "Table/ActionDataTable.h"
 
 const FName SELFACTOR = TEXT("SelfActor");
 
@@ -20,6 +22,13 @@ void UBTT_BaseAnimation::PlayAnimation(ABaseEnemyCharacter* character, UBehavior
 		UBlackboardComponent* bbc = OwnerComp.GetBlackboardComponent();
 		UE_LOG(LogTemp,Log, TEXT("dDD : %s"), *bbc->GetValueAsName(GetSelectedBlackboardKey()).ToString())
 		aiController->SetActionTableData(bbc->GetValueAsName(GetSelectedBlackboardKey()));
+
+		ABaseWeapon* weapon = Cast<ABaseWeapon>(character->GetCombatComponent()->GetEquipment(ECombatEquipmentSlot::E_MainWeapon));
+		const FActionTable* tableData = aiController->GetActionTableData();
+		if (tableData)
+			weapon->SetDamageType(tableData->damageType.GetDefaultObject());
+		else
+			weapon->SetDamageType(Cast<UDamageType>(UDamageType::StaticClass()->GetDefaultObject()));
 	}
 	character->GetCombatComponent()->PlayAnimation(animSlot, playRate, [this, &OwnerComp]()
 		{

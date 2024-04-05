@@ -16,7 +16,7 @@ class MANNEQUINHUNTER_API AMannequinHunterPlayerController : public AActionPlaye
 	GENERATED_BODY()
 public:
 	virtual void SetActionTableData(const FName& actionName) override;
-	virtual void ClearTable() override { tableData = nullptr; }
+	virtual void ClearTable() override { UE_LOG(LogTemp,Log,TEXT("Clear!!!")) tableData = nullptr; }
 	virtual const struct FActionTable* GetActionTableData() const override { return tableData; }
 protected:
 	virtual void BeginPlay() override;

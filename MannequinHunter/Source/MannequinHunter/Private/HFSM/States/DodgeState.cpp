@@ -7,12 +7,15 @@
 #include "CombatSystem/CharacterCombatComponent.h"
 #include "HFSM/StateMachine.h"
 #include "Controller/MannequinHunterPlayerController.h"
+#include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "DebugLog.h"
+#include "Utility/MannequinHunterUtility.h"
 
 FDodgeState::FDodgeState() : 
 	FBaseMannequinHunterState(StaticCast<uint8>(EPlayerStateEnum::Dodge), EStateInitOption::UpdataAndConvertOrder)
 {
 	convertOrder->Add(StaticCast<uint16>(EStateOrder::Idle));
+	convertOrder->Add(StaticCast<uint16>(EStateOrder::InputWait));
 }
 
 FDodgeState::~FDodgeState()
@@ -39,9 +42,16 @@ void FDodgeState::Enter()
 
 			// 임시 값
 			if (controller)
-				controller->SetActionTableData(TEXT("Dodge"));
+			{
+				if (stateMachine == EPlayerStateMachine::Combat)
+					controller->SetActionTableData(TEXT("Combat_Dodge"));
+				else
+					controller->SetActionTableData(TEXT("Dodge"));
+			}
+			UMannequinHunterCombatComponent* mannequinHunterCombatComponent = Cast<UMannequinHunterCombatComponent>(player->GetCombatComponent());
+			mannequinHunterCombatComponent->ResetCommandList();
 
-			characterCombatComponent->Dodge(type, 1.0f );/*[this]()
+			characterCombatComponent->Dodge(type, FMannequinHunterUtility::GetPlayRate(characterCombatComponent->GetStatusData().GetStatusData()->attackSpeed));/*[this]()
 				{
 					this->isDodgeEnd = true;
 				}
@@ -54,9 +64,6 @@ void FDodgeState::Exit()
 {
 	AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
 
-	// 임시 값
-	if (controller)
-		controller->ClearTable();
 }
 
 uint8 FDodgeState::Condition(uint16 order)
@@ -64,8 +71,12 @@ uint8 FDodgeState::Condition(uint16 order)
 	uint8 stateid = FState::Condition(order);
 
 	if (convertOrder->Contains(order))
-	//if (order == StaticCast<uint16>(EStateOrder::Idle))
 	{
+		if (order == StaticCast<uint16>(EStateOrder::InputWait))
+		{
+			stateid = StaticCast<uint16>(EPlayerStateEnum::InputWait);
+			return stateid;
+		}
 		APlayerCharacter* player = StaticCast<APlayerCharacter*>(ownerStateMachine->GetOwnerCharacter());
 		if (!player->IsMoveInput())
 			stateid = StaticCast<uint16>(EPlayerStateEnum::Idle);

@@ -22,6 +22,9 @@ public:
 	int32 useStamina = 10;
 
 	UPROPERTY(EditDefaultsOnly)
+	int32 recoveryStamina = 0;
+
+	UPROPERTY(EditDefaultsOnly)
 	bool isSuperArmor = false;
 
 	UPROPERTY(EditDefaultsOnly)

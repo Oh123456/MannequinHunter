@@ -11,6 +11,9 @@
 #include "CombatSystem/Status.h"
 #include "Controller/MannequinHunterPlayerController.h"
 #include "Utility/MannequinHunterUtility.h"
+#include "Equipment/BaseWeapon.h"
+#include "Subsystem/TableSubsystem.h"
+#include "Table/ActionDataTable.h"
 
 FAttackState::FAttackState() : FBaseMannequinHunterState(StaticCast<uint8>( EPlayerStateEnum::Attack), EStateInitOption::DontUpdataAndConvertOrder) 
 {
@@ -50,6 +53,14 @@ void FAttackState::Enter()
 			float playRate = FMannequinHunterUtility::GetPlayRate(combatComponent->GetStatusData().GetStatusData()->attackSpeed);
 			
 			UE_LOG(LogTemp, Log, TEXT("attackSpeed : %d  playRate : %f"), combatComponent->GetStatusData().GetStatusData()->attackSpeed,playRate);
+
+			ABaseWeapon* weapon =Cast<ABaseWeapon>(combatComponent->GetEquipment(ECombatEquipmentSlot::E_MainWeapon));
+			AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
+			const FActionTable* table = controller->GetActionTableData();
+			if (table)
+				weapon->SetDamageType(table->damageType.GetDefaultObject());
+			else
+				weapon->SetDamageType(Cast<UDamageType>(UDamageType::StaticClass()->GetDefaultObject()));
 
 			combatComponent->Attack(attackMontageType, playRate,[this, combatComponent]()
 			{
@@ -94,8 +105,4 @@ void FAttackState::Exit()
 {
 	attackMontageType = ECharacterCombatMontageType::None;
 
-	AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
-
-	if (controller)
-		controller->ClearTable();
 }

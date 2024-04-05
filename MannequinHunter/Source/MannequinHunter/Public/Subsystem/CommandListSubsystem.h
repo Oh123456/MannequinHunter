@@ -27,7 +27,7 @@ public:
 
 	const TCommandListTree<EPlayerInputType, FCommandData>& GetCommandList() const { return commandList; }
 private:
-	void AddCommandListTree(const FCommandDataTable* table, const FName& rowName);
+	void AddCommandListTree(const FCommandDataTable* table);
 private:
 	TCommandListTree<EPlayerInputType, FCommandData> commandList;
 };

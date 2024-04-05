@@ -12,12 +12,12 @@ void UCommandListSubsystem::LoadCommandListTable(const UDataTable* table)
 	for (const FName& name : names)
 	{
 		FCommandDataTable* rowTable = table->FindRow<FCommandDataTable>(name, TEXT(""));
-		AddCommandListTree(rowTable, name);
+		AddCommandListTree(rowTable);
 	}
 
 }
 
-void UCommandListSubsystem::AddCommandListTree(const FCommandDataTable* table, const FName& rowName)
+void UCommandListSubsystem::AddCommandListTree(const FCommandDataTable* table)
 {
 	using CommandListNode = TCommandListNode<EPlayerInputType, FCommandData>;
 
@@ -27,7 +27,7 @@ void UCommandListSubsystem::AddCommandListTree(const FCommandDataTable* table, c
 	FCommandData* value = nullptr;
 	FCommandData data;
 	data.useAnimSlot = table->useAnimSlot;
-	data.nameID = rowName;
+	data.nameID = table->actionTableName;
 	for (int i = 0; i < maxCount; i++)
 	{
 		if (i == (maxCount - 1))

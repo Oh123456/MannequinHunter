@@ -19,8 +19,6 @@ void UAnimNotify_ChangeEnum::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 void UAnimNotify_ChangeEnum::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
 	if (PropertyChangedEvent.Property->GetFName() != GET_MEMBER_NAME_CHECKED(UAnimNotify_ChangeEnum, enumClassName))
 		return;
 	if (enumClassName.IsNone())

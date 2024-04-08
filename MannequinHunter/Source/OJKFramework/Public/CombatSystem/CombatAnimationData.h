@@ -45,7 +45,7 @@ public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("AssetItems", GetFName()); }
 	virtual const FAnimSlotData* GetSlotData(const ECharacterCombatMontageType type) const override;
 protected:
-	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<ECharacterCombatMontageType, FAnimMontageArray> combatMontageMap;

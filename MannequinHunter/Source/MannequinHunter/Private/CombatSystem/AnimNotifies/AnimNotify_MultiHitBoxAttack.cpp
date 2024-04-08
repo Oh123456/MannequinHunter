@@ -3,10 +3,13 @@
 
 #include "CombatSystem/AnimNotifies/AnimNotify_MultiHitBoxAttack.h"
 #include "Equipment/MultiHitBoxWeapon.h"
+#include "Math/Color.h"
 
 UAnimNotify_MultiHitBoxAttack::UAnimNotify_MultiHitBoxAttack()
 {
+#if WITH_EDITORONLY_DATA
 	NotifyColor = FColor::Red;
+#endif
 }
 
 void UAnimNotify_MultiHitBoxAttack::BeginAttack(UCharacterCombatComponent* characterCombatComponent)

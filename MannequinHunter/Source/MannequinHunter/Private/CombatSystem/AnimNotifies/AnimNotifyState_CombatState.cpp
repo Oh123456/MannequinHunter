@@ -3,11 +3,14 @@
 
 #include "CombatSystem/AnimNotifies/AnimNotifyState_CombatState.h"
 #include "Utility/CombatSystemUtility.h"
+#include "Math/Color.h"
 #include "CombatSystem/CharacterCombatComponent.h"
 
 UAnimNotifyState_CombatState::UAnimNotifyState_CombatState()
 {
+#if WITH_EDITORONLY_DATA
 	NotifyColor = FColor::Green;
+#endif
 }
 
 void UAnimNotifyState_CombatState::BeginDestroy()

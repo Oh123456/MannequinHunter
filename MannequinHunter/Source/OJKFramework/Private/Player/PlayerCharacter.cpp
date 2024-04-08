@@ -50,14 +50,6 @@ inputDirection(0.0f,0.0f) , HFSM(nullptr)
 		inputData.lookAction = findLookAction.Object;
 	}
 
-	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, dodgeAction2, TEXT("/Game/ThirdPerson/Input/Actions/IA_Dodge2.IA_Dodge2"))
-
-		if (dodgeAction2.Succeeded())
-		{
-			inputData.dodgeAction2 = dodgeAction2.Object;
-		}
-
-
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

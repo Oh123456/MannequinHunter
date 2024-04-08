@@ -19,7 +19,7 @@ class MANNEQUINHUNTER_API UAnimNotify_ChangeEnum : public UAnimNotify
 public:
 	FORCEINLINE int64 GetEnumValue();
 public:
-	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
+	void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 private:
 	UPROPERTY(EditAnywhere, meta = (ALLOW_PRIVATE_ACCESS))

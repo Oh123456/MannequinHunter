@@ -32,22 +32,27 @@ ASpawnPoint::ASpawnPoint()
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 	arrowComponent = CreateEditorOnlyDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
-	arrowComponent->ArrowSize = 1.0f;
-	arrowComponent->bTreatAsASprite = true;
-	arrowComponent->SpriteInfo.Category = TEXT("Navigation");
-	arrowComponent->SpriteInfo.DisplayName = NSLOCTEXT("SpriteCategory", "Navigation", "Navigation");
-	arrowComponent->SetupAttachment(capsuleComponent);
-	arrowComponent->bIsScreenSizeScaled = true;
+	if (arrowComponent)
+	{
+		arrowComponent->ArrowSize = 1.0f;
+		arrowComponent->bTreatAsASprite = true;
+		arrowComponent->SpriteInfo.Category = TEXT("Navigation");
+		arrowComponent->SpriteInfo.DisplayName = NSLOCTEXT("SpriteCategory", "Navigation", "Navigation");
+		arrowComponent->SetupAttachment(capsuleComponent);
+		arrowComponent->bIsScreenSizeScaled = true;
+	}
 
 	sprite = CreateEditorOnlyDefaultSubobject<UBillboardComponent>(TEXT("Sprite"));
-	sprite->Sprite = PlayerStartTextureObject.Get();
-	sprite->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	sprite->SpriteInfo.Category = TEXT("Spawn");
-	sprite->SpriteInfo.DisplayName = NSLOCTEXT("SpriteCategory", "SpawnPoint", "Spawn Point");
-	sprite->bIsScreenSizeScaled = true;
+	if (sprite)
+	{
+		sprite->Sprite = PlayerStartTextureObject.Get();
+		sprite->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+		sprite->SpriteInfo.Category = TEXT("Spawn");
+		sprite->SpriteInfo.DisplayName = NSLOCTEXT("SpriteCategory", "SpawnPoint", "Spawn Point");
+		sprite->bIsScreenSizeScaled = true;
 
-	sprite->SetupAttachment(capsuleComponent);
-
+		sprite->SetupAttachment(capsuleComponent);
+	}
 	bIsSpatiallyLoaded = false;
 #endif
 }

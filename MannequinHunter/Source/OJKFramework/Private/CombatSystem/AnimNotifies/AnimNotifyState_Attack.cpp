@@ -4,12 +4,16 @@
 #include "CombatSystem/AnimNotifies/AnimNotifyState_Attack.h"
 #include "Utility/CombatSystemUtility.h"
 #include "Equipment/BaseWeapon.h"
+#include "Math/Color.h"
 #include "CombatSystem/CharacterCombatComponent.h"
+#include "CombatSystem/CharacterCombatComponent.inl"
 
 UAnimNotifyState_Attack::UAnimNotifyState_Attack() : Super(),
 baseWeapon(nullptr) , isRotationLock(true)
 {
+#if WITH_EDITORONLY_DATA
 	NotifyColor = FColor::Silver;
+#endif
 	//GetNotifyName
 }
 

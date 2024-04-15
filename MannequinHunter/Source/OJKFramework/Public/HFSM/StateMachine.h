@@ -27,13 +27,11 @@ struct FStateMachineConditionResult
 	}
 };
 
-//class FState;
 class UHFSMComponent;
 
 class OJKFRAMEWORK_API FStateMachine : public TSharedFromThis<FStateMachine>
 {
 public:
-	//FUNC_DECLARE_MULTICAST_DELEGATE(FStateMachineCondition, uint8, uint16)
 	DECLARE_MULTICAST_DELEGATE_TwoParams(FStateMachineCondition, uint16 ,OUT FStateMachineConditionResult&)
 	DECLARE_MULTICAST_DELEGATE_OneParam(FStateMachineEnterCondition, OUT bool)
 public:

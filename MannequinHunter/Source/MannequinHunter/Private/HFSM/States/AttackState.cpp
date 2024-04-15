@@ -77,7 +77,6 @@ uint8 FAttackState::Condition(uint16 order)
 	if (convertOrder->Contains(order))
 	{
 		newState = OrderToStateID(order);
-		//newState = FStateManager::GetInstance()->GetStateID(order); 
 	}
 	return newState;
 }

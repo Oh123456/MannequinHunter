@@ -81,25 +81,11 @@ protected:
 	
 };
 
-
-//template<typename T>
-//TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T id, uint8 defaultSateID)
-//{
-//  	return AddStateMachine(static_cast<uint8>(id), defaultSateID);
-//}
-//
-
 template<typename T>
 TSharedPtr<FStateMachine>* UHFSMComponent::FindStateMachine(T id)
 {
 	return FindStateMachine(static_cast<uint8>(id));
 }
-
-//template< typename TStateMachine>
-//TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine()
-//{
-//	return AddStateMachine<TStateMachine>();
-//}
 
 template<typename TStateMachine, typename T>
 TSharedPtr<FStateMachine>* UHFSMComponent::AddStateMachine(T tId)

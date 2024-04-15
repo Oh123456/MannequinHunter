@@ -6,11 +6,8 @@
 #include "GameFramework/Character.h"
 #include "DebugLog.h"
 
-// Sets default values for this component's properties
 UHFSMComponent::UHFSMComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
 }
@@ -119,9 +116,6 @@ void UHFSMComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 uint16 UHFSMComponent::GetStateOrder(uint16 order)
 {
-	//uint16 value = stateOrder & HFSM_STATE_ORDER;
-	//stateOrder = stateOrder & (HFSM_STATE_ORDER << 8);
-
 	return order & HFSM_STATE_ORDER;
 } 
 

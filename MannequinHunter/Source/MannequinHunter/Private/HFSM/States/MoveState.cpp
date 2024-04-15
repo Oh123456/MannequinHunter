@@ -35,22 +35,9 @@ uint8 FMoveState::Condition(uint16 order)
 
 	if (convertOrder->Contains(order))
 	{
-		//newStateID = FStateManager::GetInstance()->GetStateID(order);
 		newStateID = OrderToStateID(order);
 	}
 
-	//EStateOrder eOrder = StaticCast<EStateOrder>(order);
-
-	//switch (eOrder)
-	//{
-
-	//case EStateOrder::Dodge:
-	//	newStateID = StaticCast<uint8>(EPlayerStateEnum::Dodge);
-	//	break;
-	//case EStateOrder::Attack:
-	//	newStateID = StaticCast<uint8>(EPlayerStateEnum::Attack);
-	//	break;
-	//}
 
 	return newStateID;
 }

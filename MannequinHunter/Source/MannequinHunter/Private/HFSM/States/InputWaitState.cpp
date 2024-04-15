@@ -30,9 +30,7 @@ uint8 FInputWaitState::Condition(uint16 order)
 	if (ignoreOrder->Contains(order))
 		return newState;
 
-	//FStateManager* manager = FStateManager::GetInstance();
 	newState = OrderToStateID(order);
-	//newState = manager->GetStateID(order);
 
 	return newState;
 }

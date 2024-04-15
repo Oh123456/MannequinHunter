@@ -24,25 +24,9 @@ uint8 FJumpState::Condition(uint16 order)
 
 	if (convertOrder->Contains(order))
 	{
-		//newState = FStateManager::GetInstance()->GetStateID(order);
 		newState = OrderToStateID(order);
 	}
 
-	//EStateOrder stateOrder = StaticCast<EStateOrder>(order);
-	//
-	//switch (stateOrder)
-	//{
-	//case EStateOrder::Attack:
-	//	newState = StaticCast<uint8>(EPlayerStateEnum::Attack);
-	//	break;
-	//}
 	return newState;
 }
 
-//uint8 FJumpState::UpdateCondition()
-//{
-//	bool isFalling = ownerStateMachine->GetOwnerCharacter()->GetMovementComponent()->IsFalling();
-//	if (!isFalling)
-//		return StaticCast<uint8>(EPlayerStateEnum::Idle);
-//	return FState::UpdateCondition();
-//}

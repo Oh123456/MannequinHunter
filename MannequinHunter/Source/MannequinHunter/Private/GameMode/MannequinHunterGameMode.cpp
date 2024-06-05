@@ -13,6 +13,7 @@
 #include "Table/SpawnTable.h"
 #include "BaseActionCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "HUD/InventoryWidget.h"
 
 AMannequinHunterGameMode::AMannequinHunterGameMode()
 {
@@ -71,6 +72,18 @@ void AMannequinHunterGameMode::ClearBossHUD()
 	mainWidget->SetWidgetVisibility(EMainUIWidgetEnum::BossHPBar, ESlateVisibility::Hidden);
 }
 
+void AMannequinHunterGameMode::ToggleInventory()
+{
+	if (!inventoryWidget->IsInViewport())
+	{
+		inventoryWidget->AddToViewport();
+	}
+	else
+	{
+		inventoryWidget->RemoveFromParent();
+	}
+}
+
 
 void AMannequinHunterGameMode::BeginPlay()
 {
@@ -80,6 +93,7 @@ void AMannequinHunterGameMode::BeginPlay()
 		return;
 
 	mainWidget = Cast<UMainUIWidget>(CreateWidget(GetWorld(), mainWidgetClass));
+	inventoryWidget = Cast<UInventoryWidget>(CreateWidget(GetWorld(), inventoryWidgetClass));
 
 	if (mainWidget)
 	{

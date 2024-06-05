@@ -53,54 +53,6 @@ ARYU::ARYU() : Super()
 
 }
 
-
-void ARYU::SetInputAction()
-{
-	
-	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findCombatAction, TEXT("/Game/BP/Input/IA_Combat.IA_Combat"));
-
-	if (findCombatAction.Succeeded())
-	{
-		inputData.combatAction = findCombatAction.Object;
-	}
-
-	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findDodgeAction, TEXT("/Game/BP/Input/IA_Dodge.IA_Dodge"))
-
-	if (findDodgeAction.Succeeded())
-	{
-		inputData.dodgeAction = findDodgeAction.Object;
-	}
-
-	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findLAttackAction, TEXT("/Game/BP/Input/IA_LAttack.IA_LAttack"))
-
-	if (findLAttackAction.Succeeded())
-	{
-		inputData.AttackAction = findLAttackAction.Object;
-	}
-
-	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findRAttackAction, TEXT("/Game/BP/Input/IA_RAttack.IA_RAttack"))
-
-	if (findRAttackAction.Succeeded())
-	{
-		inputData.Attack2Action = findRAttackAction.Object;
-	}
-
-	CONSTRUCTOR_HELPERS_FOBJECTFINDER(UInputAction, findLockOnAction, TEXT("/Game/BP/Input/IA_LockOn.IA_LockOn"))
-
-	if (findLockOnAction.Succeeded())
-	{
-		inputData.lockOnAction = findLockOnAction.Object;
-	}
-}
-
-void ARYU::ToggleCombat()
-{
-	if (HFSM)
-	{
-		HFSM->SetStateOrder(EStateOrder::ToggleCombat | EStateOrder::Idle);
-	}
-}
-
 void ARYU::InputJumpKey()
 {
 	URYUAnimInstance* ryuAnimInstance = StaticCast<URYUAnimInstance*>(GetMesh()->GetAnimInstance());
@@ -114,49 +66,6 @@ void ARYU::InputJumpKeyCompleted()
 	Super::StopJumping();
 }
 
-void ARYU::Dodge(const FInputActionInstance& inputActionInstance)
-{
-	AddInputBuffer(inputActionInstance);
-	if (HFSM)
-	{
-		HFSM->SetStateOrder(EStateOrder::Dodge);
-	}
-}
-
-
-void ARYU::LAttack(const FInputActionInstance& inputActionInstance)
-{
-	AddInputBuffer(inputActionInstance);
-	Attack(EPlayerInputType::LButton);
-
-}
-
-void ARYU::RAttack(const FInputActionInstance& inputActionInstance)
-{
-	AddInputBuffer(inputActionInstance);
-	Attack(EPlayerInputType::RButton);
-}
-
-void ARYU::Attack(EPlayerInputType type)
-{
-	if (HFSM)
-	{
-		UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
-		mannequinHunterCombatComponent->SetPlyerInputType(type);
-
-
-		EStateOrder stateOrder = EStateOrder::Attack;
-		if (HFSM->GetCurrentStateMachineID() == StaticCast<uint8>(EPlayerStateMachine::Default))
-			stateOrder |= EStateOrder::ToggleCombat;
-		HFSM->SetStateOrder(stateOrder);
-	}
-}
-
-void ARYU::LockOn()
-{
-	if (combatComponent)
-		combatComponent->SetLockOnTarget();
-}
 
 void ARYU::TestWeaponTypeChange(EWeaponType type)
 {
@@ -176,31 +85,7 @@ void ARYU::Falling()
 void ARYU::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(playerInputComponent)) {
-
-
-		//Jumping
-		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Triggered, this, &ARYU::InputJumpKey);
-		enhancedInputComponent->BindAction(inputData.jumpAction, ETriggerEvent::Completed, this, &ARYU::InputJumpKeyCompleted);
-
-		//Moving
-		enhancedInputComponent->BindAction(inputData.moveAction, ETriggerEvent::Triggered, this, &ARYU::Move);
-		enhancedInputComponent->BindAction(inputData.moveAction, ETriggerEvent::Completed, this, &ARYU::MoveCompleted);
-
-		//Looking
-		enhancedInputComponent->BindAction(inputData.lookAction, ETriggerEvent::Triggered, this, &ARYU::Look);
-		
-		enhancedInputComponent->BindAction(inputData.combatAction, ETriggerEvent::Triggered, this, &ARYU::ToggleCombat);
-
-		enhancedInputComponent->BindAction(inputData.dodgeAction, ETriggerEvent::Triggered, this, &ARYU::Dodge);
-
-		enhancedInputComponent->BindAction(inputData.AttackAction, ETriggerEvent::Triggered, this, &ARYU::LAttack);
-		
-		enhancedInputComponent->BindAction(inputData.Attack2Action, ETriggerEvent::Triggered, this, &ARYU::RAttack);
-
-		enhancedInputComponent->BindAction(inputData.lockOnAction, ETriggerEvent::Triggered, this, &ARYU::LockOn);
-
-	}
+	Super::SetupPlayerInputComponent(playerInputComponent);
 }
 
 void ARYU::BeginPlay()

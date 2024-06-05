@@ -36,12 +36,7 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 		return;
 	}
 
-	UCameraComponent* cameraComponent = findCameraComponentDelegate.Execute();
-
-
-
 	FVector ownerLocation = owner->GetActorLocation();
-
 
 	TArray<FHitResult> hitResults;
 
@@ -67,7 +62,6 @@ void UPlayerCharacterCombatComponent::SetLockOnTarget()
 		{
 			hitResult = hitResults[i];
 			hitActor = hitResult.GetActor();
-			//if (hitActor->GetComponentByClass<UCombatComponent>())
 
 			length = FVector::DistSquared(hitActor->GetActorLocation(), ownerLocation);
 			if (minLength > length)

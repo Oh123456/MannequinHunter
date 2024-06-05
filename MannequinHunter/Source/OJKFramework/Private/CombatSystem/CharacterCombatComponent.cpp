@@ -124,10 +124,14 @@ uint8 UCharacterCombatComponent::OnHitDirection_Implementation()
 	double dot = ownerForwardVector2D.Dot(attackForwardVector);
 	// 같은 방향을 보고있음
 	// 좌우 방향 고려
-	const float  backHitCorrectionAngle = 10.0f;
+	const float  backHitCorrectionAngle = -10.0f;
 	float backHitCorrection = FMath::Cos(FMath::DegreesToRadians(90.0f - backHitCorrectionAngle));
 	if (dot >= backHitCorrection)
+	{
+		//FVector hitPoint = baseWeapon->GetHitPoint();
+		//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), hitPoint, 30.0f, FLinearColor::Black, 10, 20);
 		return StaticCast<uint8>(EDirection::Back);
+	}
 
 	float angle = 0.0f;
 	
@@ -140,7 +144,7 @@ uint8 UCharacterCombatComponent::OnHitDirection_Implementation()
 
 		FVector2D hitDirection(hitPoint - owner->GetActorLocation());
 
-		UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), hitPoint, 30.0f, FLinearColor::Black, 10, 20);
+		//UKismetSystemLibrary::DrawDebugArrow(this, owner->GetActorLocation(), hitPoint, 30.0f, FLinearColor::Black, 10, 20);
 		angle = (FMath::RadiansToDegrees(ownerForwardVector2D.Dot(hitDirection.GetSafeNormal())));
 		cross = FVector2D::CrossProduct(ownerForwardVector2D, hitDirection.GetSafeNormal());
 	}
@@ -526,8 +530,6 @@ void UCharacterCombatComponent::Hit(ECharacterCombatMontageType animtype)
 	animInstance->Montage_Play(montage);
 
 	animInstance->Montage_SetEndDelegate(montageEnded, montage);
-	//animInstance->Montage_SetBlendingOutDelegate(montageBlendingOutStarted, montage);
-
 }
 
 void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float yaw)
@@ -582,7 +584,7 @@ void UCharacterCombatComponent::Turn(ECharacterCombatMontageType animtype, float
 void UCharacterCombatComponent::SetTargetActor(AActor* target)
 {
 	 characterRotationData.targetActor = target; 
-	 if (target)
+	 if (target == nullptr)
 		 return;
 	 UCombatComponent* combatSystem = target->GetComponentByClass<UCombatComponent>();
 	 if (combatSystem)
@@ -611,7 +613,7 @@ void UCharacterCombatComponent::LockOn()
 
 		FRotator lookAtRotator = UKismetMathLibrary::FindLookAtRotation(ownerLocation, targetActor->GetActorLocation());
 		FRotator newCamRotator = UKismetMathLibrary::RInterpTo(ownerRotator, lookAtRotator, GetWorld()->GetDeltaSeconds(), characterRotationData.lockOnInterpSpeed);
-		newCamRotator.Pitch -= LOCK_ON_ANGLE_CORRECTION;
+		newCamRotator.Pitch = -20.0f;// LOCK_ON_ANGLE_CORRECTION;
 
 		ownerController->SetControlRotation(newCamRotator);
 		if (characterRotationData.isActorRotation)

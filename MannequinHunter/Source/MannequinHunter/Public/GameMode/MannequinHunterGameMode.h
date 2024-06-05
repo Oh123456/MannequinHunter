@@ -22,6 +22,8 @@ public:
 
 	void SetBossHUD();
 	void ClearBossHUD();
+
+	void ToggleInventory();
 protected:
 	virtual void BeginPlay() override;
 
@@ -33,8 +35,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mainWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> inventoryWidgetClass;
+
 	UPROPERTY()
 	TObjectPtr<class UMainUIWidget> mainWidget;
+
+	UPROPERTY()
+	TObjectPtr<class UInventoryWidget> inventoryWidget;
 
 private:
 	UPROPERTY()

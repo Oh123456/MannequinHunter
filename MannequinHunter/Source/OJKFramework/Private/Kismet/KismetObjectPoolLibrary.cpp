@@ -6,8 +6,6 @@
 
 void UKismetObjectPoolLibrary::SetWorld(AActor* worldActor)
 {
-	//FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
-	//objectPoolManager->ChangeWorld(worldActor->GetWorld());
 	UObjectPoolSubsystem* objectPoolManager = GetObjectPoolManagerFromActor(worldActor);
 	if (objectPoolManager)
 	{
@@ -17,7 +15,6 @@ void UKismetObjectPoolLibrary::SetWorld(AActor* worldActor)
 
 AActor* UKismetObjectPoolLibrary::GetActor(UWorld* world, TSubclassOf<AActor> actorClass)
 {
-	//FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
 	UObjectPoolSubsystem* objectPoolManager = GetObjectPoolManagerFromWorld(world);
 	AActor* actorObject = objectPoolManager->GetActor(actorClass);
 	SetActiveActor(actorObject, true);
@@ -26,7 +23,6 @@ AActor* UKismetObjectPoolLibrary::GetActor(UWorld* world, TSubclassOf<AActor> ac
 
 bool UKismetObjectPoolLibrary::SetActor(UWorld* world, AActor* actorObject)
 {
-	//FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
 	UObjectPoolSubsystem* objectPoolManager = GetObjectPoolManagerFromWorld(world);
 	SetActiveActor(actorObject, false);
 	return objectPoolManager->SetActor(actorObject);

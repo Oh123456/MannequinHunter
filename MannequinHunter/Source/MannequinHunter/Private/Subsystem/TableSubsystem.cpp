@@ -25,9 +25,6 @@ void UTableSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	LoadTable<FAIPatternTreeTable>(TEXT("/Game/BP/DataTable/DT_AIPatternTree"));
 	LoadTable<FSpawnDataTable>(TEXT("/Game/BP/DataTable/DT_SpawnTable.DT_SpawnTable"));
 	LoadTable<FActionTable>(TEXT("/Game/BP/DataTable/DT_ActionTable.DT_ActionTable"));
-	///Script/Engine.DataTable'/Game/BP/DataTable/DT_ActionTable.DT_ActionTable'
-
-
 }
 
 void UTableSubsystem::Deinitialize()

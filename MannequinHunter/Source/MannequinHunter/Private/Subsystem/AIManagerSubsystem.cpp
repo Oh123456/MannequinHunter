@@ -109,7 +109,6 @@ const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::LoadPattern(const FName& 
 
 	 for (const FAIPatternDataTable* tableData : allDatas)
 	 {
-		 //FPatternData& patternData = AIPatternTree->patternDataMap.Add(tableData->patternName, FPatternData());
 		 FPatternData& patternData = AIPatternTree->AddPatternDataMap(tableData->patternName);
 		 patternData.SetPatternData(*tableData);
 	 }
@@ -127,8 +126,6 @@ const TSharedPtr<FAIPatternTree>* UAIManagerSubsystem::LoadPattern(const FName& 
 		int32 key = patternDataPair.Key;
 		AIPatternTree->AddIndexArray(key * key);
 		AIPatternTree->CreatePatternTree();
-		//AIPatternTree->indexArray.Add(key * key);
-		//AIPatternTree->patternTrees.Add(FAIPatternStartData());
 		total = 0;
 		FAIPatternStartData& patternDataMap = AIPatternTree->GetPatternTree(index);
 		for (const FAIPatternTreeTableData& data : patternDataPair.Value.datas)

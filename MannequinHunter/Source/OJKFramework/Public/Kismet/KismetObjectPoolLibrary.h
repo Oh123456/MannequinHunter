@@ -6,9 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "KismetObjectPoolLibrary.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class OJKFRAMEWORK_API UKismetObjectPoolLibrary : public UBlueprintFunctionLibrary
 {

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Player/PlayerCharacter.h"
+#include "MannequinHunterPlayerCharacter.h"
 #include "RYU.generated.h"
 
 /**
@@ -18,7 +18,7 @@ enum class EWeaponType : uint8;
 enum class EPlayerInputType : uint8;
 
 UCLASS()
-class MANNEQUINHUNTER_API ARYU : public APlayerCharacter
+class MANNEQUINHUNTER_API ARYU : public AMannequinHunterPlayerCharacter
 {
 	GENERATED_BODY()
 
@@ -27,20 +27,10 @@ class MANNEQUINHUNTER_API ARYU : public APlayerCharacter
 public:
 	ARYU();
 
+protected:
+	virtual void InputJumpKey() override;
+	virtual void InputJumpKeyCompleted() override;
 
-private:
-	void SetInputAction();
-
-	void ToggleCombat();
-
-	void InputJumpKey();
-	void InputJumpKeyCompleted();
-	void Dodge(const struct FInputActionInstance& inputActionInstance);
-	void LAttack(const struct FInputActionInstance& inputActionInstance);
-	void RAttack(const struct FInputActionInstance& inputActionInstance);
-
-	void Attack(EPlayerInputType type);
-	void LockOn();
 public:
 	UFUNCTION(BlueprintCallable)
 	void TestWeaponTypeChange(EWeaponType type);

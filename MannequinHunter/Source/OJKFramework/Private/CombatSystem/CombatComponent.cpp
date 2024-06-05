@@ -88,7 +88,7 @@ bool UCombatComponent::IsDeath() const
 {
 	const TSharedPtr<FStatusData>& data = status.GetStatusData();
 	if (data == nullptr)
-		return true;
+		return false;
 
 	return data->health <= 0;
 }

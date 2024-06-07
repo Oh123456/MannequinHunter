@@ -15,12 +15,12 @@ class MANNEQUINHUNTER_API UInventoryWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	UInventoryWidget(const FObjectInitializer& ObjectInitializer);
+
+	void Refresh();
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 private:
 	UPROPERTY()
 	TObjectPtr<class UGridPanel> gridPanel;
-
-	//UPROPERTY()
-	//TObjectPtr<class UItemWidget> itemWidget;
 };

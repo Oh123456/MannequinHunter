@@ -9,13 +9,17 @@
 /**
  * 
  */
+
+struct FItemTable;
+
 UCLASS()
 class MANNEQUINHUNTER_API UItemWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void SetData(int32 id);
-
+	void SetData(const FName& id);
+	const FItemTable* GetItemData() const { return itemData; }
+	void Clear();
 protected:
 	virtual void NativeOnInitialized() override;
 
@@ -23,5 +27,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<class UImage> iconWidget;
 
-	int32 itemId = -1;
+	const FItemTable* itemData;
+
 };

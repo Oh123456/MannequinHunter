@@ -4,16 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "CombatSystem/MannequinHunterStatus.h"
 #include "InventorySubsystem.generated.h"
 
 /**
  * 
  */
 
-struct FITemData
+struct FItemData
 {
-	int32 id = -1;
-
+public:
+	FItemData(const FName& itemID, const struct FItemTable* tableData);
+	FItemData() : id(), statusData() {};
+public:
+	FName id;
+	FMannequinHunterStatusData statusData;
 };
 
 
@@ -27,10 +32,12 @@ public:
 public:
 	UInventorySubsystem();
 
-	void SetItemData(const int32 index, const FITemData& data);
-	const FITemData* GetItemData(const int32 index) const;
+	void SetItemData(const int32 index, const FItemData& data);
+	void SetItemData(const int32 index, const FName& itemID);
+	const FItemData* GetItemData(const int32 index) const;
+	const TArray<FItemData>& GetItemDates() const { return items; }
 
 	void Reset();
 private:
-	TArray<FITemData> items;
+	TArray<FItemData> items;
 };

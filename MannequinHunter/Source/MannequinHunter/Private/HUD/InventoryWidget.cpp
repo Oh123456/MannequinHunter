@@ -11,11 +11,20 @@
 
 UInventoryWidget::UInventoryWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	//ConstructorHelpers::FObjectFinder<UItemWidget> Item_Widget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BP/HUD/WBP_Item.WBP_Item'"));
-	//if (Item_Widget.Succeeded())
-	//{
-	//	itemWidget = Item_Widget.Object;
-	//}
+}
+
+void UInventoryWidget::Refresh()
+{
+	UInventorySubsystem* inventorySubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+	const TArray<FItemData>& items = inventorySubsystem->GetItemDates();
+	for (int i = 0; i < UInventorySubsystem::MAX_ITEM_COUNT; i++)
+	{
+		if (items[i].id.IsNone())
+			continue;
+
+		UItemWidget* itemWidget = Cast<UItemWidget>(gridPanel->GetChildAt(i));
+		itemWidget->SetData(items[i].id);
+	}
 }
 
 void UInventoryWidget::NativeOnInitialized()
@@ -39,4 +48,9 @@ void UInventoryWidget::NativeOnInitialized()
 		slot->Nudge.X = 10.f;
 	}
 
+}
+
+void UInventoryWidget::NativeConstruct()
+{
+	Refresh();
 }

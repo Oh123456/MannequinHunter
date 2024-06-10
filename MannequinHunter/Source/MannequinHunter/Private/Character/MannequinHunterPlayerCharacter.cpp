@@ -9,6 +9,7 @@
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/MannequinHunterGameMode.h"
+#include "Controller/ActionPlayerController.h"
 
 void AMannequinHunterPlayerCharacter::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {
@@ -113,6 +114,8 @@ void AMannequinHunterPlayerCharacter::Dodge(const FInputActionInstance& inputAct
 
 void AMannequinHunterPlayerCharacter::LAttack(const FInputActionInstance& inputActionInstance)
 {
+	if (actionPlayerController->bShowMouseCursor)
+		return;
 	AddInputBuffer(inputActionInstance);
 	Attack(EPlayerInputType::LButton);
 
@@ -120,6 +123,8 @@ void AMannequinHunterPlayerCharacter::LAttack(const FInputActionInstance& inputA
 
 void AMannequinHunterPlayerCharacter::RAttack(const FInputActionInstance& inputActionInstance)
 {
+	if (actionPlayerController->bShowMouseCursor)
+		return;
 	AddInputBuffer(inputActionInstance);
 	Attack(EPlayerInputType::RButton);
 }
@@ -148,5 +153,8 @@ void AMannequinHunterPlayerCharacter::LockOn()
 void AMannequinHunterPlayerCharacter::OnInventory()
 {
 	AMannequinHunterGameMode* gameMode = Cast<AMannequinHunterGameMode>(UGameplayStatics::GetGameMode(this));
+	if (gameMode == nullptr)
+		return;
 	gameMode->ToggleInventory();
+	
 }

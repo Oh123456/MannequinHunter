@@ -23,7 +23,7 @@ public:
 	void SetBossHUD();
 	void ClearBossHUD();
 
-	void ToggleInventory();
+	bool ToggleInventory();
 protected:
 	virtual void BeginPlay() override;
 

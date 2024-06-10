@@ -5,6 +5,8 @@
 #include "Components/Image.h"
 #include "Subsystem/TableSubsystem.h"
 #include "Table/ItemDataTable.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Input/Events.h"
 
 void UItemWidget::SetData(const FName& id)
 {
@@ -36,4 +38,15 @@ void UItemWidget::NativeOnInitialized()
 {
 	iconWidget = Cast<UImage>(GetWidgetFromName(TEXT("Icon")));
 	Clear();
+}
+
+FReply UItemWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	FReply reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+
+	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	{
+		UE_LOG(LogTemp,Log,TEXT("MouseButtonDown !! "));
+	}
+	return reply;
 }

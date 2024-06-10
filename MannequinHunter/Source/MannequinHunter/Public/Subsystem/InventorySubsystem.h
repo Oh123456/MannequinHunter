@@ -21,6 +21,12 @@ public:
 	FMannequinHunterStatusData statusData;
 };
 
+enum class EEquipment
+{
+	E_Weapone= 0,
+	E_Armor,
+	E_Accessories,
+};
 
 UCLASS()
 class MANNEQUINHUNTER_API UInventorySubsystem : public UGameInstanceSubsystem
@@ -40,4 +46,5 @@ public:
 	void Reset();
 private:
 	TArray<FItemData> items;
+	TMap<EEquipment, FItemData> equipment;
 };

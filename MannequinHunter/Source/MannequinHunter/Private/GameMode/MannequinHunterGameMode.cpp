@@ -14,6 +14,8 @@
 #include "BaseActionCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "HUD/InventoryWidget.h"
+#include "Subsystem/UISubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 AMannequinHunterGameMode::AMannequinHunterGameMode()
 {
@@ -72,16 +74,20 @@ void AMannequinHunterGameMode::ClearBossHUD()
 	mainWidget->SetWidgetVisibility(EMainUIWidgetEnum::BossHPBar, ESlateVisibility::Hidden);
 }
 
-void AMannequinHunterGameMode::ToggleInventory()
+bool AMannequinHunterGameMode::ToggleInventory()
 {
-	if (!inventoryWidget->IsInViewport())
+	UUISubsystem* uiManager = GetGameInstance()->GetSubsystem<UUISubsystem>();
+	bool isShow =  uiManager->IsShow(inventoryWidgetClass);
+	if (!isShow)
 	{
-		inventoryWidget->AddToViewport();
+		uiManager->Show(inventoryWidgetClass);
 	}
 	else
 	{
-		inventoryWidget->RemoveFromParent();
+		uiManager->Hide(inventoryWidgetClass);
 	}
+
+	return isShow;
 }
 
 
@@ -93,7 +99,7 @@ void AMannequinHunterGameMode::BeginPlay()
 		return;
 
 	mainWidget = Cast<UMainUIWidget>(CreateWidget(GetWorld(), mainWidgetClass));
-	inventoryWidget = Cast<UInventoryWidget>(CreateWidget(GetWorld(), inventoryWidgetClass));
+	//inventoryWidget = Cast<UInventoryWidget>(CreateWidget(GetWorld(), inventoryWidgetClass));
 
 	if (mainWidget)
 	{
@@ -107,6 +113,27 @@ void AMannequinHunterGameMode::BeginPlay()
 		status.OnChangeStaminaStatus.AddUObject(mainWidget, &UMainUIWidget::SetStaminaBar);
 		
 	}
+
+	UUISubsystem* uiManager = GetGameInstance()->GetSubsystem<UUISubsystem>();
+	uiManager->OnShow().AddLambda([this](UUserWidget* showWidget)
+		{
+			APlayerController* playerController = UGameplayStatics::GetPlayerController(this, 0);
+			playerController->SetShowMouseCursor(true);
+			playerController->SetLockLocation(true);
+			playerController->SetInputMode(FInputModeGameAndUI());
+		});
+
+	uiManager->OnHide().AddLambda([this](UUserWidget* hideWidget)
+		{
+			UUISubsystem* uiManager = GetGameInstance()->GetSubsystem<UUISubsystem>();
+			if (uiManager->Count() == 0)
+			{
+				APlayerController* playerController = UGameplayStatics::GetPlayerController(this,0);
+				playerController->SetShowMouseCursor(false);
+				playerController->SetInputMode(FInputModeGameOnly());
+
+			}
+		});
 }
 
 void AMannequinHunterGameMode::ClearBoss(const FDeathInfo& info)

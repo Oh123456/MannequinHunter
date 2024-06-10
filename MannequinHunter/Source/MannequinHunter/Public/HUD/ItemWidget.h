@@ -22,7 +22,7 @@ public:
 	void Clear();
 protected:
 	virtual void NativeOnInitialized() override;
-
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 private:
 	UPROPERTY()
 	TObjectPtr<class UImage> iconWidget;

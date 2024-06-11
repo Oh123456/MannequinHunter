@@ -33,4 +33,5 @@ protected:
 	virtual void LockOn();
 
 	void OnInventory();
+	void OnInfo();
 };

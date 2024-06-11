@@ -41,6 +41,8 @@ void AMannequinHunterPlayerCharacter::SetupPlayerInputComponent(UInputComponent*
 		enhancedInputComponent->BindAction(inputData.lockOnAction, ETriggerEvent::Triggered, this, &AMannequinHunterPlayerCharacter::LockOn);
 
 		enhancedInputComponent->BindAction(inputData.InventoryAction, ETriggerEvent::Triggered, this, &AMannequinHunterPlayerCharacter::OnInventory);
+
+		enhancedInputComponent->BindAction(inputData.infoAction, ETriggerEvent::Triggered, this, &AMannequinHunterPlayerCharacter::OnInfo);
 	}
 
 }
@@ -157,4 +159,12 @@ void AMannequinHunterPlayerCharacter::OnInventory()
 		return;
 	gameMode->ToggleInventory();
 	
+}
+
+void AMannequinHunterPlayerCharacter::OnInfo()
+{
+	AMannequinHunterGameMode* gameMode = Cast<AMannequinHunterGameMode>(UGameplayStatics::GetGameMode(this));
+	if (gameMode == nullptr)
+		return;
+	gameMode->ToggleInfo();
 }

@@ -56,6 +56,9 @@ struct FPlayerInputData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> InventoryAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> infoAction;
 };
 
 

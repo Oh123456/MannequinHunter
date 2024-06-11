@@ -76,18 +76,12 @@ void AMannequinHunterGameMode::ClearBossHUD()
 
 bool AMannequinHunterGameMode::ToggleInventory()
 {
-	UUISubsystem* uiManager = GetGameInstance()->GetSubsystem<UUISubsystem>();
-	bool isShow =  uiManager->IsShow(inventoryWidgetClass);
-	if (!isShow)
-	{
-		uiManager->Show(inventoryWidgetClass);
-	}
-	else
-	{
-		uiManager->Hide(inventoryWidgetClass);
-	}
+	return OpenPanel(inventoryWidgetClass);
+}
 
-	return isShow;
+bool AMannequinHunterGameMode::ToggleInfo()
+{
+	return OpenPanel(infoWidgetClass);
 }
 
 
@@ -156,6 +150,22 @@ void AMannequinHunterGameMode::ClearBoss(const FDeathInfo& info)
 			objPool->SetActor(spawnBoss);
 			spawnBoss = nullptr;
 		}, 2.0f, false);
+}
+
+bool AMannequinHunterGameMode::OpenPanel(const TSubclassOf<UUserWidget>& widgetClass)
+{
+	UUISubsystem* uiManager = GetGameInstance()->GetSubsystem<UUISubsystem>();
+	bool isShow = uiManager->IsShow(widgetClass);
+	if (!isShow)
+	{
+		uiManager->Show(widgetClass);
+	}
+	else
+	{
+		uiManager->Hide(widgetClass);
+	}
+
+	return isShow;
 }
 
 

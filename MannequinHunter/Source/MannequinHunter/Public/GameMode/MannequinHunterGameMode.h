@@ -24,11 +24,13 @@ public:
 	void ClearBossHUD();
 
 	bool ToggleInventory();
+	bool ToggleInfo();
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	void ClearBoss(const FDeathInfo& info);
+	bool OpenPanel(const TSubclassOf<UUserWidget>& wudgetClass);
 public:
 	FClearBoss OnClearBossEvent;
 protected:
@@ -37,6 +39,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> inventoryWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> infoWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<class UMainUIWidget> mainWidget;

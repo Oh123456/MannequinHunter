@@ -38,6 +38,8 @@ public:
 public:
 	UInventorySubsystem();
 
+	void Equipment(EEquipment slot, const FItemData& data);
+	void Equipment(EEquipment slot, int32 InventoryIndex);
 	void SetItemData(const int32 index, const FItemData& data);
 	void SetItemData(const int32 index, const FName& itemID);
 	const FItemData* GetItemData(const int32 index) const;

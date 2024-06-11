@@ -31,6 +31,7 @@ protected:
 
 	virtual void Attack(EPlayerInputType type);
 	virtual void LockOn();
+	virtual void Look(const FInputActionValue& Value) override;
 
 	void OnInventory();
 	void OnInfo();

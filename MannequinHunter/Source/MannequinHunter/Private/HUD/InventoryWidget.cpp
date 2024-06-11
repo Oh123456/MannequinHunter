@@ -42,8 +42,8 @@ void UInventoryWidget::NativeOnInitialized()
 	for (int i = 0; i < UInventorySubsystem::MAX_ITEM_COUNT; i++)
 	{
 
-		UUserWidget* widget = CreateWidget(GetWorld(), itemWidget);
-
+		UItemWidget* widget = CreateWidget<UItemWidget>(GetWorld(), itemWidget);
+		widget->SetIndex(i);
 		UGridSlot* slot = gridPanel->AddChildToGrid(widget, i / column, i % column);
 		slot->Nudge.X = 10.f;
 	}

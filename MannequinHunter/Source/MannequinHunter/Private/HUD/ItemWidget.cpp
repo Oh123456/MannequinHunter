@@ -4,6 +4,7 @@
 #include "HUD/ItemWidget.h"
 #include "Components/Image.h"
 #include "Subsystem/TableSubsystem.h"
+#include "Subsystem/InventorySubsystem.h"
 #include "Table/ItemDataTable.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Input/Events.h"
@@ -46,6 +47,13 @@ FReply UItemWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const F
 
 	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
 	{
+		UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+		inventory->Equipment(EEquipment::E_Weapone, index);
+		const FName& id = inventory->GetItemData(index)->id;
+		if (id.IsNone())
+			Clear();
+		else
+			SetData(id);
 		UE_LOG(LogTemp,Log,TEXT("MouseButtonDown !! "));
 	}
 	return reply;

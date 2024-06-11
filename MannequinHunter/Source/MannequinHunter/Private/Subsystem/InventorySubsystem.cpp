@@ -14,6 +14,10 @@ UInventorySubsystem::UInventorySubsystem() :  Super()
 	{
 		items.Add(FItemData());
 	}
+
+	Equipment(EEquipment::E_Weapone, FItemData());
+	Equipment(EEquipment::E_Armor, FItemData());
+	Equipment(EEquipment::E_Accessories, FItemData());
 }
 
 void UInventorySubsystem::SetItemData(const int32 index, const FItemData& data)
@@ -28,6 +32,25 @@ void UInventorySubsystem::SetItemData(const int32 index, const FName& itemID)
 	UTableSubsystem* tableSubsystem = GetGameInstance()->GetSubsystem<UTableSubsystem>();
 	const UDataTable* itemDataTable = tableSubsystem->GetTable<FItemTable>();
 	SetItemData(index, FItemData(itemID, itemDataTable->FindRow<FItemTable>(itemID, TEXT(""))));
+}
+
+void UInventorySubsystem::Equipment(EEquipment slot, const FItemData& data)
+{
+	if (equipment.Contains(slot))
+		equipment[slot] = data;
+	else
+		equipment.Add(slot, data);
+}
+
+void UInventorySubsystem::Equipment(EEquipment slot, int32 InventoryIndex)
+{
+	const FItemData& data = items[InventoryIndex];
+	if (data.id.IsNone())
+		return;
+	FItemData equipmentData = *equipment.Find(slot);
+	equipment[slot] = data;
+	items[InventoryIndex] = equipmentData;
+
 }
 
 const FItemData* UInventorySubsystem::GetItemData(const int32 index) const

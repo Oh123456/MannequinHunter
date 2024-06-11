@@ -168,3 +168,11 @@ void AMannequinHunterPlayerCharacter::OnInfo()
 		return;
 	gameMode->ToggleInfo();
 }
+
+
+void AMannequinHunterPlayerCharacter::Look(const FInputActionValue & Value)
+{
+	if (actionPlayerController->bShowMouseCursor)
+		return;
+	Super::Look(Value);
+}

@@ -17,6 +17,7 @@ class MANNEQUINHUNTER_API UItemWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	void SetIndex(int32 num) { this->index = num; }
 	void SetData(const FName& id);
 	const FItemTable* GetItemData() const { return itemData; }
 	void Clear();
@@ -28,5 +29,5 @@ private:
 	TObjectPtr<class UImage> iconWidget;
 
 	const FItemTable* itemData;
-
+	int32 index = 0;
 };

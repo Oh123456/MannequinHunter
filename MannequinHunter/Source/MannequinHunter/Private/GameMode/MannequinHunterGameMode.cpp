@@ -105,6 +105,8 @@ void AMannequinHunterGameMode::BeginPlay()
 		
 		status.OnChangeHPStatus.AddUObject(mainWidget, &UMainUIWidget::SetPlayerHPBar);
 		status.OnChangeStaminaStatus.AddUObject(mainWidget, &UMainUIWidget::SetStaminaBar);
+		status.OnChangeStatus.AddUObject(mainWidget, &UMainUIWidget::SetPlayerHPBar);
+		status.OnChangeStatus.AddUObject(mainWidget, &UMainUIWidget::SetStaminaBar);
 		
 	}
 

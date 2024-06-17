@@ -4,6 +4,8 @@
 #include "CombatSystem/MannequinHunterStatus.h"
 #include "Table/MannequinHunterStatusTable.h"
 
+FMannequinHunterStatusData FMannequinHunterStatusData::NoneData;
+
 void FMannequinHunterStatus::CreateStatus()
 {
 	status = MakeShared<FMannequinHunterStatusData>();

@@ -8,7 +8,7 @@
 #include "Table/ItemDataTable.h"
 #include "CombatSystem/MannequinHunterCombatComponent.h"
 #include "Subsystem/InventorySubsystem.h"
-
+#include "Item/Item.h"
 
 void UMannequinHunterGameInstance::OnStart()
 {
@@ -27,21 +27,24 @@ void UMannequinHunterGameInstance::OnStart()
 
 	UInventorySubsystem* inventorySubsystem = GetSubsystem<UInventorySubsystem>();
 	int32 index = 0;
-	const UDataTable* itemDataTable = tableSubsystem->GetTable<FItemTable>();
 	FName itemID = TEXT("Sword01");
-
-	FItemData itemData(itemID, itemDataTable->FindRow<FItemTable>(itemID, TEXT("")));
-	inventorySubsystem->SetItemData(index++, itemData);
+	inventorySubsystem->SetItemData(index++, FItemFactory::CreateItemData(itemID, tableSubsystem));
 
 	itemID = TEXT("Sword02");
-	itemData = FItemData(itemID, itemDataTable->FindRow<FItemTable>(itemID, TEXT("")));
-	inventorySubsystem->SetItemData(index++, itemData);
+	inventorySubsystem->SetItemData(index++, FItemFactory::CreateItemData(itemID, tableSubsystem));
 
 	itemID = TEXT("Fist01");
-	itemData = FItemData(itemID, itemDataTable->FindRow<FItemTable>(itemID, TEXT("")));
-	inventorySubsystem->SetItemData(index++, itemData);
+	inventorySubsystem->SetItemData(index++, FItemFactory::CreateItemData(itemID, tableSubsystem));
 
 	itemID = TEXT("Fist02");
-	itemData = FItemData(itemID, itemDataTable->FindRow<FItemTable>(itemID, TEXT("")));
-	inventorySubsystem->SetItemData(index++, itemData);
+	inventorySubsystem->SetItemData(index++, FItemFactory::CreateItemData(itemID, tableSubsystem));
+
+	itemID = TEXT("ETC_1");
+	inventorySubsystem->SetItemData(index++, FItemFactory::CreateItemData(itemID, tableSubsystem));
+
+	itemID = TEXT("ETC_2");
+	inventorySubsystem->SetItemData(index++, FItemFactory::CreateItemData(itemID, tableSubsystem));
+
+	itemID = TEXT("ETC_3");
+	inventorySubsystem->SetItemData(index++, FItemFactory::CreateItemData(itemID, tableSubsystem));
 }

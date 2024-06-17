@@ -4,22 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "CombatSystem/MannequinHunterStatus.h"
 #include "InventorySubsystem.generated.h"
 
 /**
  * 
  */
 
-struct FItemData
-{
-public:
-	FItemData(const FName& itemID, const struct FItemTable* tableData);
-	FItemData() : id(), statusData() {};
-public:
-	FName id;
-	FMannequinHunterStatusData statusData;
-};
+struct FItemData;
 
 enum class EEquipment
 {
@@ -27,6 +18,9 @@ enum class EEquipment
 	E_Armor,
 	E_Accessories,
 };
+
+DECLARE_EVENT_TwoParams(UInventorySubsystem, FEquipmentEvent, EEquipment , const TSharedPtr<FItemData>);
+DECLARE_EVENT_TwoParams(UInventorySubsystem, FAddInventoryEvent, const FName&, int32);
 
 UCLASS()
 class MANNEQUINHUNTER_API UInventorySubsystem : public UGameInstanceSubsystem
@@ -38,15 +32,25 @@ public:
 public:
 	UInventorySubsystem();
 
-	void Equipment(EEquipment slot, const FItemData& data);
+	void Equipment(EEquipment slot, const TSharedPtr<FItemData>& data);
 	void Equipment(EEquipment slot, int32 InventoryIndex);
-	void SetItemData(const int32 index, const FItemData& data);
+	void RemoveEquipment(EEquipment slot);
+	bool CheckEquipmentItem(EEquipment slot) { return (*equipment.Find(slot)) != nullptr; }
+	void SetItemData(const int32 index, const TSharedPtr<FItemData>& data);
 	void SetItemData(const int32 index, const FName& itemID);
-	const FItemData* GetItemData(const int32 index) const;
-	const TArray<FItemData>& GetItemDates() const { return items; }
+	int32 FindEmptySlot();
+	const TSharedPtr<FItemData>* GetItemData(const int32 index) const;
+	const TArray<TSharedPtr<FItemData>>& GetItemDates() const { return items; }
+	const TMap<EEquipment, TSharedPtr<FItemData>>& GetEquipment() const { return equipment; }
 
 	void Reset();
+
+	FEquipmentEvent& OnEquipment() { return equipmentEvent; }
+	FAddInventoryEvent& OnAddInventoryEvent() { return addInventoryEvent; }
 private:
-	TArray<FItemData> items;
-	TMap<EEquipment, FItemData> equipment;
+	TArray<TSharedPtr<FItemData>> items;
+	TMap<EEquipment, TSharedPtr<FItemData>> equipment;
+
+	FEquipmentEvent equipmentEvent;
+	FAddInventoryEvent addInventoryEvent;
 };

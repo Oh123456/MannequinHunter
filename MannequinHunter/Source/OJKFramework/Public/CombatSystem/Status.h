@@ -17,7 +17,8 @@ public:
 	virtual ~FStatusDataBase() {};
 public:
 	virtual void Copy(const FStatusDataBase& data);
-
+	virtual void Sum(const FStatusDataBase& data);
+	virtual void Sub(const FStatusDataBase& data);
 public:
 	UPROPERTY(EditDefaultsOnly)
 	int32 attack;
@@ -39,7 +40,8 @@ struct OJKFRAMEWORK_API FStatusData : public FStatusDataBase
 	virtual ~FStatusData() {};
 
 	virtual void Copy(const FStatusDataBase& data) override;
-
+	virtual void Sum(const FStatusDataBase& data) override;
+	virtual void Sub(const FStatusDataBase& data) override;
 	int32 health;
 	int32 stamina;
 };
@@ -66,11 +68,16 @@ public:
 	void SetStamina(int32 setValue);
 	void SetMaxStamina(int32 setValue);	
 
+	void Sum(const FStatusDataBase& data);
+	void Sub(const FStatusDataBase& data);
+
 	bool CheckStamina() const { return status->stamina > 0; }
 	bool CheckMaxStamina() const { return status->maxStamina <= status->stamina; }
 	bool CheckMaxHP() const { return status->maxHealth <= status->health; }
 
 	const TSharedPtr<FStatusData>& GetStatusData() const { return status; }
+	TSharedPtr<FStatusData>& GetStatusData() { return status; }
+
 protected:
 	virtual void CreateStatus();
 	virtual const FStatusDataBase* GetStatusDataFormTable(const FStatusDataTableBase* dataTable);

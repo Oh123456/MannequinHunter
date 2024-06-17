@@ -23,10 +23,12 @@ public:
 	void Clear();
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
-private:
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+protected:
 	UPROPERTY()
 	TObjectPtr<class UImage> iconWidget;
+
+	FName* ItemID;
 
 	const FItemTable* itemData;
 	int32 index = 0;

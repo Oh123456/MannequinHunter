@@ -17,7 +17,12 @@ struct FMannequinHunterStatusData : public FStatusData
 {
 	GENERATED_BODY()
 
-	virtual ~FMannequinHunterStatusData() {};
+public:
+	static FMannequinHunterStatusData NoneData;
+
+	FMannequinHunterStatusData() { NoneData.maxHealth = 0; }
+
+	virtual ~FMannequinHunterStatusData() { };
 
 	virtual void Copy(const FStatusDataBase& data) override
 	{
@@ -25,7 +30,7 @@ struct FMannequinHunterStatusData : public FStatusData
 	}
 };
 
-class MANNEQUINHUNTER_API FMannequinHunterStatus : FStatus
+class MANNEQUINHUNTER_API FMannequinHunterStatus : public FStatus
 {
 
 protected:

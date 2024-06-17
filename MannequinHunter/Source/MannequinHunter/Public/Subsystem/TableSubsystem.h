@@ -11,16 +11,28 @@
 /**
  * 
  */
+
+enum class EItemType;
+
+struct FItemDataTableResult
+{
+	EItemType type;
+	UPROPERTY()
+	const UDataTable* table;
+};
+
+
 UCLASS()
 class MANNEQUINHUNTER_API UTableSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-	
+public:
+	const static FName STRINGTABLE_UI_PATH;
 
 public:
 
 	template<typename TTable>
-	const UDataTable* GetTable()
+	const UDataTable* GetTable() 
 	{
 		TObjectPtr<UDataTable>* findTable = tableMap.Find(TTable::StaticStruct());
 
@@ -32,7 +44,7 @@ public:
 
 
 	template<typename TTable>
-	const TTable* GetTable(FName key, const FString& contextString = TEXT(""))
+	const TTable* GetTable(FName key, const FString& contextString = TEXT("")) 
 	{
 		TObjectPtr<UDataTable>* findTable = tableMap.Find(TTable::StaticStruct());
 
@@ -53,7 +65,7 @@ public:
 	}
 
 	const UDataTable* LoadAIPatternTable(const FName& tableName);
-
+	const void GetItemTable(const FName& id, FItemDataTableResult& OUT itemDataTableResult);
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;

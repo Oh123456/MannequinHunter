@@ -69,6 +69,18 @@ void FStatus::SetMaxStamina(int32 setValue)
 	OnChangeStaminaStatus.Broadcast(status);
 }
 
+void FStatus::Sum(const FStatusDataBase& data)
+{
+	status->Sum(data);
+	OnChangeStatus.Broadcast(status);
+}
+
+void FStatus::Sub(const FStatusDataBase& data)
+{
+	status->Sub(data);
+	OnChangeStatus.Broadcast(status);
+}
+
 void FStatus::CreateStatus()
 {
 	status = MakeShared<FStatusData>();
@@ -93,6 +105,24 @@ void FStatusDataBase::Copy(const FStatusDataBase& data)
 	maxStamina = data.maxStamina;
 }
 
+void FStatusDataBase::Sum(const FStatusDataBase& data)
+{
+	attack += data.attack;
+	attackSpeed += data.attackSpeed;
+	defensive += data.defensive;
+	maxHealth += data.maxHealth;
+	maxStamina += data.maxStamina;
+}
+
+void FStatusDataBase::Sub(const FStatusDataBase& data)
+{
+	attack -= data.attack;
+	attackSpeed -= data.attackSpeed;
+	defensive -= data.defensive;
+	maxHealth -= data.maxHealth;
+	maxStamina -= data.maxStamina;
+}
+
 void FStatusData::Copy(const FStatusDataBase& data)
 {
 	FStatusDataBase::Copy(data);
@@ -101,4 +131,29 @@ void FStatusData::Copy(const FStatusDataBase& data)
 	health = statusData.maxHealth;
 	stamina = statusData.maxStamina;
 
+}
+
+void FStatusData::Sum(const FStatusDataBase& data)
+{
+	FStatusDataBase::Sum(data);
+	const FStatusData& statusData = static_cast<const FStatusData&>(data);
+
+
+	health += statusData.maxHealth;
+	if (health > maxHealth)
+		health = maxHealth;
+	stamina += statusData.maxStamina;
+	if (stamina > maxStamina)
+		stamina = maxStamina;
+}
+
+void FStatusData::Sub(const FStatusDataBase& data)
+{
+	FStatusDataBase::Sub(data);
+	const FStatusData& statusData = static_cast<const FStatusData&>(data);
+
+	if (health > maxHealth)
+		health = maxHealth;
+	if (stamina > maxStamina)
+		stamina = maxStamina;
 }

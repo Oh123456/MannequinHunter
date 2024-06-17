@@ -17,9 +17,12 @@ public:
 	UInventoryWidget(const FObjectInitializer& ObjectInitializer);
 
 	void Refresh();
+private:
+	void Refresh(const FName& id, int32 index);
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
+
 private:
 	UPROPERTY()
 	TObjectPtr<class UGridPanel> gridPanel;

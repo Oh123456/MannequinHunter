@@ -11,9 +11,13 @@
 
 void UItemWidget::SetData(const FName& id)
 {
-	UTableSubsystem* tableSubsystem = GetGameInstance()->GetSubsystem<UTableSubsystem>();
+	ItemID = const_cast<FName*>(&id);
+	UGameInstance* gameInstance = GetGameInstance();
+	UTableSubsystem* tableSubsystem = gameInstance->GetSubsystem<UTableSubsystem>();
 
-	const UDataTable* itemTable = tableSubsystem->GetTable<FItemTable>();
+	FItemDataTableResult result;
+	tableSubsystem->GetItemTable(id , result);
+	const UDataTable* itemTable = result.table;
 	itemData = itemTable->FindRow<FItemTable>(id,TEXT(""));
 
 	if (itemData == nullptr)
@@ -28,6 +32,7 @@ void UItemWidget::SetData(const FName& id)
 
 void UItemWidget::Clear()
 {
+	ItemID = nullptr;
 	itemData = nullptr;
 	iconWidget->SetBrushFromTexture(nullptr);
 	FLinearColor color = FLinearColor::White;
@@ -41,20 +46,9 @@ void UItemWidget::NativeOnInitialized()
 	Clear();
 }
 
-FReply UItemWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	FReply reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
-	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
-	{
-		UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
-		inventory->Equipment(EEquipment::E_Weapone, index);
-		const FName& id = inventory->GetItemData(index)->id;
-		if (id.IsNone())
-			Clear();
-		else
-			SetData(id);
-		UE_LOG(LogTemp,Log,TEXT("MouseButtonDown !! "));
-	}
-	return reply;
+
+void UItemWidget::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
 }

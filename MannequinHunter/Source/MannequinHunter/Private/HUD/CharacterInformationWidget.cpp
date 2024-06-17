@@ -9,26 +9,35 @@
 #include "CombatSystem/Status.h"
 #include "Components/GridPanel.h"
 #include "Components/TextBlock.h"
+#include "Subsystem/InventorySubsystem.h"
+#include "HUD/ItemWidget.h"
+#include "Item/Item.h"
+#include "Internationalization/StringTableRegistry.h"
+#include "Subsystem/TableSubsystem.h"
 
-#define SET_STATUS_TEXT_DATA(widget, argData) \
+#define SET_STATUS_TEXT_DATA(widget, argData, keyText) \
 {\
-	UTextBlock* textBlock = Cast<UTextBlock>(widget); \
-	FText text = textBlock->GetText(); \
-	FStringFormatArg args(argData); \
-	FStringFormatOrderedArguments orderedArg; \
-	orderedArg.Add(args); \
-	textBlock->SetText(FText::FromString(FString::Format(*text.ToString(), orderedArg))); \
-} \
+	UTextBlock* textBlock = Cast<UTextBlock>(widget);\
+	FText text = FText::Format(FText::FromStringTable(UTableSubsystem::STRINGTABLE_UI_PATH, TEXT(keyText)), FText::AsNumber(argData));\
+	textBlock->SetText(text);\
+}\
 
-void UCharacterInformationWidget::UpdateStatus(TArray<UWidget*>& textWidgets, const TSharedPtr<FStatusData>& data)
+int32 testValue = 123456789;
+
+void UCharacterInformationWidget::UpdateStatus(const TSharedPtr<FStatusData>& data)
 {
 	int32 count = 0;
 
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->maxHealth);
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->maxStamina);
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->attack);
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->attackSpeed);
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->defensive);
+	TArray<UWidget*> textWidgets = infoPanel->GetAllChildren();
+
+
+	SET_STATUS_TEXT_DATA(textWidgets[count++], data->maxHealth, "Text_MaxHealth");
+	SET_STATUS_TEXT_DATA(textWidgets[count++], data->maxStamina, "Text_MaxStamina");
+	SET_STATUS_TEXT_DATA(textWidgets[count++], data->attack, "Text_Attack");
+	SET_STATUS_TEXT_DATA(textWidgets[count++], data->attackSpeed, "Text_AttackSpeed");
+	SET_STATUS_TEXT_DATA(textWidgets[count++], data->defensive, "Text_Defensive");
+
+
 
 }
 
@@ -36,12 +45,48 @@ void UCharacterInformationWidget::ChangeStatus(const TSharedPtr<FStatusData>& da
 {
 	if (IsInViewport())
 	{
-		TArray<UWidget*> children = infoPanel->GetAllChildren();
-		UpdateStatus(children, data);
+		UpdateStatus(data);
 	}
 	else
 	{
-		isChangeStatus = true;
+		EnumAddFlags<EChangeInformationData>(changeData, EChangeInformationData::E_Status);
+	}
+}
+
+void UCharacterInformationWidget::UpdateEquipment()
+{
+	UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+
+
+	const auto& equipmentMap = inventory->GetEquipment();
+	for (const auto& pair : equipmentMap)
+	{
+
+		UItemWidget* widget = Cast<UItemWidget>(equipmentBox->GetChildAt(StaticCast<int32>(pair.Key)));
+		if (pair.Value == nullptr)
+		{
+			widget->Clear();
+			continue;
+		}
+
+		widget->SetData((pair.Value)->id);
+	}
+}
+
+void UCharacterInformationWidget::ChangeEquipment(EEquipment slot, const TSharedPtr<FItemData> data)
+{
+	if (IsInViewport())
+	{
+
+		UItemWidget* itemWidget = Cast<UItemWidget>(equipmentBox->GetChildAt(StaticCast<int32>(slot)));
+		if (data == nullptr)
+			itemWidget->Clear();
+		else
+			itemWidget->SetData(data->id);
+	}
+	else
+	{
+		EnumAddFlags<EChangeInformationData>(changeData, EChangeInformationData::E_Equipment);
 	}
 }
 
@@ -56,9 +101,16 @@ void UCharacterInformationWidget::NativeOnInitialized()
 	if (player == nullptr)
 		return;
 	FStatus& status = player->GetCombatComponent()->GetStatusData();
-	TArray<UWidget*> children = infoPanel->GetAllChildren();
+	TArray<UWidget*> children = equipmentBox->GetAllChildren();
 
-	UpdateStatus(children, status.GetStatusData());
+	for (int32 i = 0; i < children.Num(); i++)
+	{
+		Cast<UItemWidget>(children[i])->SetIndex(i);
+	}
+
+	UpdateStatus(status.GetStatusData());
+	UpdateEquipment();
+
 }
 
 void UCharacterInformationWidget::NativeConstruct()
@@ -69,15 +121,22 @@ void UCharacterInformationWidget::NativeConstruct()
 	if (player == nullptr)
 		return;
 	FStatus& status = player->GetCombatComponent()->GetStatusData();
-	changeStatusDelegateHandle = status.OnChangeStatus.AddUObject(this, &UCharacterInformationWidget::ChangeStatus);
+	/*changeStatusDelegateHandle = */status.OnChangeStatus.AddUObject(this, &UCharacterInformationWidget::ChangeStatus);
 
-	if (isChangeStatus)
+	if (EnumHasAnyFlags(changeData, EChangeInformationData::E_Status))
 	{
-		TArray<UWidget*> children = infoPanel->GetAllChildren();
 
-		UpdateStatus(children, status.GetStatusData());
+		UpdateStatus(status.GetStatusData());
+		EnumRemoveFlags(changeData, EChangeInformationData::E_Status);
+	}
 
-		isChangeStatus = false;
+	UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+	/*changeEquipmentDelegateHandle = */inventory->OnEquipment().AddUObject(this, &UCharacterInformationWidget::ChangeEquipment);
+
+	if (EnumHasAnyFlags(changeData, EChangeInformationData::E_Equipment))
+	{
+		UpdateEquipment();
+		EnumRemoveFlags(changeData, EChangeInformationData::E_Equipment);
 	}
 }
 
@@ -85,9 +144,12 @@ void UCharacterInformationWidget::NativeDestruct()
 {
 	Super::NativeDestruct();
 
-	AMannequinHunterPlayerCharacter* player = Cast<AMannequinHunterPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (player == nullptr)
-		return;
-	FStatus& status = player->GetCombatComponent()->GetStatusData();
-	status.OnChangeStatus.Remove(changeStatusDelegateHandle);
+	//AMannequinHunterPlayerCharacter* player = Cast<AMannequinHunterPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	//if (player == nullptr)
+	//	return;
+	//FStatus& status = player->GetCombatComponent()->GetStatusData();
+	//status.OnChangeStatus.Remove(changeStatusDelegateHandle);
+
+	//UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+	//inventory->OnEquipment().Remove(changeEquipmentDelegateHandle);
 }

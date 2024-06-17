@@ -4,7 +4,8 @@
 #include "HUD/InventoryWidget.h"
 #include "Components/GridPanel.h"
 #include "Components/GridSlot.h"
-#include "HUD/ItemWidget.h"
+#include "HUD/InventoryItemWidget.h"
+#include "Item/Item.h"
 #include "Subsystem/InventorySubsystem.h"
 
 
@@ -16,15 +17,22 @@ UInventoryWidget::UInventoryWidget(const FObjectInitializer& ObjectInitializer) 
 void UInventoryWidget::Refresh()
 {
 	UInventorySubsystem* inventorySubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
-	const TArray<FItemData>& items = inventorySubsystem->GetItemDates();
+	const TArray<TSharedPtr<FItemData>>& items = inventorySubsystem->GetItemDates();
 	for (int i = 0; i < UInventorySubsystem::MAX_ITEM_COUNT; i++)
 	{
-		if (items[i].id.IsNone())
+		if (items[i] == nullptr || 
+			items[i]->id.IsNone())
 			continue;
 
 		UItemWidget* itemWidget = Cast<UItemWidget>(gridPanel->GetChildAt(i));
-		itemWidget->SetData(items[i].id);
+		itemWidget->SetData(items[i]->id);
 	}
+}
+
+void UInventoryWidget::Refresh(const FName& id, int32 index)
+{
+	UItemWidget* itemWidget = Cast<UItemWidget>(gridPanel->GetChildAt(index));
+	itemWidget->SetData(id);
 }
 
 void UInventoryWidget::NativeOnInitialized()
@@ -42,12 +50,15 @@ void UInventoryWidget::NativeOnInitialized()
 	for (int i = 0; i < UInventorySubsystem::MAX_ITEM_COUNT; i++)
 	{
 
-		UItemWidget* widget = CreateWidget<UItemWidget>(GetWorld(), itemWidget);
+		UInventoryItemWidget* widget = CreateWidget<UInventoryItemWidget>(GetWorld(), itemWidget);
 		widget->SetIndex(i);
 		UGridSlot* slot = gridPanel->AddChildToGrid(widget, i / column, i % column);
 		slot->Nudge.X = 10.f;
 	}
 
+
+	UInventorySubsystem* inventorySubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+	inventorySubsystem->OnAddInventoryEvent().AddUObject(this, &UInventoryWidget::Refresh);
 }
 
 void UInventoryWidget::NativeConstruct()

@@ -15,14 +15,6 @@
 #include "Internationalization/StringTableRegistry.h"
 #include "Subsystem/TableSubsystem.h"
 
-#define SET_STATUS_TEXT_DATA(widget, argData, keyText) \
-{\
-	UTextBlock* textBlock = Cast<UTextBlock>(widget);\
-	FText text = FText::Format(FText::FromStringTable(UTableSubsystem::STRINGTABLE_UI_PATH, TEXT(keyText)), FText::AsNumber(argData));\
-	textBlock->SetText(text);\
-}\
-
-int32 testValue = 123456789;
 
 void UCharacterInformationWidget::UpdateStatus(const TSharedPtr<FStatusData>& data)
 {
@@ -31,14 +23,11 @@ void UCharacterInformationWidget::UpdateStatus(const TSharedPtr<FStatusData>& da
 	TArray<UWidget*> textWidgets = infoPanel->GetAllChildren();
 
 
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->maxHealth, "Text_MaxHealth");
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->maxStamina, "Text_MaxStamina");
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->attack, "Text_Attack");
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->attackSpeed, "Text_AttackSpeed");
-	SET_STATUS_TEXT_DATA(textWidgets[count++], data->defensive, "Text_Defensive");
-
-
-
+	TEXTBLOCK_FORMAT_ONEPARAM(UTableSubsystem::STRINGTABLE_UI_PATH, textWidgets[count++], data->maxHealth, TEXT("Text_MaxHealth"));
+	TEXTBLOCK_FORMAT_ONEPARAM(UTableSubsystem::STRINGTABLE_UI_PATH, textWidgets[count++], data->maxStamina, TEXT("Text_MaxStamina"));
+	TEXTBLOCK_FORMAT_ONEPARAM(UTableSubsystem::STRINGTABLE_UI_PATH, textWidgets[count++], data->attack, TEXT("Text_Attack"));
+	TEXTBLOCK_FORMAT_ONEPARAM(UTableSubsystem::STRINGTABLE_UI_PATH, textWidgets[count++], data->attackSpeed, TEXT("Text_AttackSpeed"));
+	TEXTBLOCK_FORMAT_ONEPARAM(UTableSubsystem::STRINGTABLE_UI_PATH, textWidgets[count++], data->defensive, TEXT("Text_Defensive"));
 }
 
 void UCharacterInformationWidget::ChangeStatus(const TSharedPtr<FStatusData>& data)

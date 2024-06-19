@@ -4,10 +4,18 @@
 #include "Subsystem/UISubsystem.h"
 #include "Blueprint/UserWidget.h"
 
-void UUISubsystem::Show(UClass* widgetClass, int32 ZOrder)
+
+UUISubsystem::UUISubsystem() : Super(),
+UI_PATH(TEXT("/Game/BP/HUD/"))
 {
+
+}
+
+UUserWidget* UUISubsystem::Show(UClass* widgetClass, int32 ZOrder)
+{
+
 	if (widgetClass == nullptr)
-		return;
+		return nullptr;
 
 	TObjectPtr<UUserWidget>* userWidget = cachedUI.Find(widgetClass);
 	if (userWidget == nullptr)
@@ -15,20 +23,9 @@ void UUISubsystem::Show(UClass* widgetClass, int32 ZOrder)
 		userWidget = &cachedUI.Add(widgetClass, CreateWidget(GetWorld(), widgetClass));
 	}
 
-	if ((*userWidget)->IsInViewport())
-	{
-		auto activeUINode = CheckActiveList(userWidget);
+	Show(*userWidget,ZOrder);
 
-		if (activeUINode)
-		{
-			(*userWidget)->RemoveFromParent();
-			activeUIList.RemoveNode(activeUINode);
-		}
-	}
-
-	(*userWidget)->AddToViewport(ZOrder);
-	activeUIList.AddTail((*userWidget));
-	showEvent.Broadcast(*userWidget);
+	return *userWidget;
 }
 
 void UUISubsystem::Hide()
@@ -98,5 +95,23 @@ TDoubleLinkedList<TObjectPtr<UUserWidget>>::TDoubleLinkedListNode* UUISubsystem:
 		node = node->GetNextNode();
 	}
 	return nullptr;
+}
+
+void UUISubsystem::Show(TObjectPtr<UUserWidget>& userWidget, int32 ZOrder)
+{
+	if ((userWidget)->IsInViewport())
+	{
+		auto activeUINode = CheckActiveList(&userWidget);
+
+		if (activeUINode)
+		{
+			(userWidget)->RemoveFromParent();
+			activeUIList.RemoveNode(activeUINode);
+		}
+	}
+
+	(userWidget)->AddToViewport(ZOrder);
+	activeUIList.AddTail((userWidget));
+	showEvent.Broadcast(userWidget);
 }
 

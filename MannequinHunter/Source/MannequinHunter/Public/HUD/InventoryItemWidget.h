@@ -16,4 +16,6 @@ class MANNEQUINHUNTER_API UInventoryItemWidget : public UItemWidget
 
 protected:
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
+	virtual const TSharedPtr<FItemData>* GetItemData() override;
 };

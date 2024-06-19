@@ -28,6 +28,7 @@ class MANNEQUINHUNTER_API UTableSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 public:
 	const static FName STRINGTABLE_UI_PATH;
+	const static FName STRINGTABLE_ITEM_PATH;
 
 public:
 

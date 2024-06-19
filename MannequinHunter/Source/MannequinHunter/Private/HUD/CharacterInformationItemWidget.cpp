@@ -28,3 +28,13 @@ FReply UCharacterInformationItemWidget::NativeOnMouseButtonDown(const FGeometry&
 
 	return replay;
 }
+
+const TSharedPtr<FItemData>* UCharacterInformationItemWidget::GetItemData()
+{
+	if (IsEmpty())
+		return nullptr;
+
+	UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+
+	return &inventory->GetEquipment()[StaticCast<EEquipment>(index)];
+}

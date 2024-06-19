@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> infoWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> itemInfoWidgetClass;
+
 	UPROPERTY()
 	TObjectPtr<class UMainUIWidget> mainWidget;
 

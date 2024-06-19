@@ -12,6 +12,7 @@
 const TCHAR* AIPatternPath = TEXT("/Game/BP/DataTable/AIPatternDataTables/");
 
 const FName UTableSubsystem::STRINGTABLE_UI_PATH = TEXT("/Game/BP/DataTable/ST_UI.ST_UI");
+const FName UTableSubsystem::STRINGTABLE_ITEM_PATH = TEXT("/Game/BP/DataTable/ST_Item.ST_Item");
 
 const UDataTable* UTableSubsystem::LoadAIPatternTable(const FName& tableName)
 {

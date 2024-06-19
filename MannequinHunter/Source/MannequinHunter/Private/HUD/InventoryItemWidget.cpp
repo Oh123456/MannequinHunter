@@ -31,3 +31,12 @@ FReply UInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	}
 	return reply;
 }
+
+const TSharedPtr<FItemData>* UInventoryItemWidget::GetItemData()
+{
+	if (IsEmpty())
+		return nullptr;
+
+	UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+	return inventory->GetItemData(index);
+}

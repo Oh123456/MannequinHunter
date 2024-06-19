@@ -41,3 +41,9 @@ if (uClass->ImplementsInterface(U##InterfaceClass::StaticClass()))\
 	castInterface->FunctionName(__VA_ARGS__);\
 }\
 
+#define TEXTBLOCK_FORMAT_ONEPARAM(stringTablePath,widget, argData, keyText) \
+{\
+	UTextBlock* textBlock = Cast<UTextBlock>(widget);\
+	FText text = FText::Format(FText::FromStringTable(stringTablePath, keyText), FText::AsNumber(argData));\
+	textBlock->SetText(text);\
+}\

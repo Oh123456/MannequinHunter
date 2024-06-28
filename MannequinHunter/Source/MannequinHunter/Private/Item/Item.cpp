@@ -13,7 +13,14 @@ FEquipmentItemData::FEquipmentItemData(const FName& itemID, const FItemTable* ta
 {
 	const FEquipmentItemTable* equipmentItemTable = (const FEquipmentItemTable*)(tableData);
 	statusData = equipmentItemTable->statusData;
-	weaponConstant = equipmentItemTable->weaponConstant;
+}
+
+FWeaponItemData::FWeaponItemData(const FName& itemID, const struct FItemTable* tableData) : FEquipmentItemData(itemID, tableData)
+{
+	const FWeaponItemTable* weaponItemTable = (const FWeaponItemTable*)(tableData);
+	weaponConstant = weaponItemTable->weaponConstant;
+	weaponType = weaponItemTable->weaponType;
+	weaponClass = weaponItemTable->weaponClass;
 }
 
 TSharedPtr<FItemData> FItemFactory::CreateItemData(const FName& itemID, UTableSubsystem* tableSubsystem)
@@ -39,7 +46,7 @@ TSharedPtr<FItemData> FItemFactory::CreateItemData(const FName& itemID, UTableSu
 	}
 	case EItemType::E_Weapon:
 	{
-		table = tableData->FindRow<FEquipmentItemTable>(itemID, TEXT(""));
+		table = tableData->FindRow<FWeaponItemTable>(itemID, TEXT(""));
 		return MakeShared<FWeaponItemData>(itemID, table);
 	}
 	default:

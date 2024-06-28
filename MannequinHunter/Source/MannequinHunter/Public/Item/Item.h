@@ -9,7 +9,7 @@ enum class EItemType
 	E_Weapon,
 };
 
-
+enum class EWeaponType : uint8;
 
 struct FItemData
 {
@@ -30,16 +30,16 @@ struct FEquipmentItemData : public FItemData
 {
 public:
 	FEquipmentItemData(const FName& itemID, const struct FItemTable* tableData);
-	FEquipmentItemData() : FItemData(), statusData() , weaponConstant(1.0f) {};
+	FEquipmentItemData() : FItemData(), statusData(){};
 
 	virtual ~FEquipmentItemData() {}
 
 	virtual const FMannequinHunterStatusData GetStatusData() const override { return statusData; }
 
-	float GetWeaponConstant() const { return weaponConstant; }
+	
 protected:
 	FMannequinHunterStatusData statusData;
-	float weaponConstant;
+
 };
 
 
@@ -47,7 +47,7 @@ struct FWeaponItemData : public FEquipmentItemData
 {
 
 public:
-	FWeaponItemData(const FName& itemID, const struct FItemTable* tableData) : FEquipmentItemData(itemID, tableData) {};
+	FWeaponItemData(const FName& itemID, const struct FItemTable* tableData);
 	FWeaponItemData() : FEquipmentItemData() {};
 
 	virtual ~FWeaponItemData() {}
@@ -58,6 +58,14 @@ public:
 		data.attack = FMath::RoundToInt(StaticCast<float>(data.attack) * weaponConstant);
 		return data;
 	}
+	float GetWeaponConstant() const { return weaponConstant; }
+	EWeaponType GetWeaponType() const { return weaponType; }
+	const TSubclassOf<class AEquipment>& GetWeaponClass() const { return weaponClass; }
+private:
+	float weaponConstant;
+	EWeaponType weaponType;
+	UPROPERTY()
+	TSubclassOf<class AEquipment> weaponClass;
 };
 
 static class FItemFactory

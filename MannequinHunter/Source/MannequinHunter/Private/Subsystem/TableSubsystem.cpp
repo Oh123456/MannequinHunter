@@ -30,10 +30,22 @@ const void UTableSubsystem::GetItemTable(const FName& id, FItemDataTableResult& 
 		return;
 
 	itemDataTableResult.type = keytable->itemType;
-	if (EItemType::E_Etc == keytable->itemType)
+
+	switch (keytable->itemType)
+	{
+	case EItemType::E_Etc:
 		itemDataTableResult.table = GetTable<FItemTable>();
-	else
+		break;
+	case EItemType::E_Equipment:
 		itemDataTableResult.table = GetTable<FEquipmentItemTable>();
+		break;
+	case EItemType::E_Weapon:
+		itemDataTableResult.table = GetTable<FWeaponItemTable>();
+		break;
+	default:
+		break;
+	}
+		
 }
 
 void UTableSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -47,6 +59,7 @@ void UTableSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	LoadTable<FItemKeyTable>(TEXT("/Game/BP/DataTable/DT_ItemKey"));
 	LoadTable<FItemTable>(TEXT("/Game/BP/DataTable/DT_Item"));
 	LoadTable<FEquipmentItemTable>(TEXT("/Game/BP/DataTable/DT_EquipmentItem"));
+	LoadTable<FWeaponItemTable>(TEXT("/Game/BP/DataTable/DT_WeaponItem"));
 }
 
 void UTableSubsystem::Deinitialize()

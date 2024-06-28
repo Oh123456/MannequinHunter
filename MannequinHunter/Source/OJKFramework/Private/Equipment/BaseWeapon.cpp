@@ -169,6 +169,31 @@ void ABaseWeapon::SetWeaponOwner(AActor* weaponOwner)
 
 }
 
+void ABaseWeapon::RemoveWeaponOwner()
+{
+	if (bUseCylinder)
+	{
+
+		if (!CheckCylinderComponent())
+			return;
+
+		hitCheckBeginDelegate.Unbind();
+		RemoveCylinder();
+		hitCheckEndDelegate.Unbind();
+		SetCylinderActive(false);
+	}
+	else
+	{
+		weaponTraceHitParameter.ignoreActor.Add(Owner);
+		hitCheckBeginDelegate.Unbind();
+		RemoveTraceHit();
+		hitCheckEndDelegate.Unbind();
+	}
+
+	weaponData.ownerCharacter = nullptr;
+	SetOwner(weaponData.ownerCharacter);
+}
+
 void ABaseWeapon::HitCheckCylinder(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)
 {
 	if (otherActor && otherActor != GetOwner() && (otherActor != this) && otherComp)
@@ -217,9 +242,20 @@ void ABaseWeapon::SetCylinder()
 	cylinderComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseWeapon::HitCheckCylinder);
 }
 
+void ABaseWeapon::RemoveCylinder()
+{
+	if (cylinderComponent)
+		cylinderComponent->OnComponentBeginOverlap.RemoveAll(this);
+}
+
 void ABaseWeapon::SetTraceHit()
 {
 	hitCheckDelegate.BindUObject(this, &ABaseWeapon::HitCheckTrace);
+}
+
+void ABaseWeapon::RemoveTraceHit()
+{
+	hitCheckDelegate.Unbind();
 }
 
 bool ABaseWeapon::CheckCylinderComponent()

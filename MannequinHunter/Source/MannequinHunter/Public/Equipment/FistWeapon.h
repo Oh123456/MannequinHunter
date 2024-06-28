@@ -67,6 +67,8 @@ private:
 public:
 	virtual void SetActiveCylinderIndex(uint8 index) override;
 	virtual void SetWeaponOwner(class AActor* weaponOwner) override;
+protected:
+	virtual void CreateHitBox() override;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = HitBox, meta = (AllowPrivateAccess = "true"))
 	FFistWeaponData fistWeaponData;

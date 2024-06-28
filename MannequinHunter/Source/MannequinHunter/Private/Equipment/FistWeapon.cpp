@@ -25,12 +25,25 @@ void AFistWeapon::SetWeaponOwner(AActor* weaponOwner)
 	ACharacter* character = Cast<ACharacter>(weaponOwner);
 	if (character)
 	{
-		for (const FFistHitBoxData& hitBox : fistWeaponData.useHitBoxData)
+		//for (const FFistHitBoxData& hitBox : fistWeaponData.useHitBoxData)
+		USkeletalMeshComponent* mesh = character->GetMesh();
+		for(int i = 0 ; i < fistWeaponData.useHitBoxData.Num(); i++)
 		{
-			SetupCylinderAttachment(hitBox.hitBox, character->GetMesh(), hitBox.socketNames);
+			SetupCylinderAttachment(multiHitBoxWeaponData.hitBoxs[i], mesh, fistWeaponData.useHitBoxData[i].socketNames);
 		}
 	}
 	Super::SetWeaponOwner(weaponOwner);
+}
+
+void AFistWeapon::CreateHitBox()
+{
+
+	for (const FFistHitBoxData& hitBox : fistWeaponData.useHitBoxData)
+	{
+		multiHitBoxWeaponData.hitBoxs.Add(GetWorld()->SpawnActor<AHitBoxActor>(hitBox.hitBox));
+		
+	}
+
 }
 
 void AFistWeapon::AddActiveCylinderIndexQueue(EFistWeaponSlotFlag index, EFistWeaponSlotFlag flag, EFistWeaponSlot slot)

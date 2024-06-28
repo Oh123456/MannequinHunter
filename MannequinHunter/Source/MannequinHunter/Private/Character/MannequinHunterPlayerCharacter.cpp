@@ -10,6 +10,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/MannequinHunterGameMode.h"
 #include "Controller/ActionPlayerController.h"
+#include "Subsystem/InventorySubsystem.h"
+#include "Item/Item.h"
+#include "Equipment/BaseWeapon.h"
+#include "CombatSystem/CharacterCombatComponent.inl"
 
 void AMannequinHunterPlayerCharacter::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {
@@ -167,6 +171,40 @@ void AMannequinHunterPlayerCharacter::OnInfo()
 	if (gameMode == nullptr)
 		return;
 	gameMode->ToggleInfo();
+}
+
+void AMannequinHunterPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UInventorySubsystem* inventory = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+	inventory->OnEquipment().AddUObject(this,&AMannequinHunterPlayerCharacter::OnEquipment);
+}
+
+void AMannequinHunterPlayerCharacter::OnEquipment(EEquipment slot, const TSharedPtr<FItemData> itemData)
+{
+	if (slot != EEquipment::E_Weapone)
+		return;
+
+	const TSharedPtr<FWeaponItemData> weaponItem = StaticCastSharedPtr<FWeaponItemData>(itemData);
+
+	UMannequinHunterCombatComponent* mannequinHunterCombatComponent = StaticCast<UMannequinHunterCombatComponent*>(combatComponent);
+
+	AEquipment* currentEquipment = mannequinHunterCombatComponent->GetEquipment(ECombatEquipmentSlot::E_MainWeapon);
+	if (currentEquipment)
+	{
+		ABaseWeapon* currentWeapon = Cast<ABaseWeapon>(currentEquipment);
+		currentWeapon->RemoveWeaponOwner();
+	}
+
+	ABaseWeapon* weapon = mannequinHunterCombatComponent->CreateEquipment<ABaseWeapon>(weaponItem->GetWeaponClass(),ECombatEquipmentSlot::E_MainWeapon);
+
+	weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("Weapon_r_Sockt"));
+	weapon->SetWeaponOwner(this);
+
+	EWeaponType type = weaponItem->GetWeaponType();
+	mannequinHunterCombatComponent->SetWeaponType(type);
+	mannequinHunterCombatComponent->SetCombatAnimationData(type);
 }
 
 

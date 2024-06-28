@@ -106,6 +106,8 @@ public:
 	inline void ClearHitObjects() { weaponHitData.attackObjects.Reset(0); }
 	UFUNCTION(BlueprintCallable)
 	virtual void SetWeaponOwner(class AActor* weaponOwner);
+
+	virtual void RemoveWeaponOwner();
 protected:
 	UFUNCTION()
 	virtual void HitCheckCylinder(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
@@ -121,7 +123,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetCylinder();
+	virtual void RemoveCylinder();
 	virtual void SetTraceHit();
+	virtual void RemoveTraceHit();
 	virtual bool CheckCylinderComponent();
 
 protected:

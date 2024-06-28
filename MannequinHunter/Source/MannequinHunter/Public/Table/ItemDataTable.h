@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "Combatsystem/MannequinHunterStatus.h"
 #include "Item/Item.h"
+#include "Character/PlayerCommonEnums.h"
 #include "ItemDataTable.generated.h"
 
 /**
@@ -44,9 +45,23 @@ struct FEquipmentItemTable : public FItemTable
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditDefaultsOnly)
-	float weaponConstant;
-	UPROPERTY(EditDefaultsOnly)
 	FMannequinHunterStatusData statusData;
+};
+
+USTRUCT(Blueprinttype)
+struct FWeaponItemTable : public FEquipmentItemTable
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditDefaultsOnly)
+	float weaponConstant;
+
+	UPROPERTY(EditDefaultsOnly)
+	EWeaponType weaponType;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AEquipment> weaponClass;
+
 };
 
 UCLASS()

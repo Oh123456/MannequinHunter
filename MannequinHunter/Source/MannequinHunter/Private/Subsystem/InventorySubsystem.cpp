@@ -89,7 +89,6 @@ void UInventorySubsystem::Equipment(EEquipment slot, int32 InventoryIndex)
 		status.Sum(statusData);
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("weaponConstant!!!! %f "), data->GetWeaponConstant());
 }
 
 void UInventorySubsystem::RemoveEquipment(EEquipment slot)

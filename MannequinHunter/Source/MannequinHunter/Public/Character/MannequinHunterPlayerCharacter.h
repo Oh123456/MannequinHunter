@@ -35,4 +35,10 @@ protected:
 
 	void OnInventory();
 	void OnInfo();
+
+	// To add mapping context
+	virtual void BeginPlay() override;
+
+private:
+	void OnEquipment(enum class EEquipment slot, const TSharedPtr<struct FItemData> itemData);
 };

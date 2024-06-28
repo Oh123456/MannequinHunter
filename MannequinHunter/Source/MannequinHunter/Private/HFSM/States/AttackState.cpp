@@ -58,7 +58,13 @@ void FAttackState::Enter()
 			AMannequinHunterPlayerController* controller = ownerStateMachine->GetOwnerCharacter()->GetController<AMannequinHunterPlayerController>();
 			const FActionTable* table = controller->GetActionTableData();
 			if (table)
-				weapon->SetDamageType(table->damageType.GetDefaultObject());
+			{
+				const FActionTableData* actionTableData = table->actionDataMap.Find(combatComponent->GetWeaponType());
+				if (actionTableData)
+					weapon->SetDamageType(actionTableData->damageType.GetDefaultObject());
+				else
+					weapon->SetDamageType(Cast<UDamageType>(UDamageType::StaticClass()->GetDefaultObject()));
+			}
 			else
 				weapon->SetDamageType(Cast<UDamageType>(UDamageType::StaticClass()->GetDefaultObject()));
 

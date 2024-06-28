@@ -5,13 +5,19 @@
 #include "Components/CapsuleComponent.h"
 #include "Equipment/HitBoxActor.h"
 
-void AMultiHitBoxWeapon::SetupCylinderAttachment(TSubclassOf<AHitBoxActor> createHitBox ,USceneComponent* InParent, FName InSocketName)
+void AMultiHitBoxWeapon::SetupCylinderAttachment(AHitBoxActor* hitbox, USceneComponent* InParent, FName InSocketName)
 {
-	AHitBoxActor* hitBox = GetWorld()->SpawnActor<AHitBoxActor>(createHitBox);
+	hitbox->AttachToComponent(InParent, FAttachmentTransformRules::KeepRelativeTransform, InSocketName);
 
-	hitBox->AttachToComponent(InParent, FAttachmentTransformRules::KeepRelativeTransform, InSocketName);
-	multiHitBoxWeaponData.hitBoxs.Add(hitBox);
+}
 
+void AMultiHitBoxWeapon::ReleaseCylinder()
+{
+	for (TObjectPtr<AHitBoxActor>& hitbox : multiHitBoxWeaponData.hitBoxs)
+	{
+		hitbox->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+		hitbox->GetHitBox()->OnComponentBeginOverlap.RemoveAll(this);//(this, );
+	}
 }
 
 void AMultiHitBoxWeapon::SetCylinderActive(bool isActive)
@@ -77,6 +83,12 @@ FVector AMultiHitBoxWeapon::GetHitPoint() const
 		return FVector::ZeroVector;
 }
 
+void AMultiHitBoxWeapon::RemoveWeaponOwner()
+{
+	Super::RemoveWeaponOwner();
+	ReleaseCylinder();
+}
+
 void AMultiHitBoxWeapon::SetCylinder()
 {
 	for (const TObjectPtr<AHitBoxActor> hitBox : multiHitBoxWeaponData.hitBoxs)
@@ -94,4 +106,10 @@ void AMultiHitBoxWeapon::SetTraceHit()
 bool AMultiHitBoxWeapon::CheckCylinderComponent()
 {
 	return multiHitBoxWeaponData.hitBoxs.Num() > 0;
+}
+
+void AMultiHitBoxWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+	CreateHitBox();
 }

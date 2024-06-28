@@ -22,7 +22,7 @@ void UObjectPoolSubsystem::ChangeWorld()
 AActor* UObjectPoolSubsystem::GetActor(TSubclassOf<AActor> actorClass)
 {
 	UWorld* world = GetWorld();
-	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorClass->GetDefaultObject()->GetClass()));
+	TSharedPtr<FObjectPool>* findPool = pools.Find(FObjectPoolKey(actorClass));
 	if (findPool == nullptr)
 	{
 		return CreateObjectPool(actorClass)->Get(world);
@@ -44,12 +44,12 @@ bool UObjectPoolSubsystem::SetActor(AActor* actorObject)
 TSharedPtr<FObjectPool> UObjectPoolSubsystem::CreateObjectPool(const TSubclassOf<AActor>& actorClass)
 {
 	TSharedPtr<FObjectPool> pool = MakeShared<FObjectPool>(actorClass);
-	pools.Add(FObjectPoolKey(actorClass->GetDefaultObject()->GetClass()), pool);
+	pools.Add(FObjectPoolKey(actorClass), pool);
 	return pool;
 }
 
 uint32 OJKFramework::GetTypeHash(const FObjectPoolKey& key)
 {
-	uint32 Hash = FCrc::MemCrc32(&key, sizeof(FObjectPoolKey));
+	uint32 Hash = FCrc::MemCrc32((key.Get()), sizeof(UClass));
 	return Hash;
 }

@@ -64,14 +64,20 @@ bool UMannequinHunterCombatComponent::CheckStatus()
 {
 	AMannequinHunterPlayerController* controller = GetOwner()->GetInstigatorController<AMannequinHunterPlayerController>();
 	const FActionTable* data = controller->GetActionTableData();
-	int32 stamina = data->useStamina;
+
+	const FActionTableData* tableData = data->actionDataMap.Find(commandListData.playerWeaponType);
+
+	if (tableData == nullptr)
+		return false;
+
+	int32 stamina = tableData->useStamina;
 	if (!status.CheckStamina())
 		return false;
 
 	status.AddStamina(-stamina);
 
-	isSuperArmor = data->isSuperArmor;
-	isImmortality = data->isImmortality;
+	isSuperArmor = tableData->isSuperArmor;
+	isImmortality = tableData->isImmortality;
 	return true;
 }
 

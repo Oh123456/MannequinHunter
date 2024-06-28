@@ -14,6 +14,7 @@
 #include "TimerManager.h"
 #include "DebugLog.h"
 #include "TimerManager.h"
+#include "Kismet/KismetObjectPoolLibrary.h"
 
 const float UCharacterCombatComponent::DODGE_CHARACTER_INTERP_SPEED = 7.0f;
 const float LOCK_ON_ANGLE_CORRECTION = 1.5f;
@@ -705,6 +706,8 @@ AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> c
 {
 	TSharedPtr<IEquipmentItem>* findItem = characterCombatData.equipmentItem.Find(slot);
 
+
+
 	if (findItem == nullptr)
 	{
 		TSharedPtr<IEquipmentItem> newObject = MakeShared<FEquipmentItem>();
@@ -713,10 +716,17 @@ AEquipment* UCharacterCombatComponent::CreateEquipment(TSubclassOf<AEquipment> c
 	}
 
 	UObjectPoolSubsystem* objectPoolManager =  GetWorld()->GetGameInstance()->GetSubsystem<UObjectPoolSubsystem>();
-
-	//FObjectPoolManager* objectPoolManager = FObjectPoolManager::GetInstance();
 	
+	AEquipment* equipment = (*findItem)->GetEquipment(0);
+	if (equipment != nullptr)
+	{
+		equipment->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+		UKismetObjectPoolLibrary::SetActiveActor(equipment, false);
+		objectPoolManager->SetActor(equipment);
+	}
+
 	AEquipment* createObject = objectPoolManager->GetActor<AEquipment>(createEquipment);
+	UKismetObjectPoolLibrary::SetActiveActor(createObject, true);
 	(*findItem)->SetEquipment(addIndex, createObject);
 
 	return createObject;

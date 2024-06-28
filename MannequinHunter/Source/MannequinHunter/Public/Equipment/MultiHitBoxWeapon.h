@@ -36,13 +36,17 @@ public:
 	virtual void SetCylinderActive(bool isActive) override;
 	virtual FVector2D GetAttackDirection() const override;
 	virtual FVector GetHitPoint() const;
+	virtual void RemoveWeaponOwner() override;
 protected:
 	virtual void SetCylinder() override;
 	virtual void SetTraceHit() override;
 	virtual bool CheckCylinderComponent() override;
+	virtual void BeginPlay()  override;
+	virtual void CreateHitBox() {};
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetupCylinderAttachment(TSubclassOf<AHitBoxActor> createHitBox, USceneComponent* InParent, FName InSocketName);
+	void SetupCylinderAttachment(AHitBoxActor* hitbox ,USceneComponent* InParent, FName InSocketName);
+	void ReleaseCylinder();
 protected:
 	FMultiHitBoxWeaponData multiHitBoxWeaponData;
 	FMultiHitData multiHitData;

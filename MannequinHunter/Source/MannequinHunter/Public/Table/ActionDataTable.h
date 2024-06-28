@@ -4,7 +4,32 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "Character/PlayerCommonEnums.h"
 #include "ActionDataTable.generated.h"
+
+USTRUCT(Blueprinttype)
+struct FActionTableData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	float damageCoefficient = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 useStamina = 10;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 recoveryStamina = 0;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool isSuperArmor = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool isImmortality = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UDamageType> damageType = UDamageType::StaticClass();
+};
 
 USTRUCT(Blueprinttype)
 struct FActionTable : public FTableRowBase
@@ -32,6 +57,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UDamageType> damageType = UDamageType::StaticClass();
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<EWeaponType, FActionTableData> actionDataMap;
 };
 
 

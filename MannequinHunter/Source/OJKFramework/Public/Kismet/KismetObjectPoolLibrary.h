@@ -12,6 +12,8 @@ class OJKFRAMEWORK_API UKismetObjectPoolLibrary : public UBlueprintFunctionLibra
 {
 	GENERATED_BODY()
 	
+public:
+
 	UFUNCTION(BlueprintCallable, DisplayName = "Set ObjectPool World")
 	static void SetWorld(AActor* worldActor);
 

@@ -78,10 +78,12 @@ namespace OJKFramework
 
 		inline bool Equals(const FObjectPoolKey& key) const
 		{
-			const UObject* uObject = Cast<UObject>(key.Get());
+			return uClass.Get() == key.Get();
+			//return uObject->IsA(this->Get());
+			/*const UObject* uObject = Cast<UObject>(key.Get());
 			if (uObject == nullptr)
 				return false;
-			return uObject->IsA(this->Get());
+			return uObject->IsA(this->Get());*/
 		}
 
 		inline const UClass* Get() const
